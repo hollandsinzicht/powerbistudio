@@ -104,7 +104,7 @@ export default function DaxAssistant() {
                         </div>
 
                         {/* Input Form */}
-                        <form onSubmit={handleSubmit} className="p-6 md:p-8 flex flex-col flex-grow">
+                        <form onSubmit={handleSubmit} className="p-6 md:p-8">
 
                             <div className="mb-6">
                                 <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
@@ -120,7 +120,7 @@ export default function DaxAssistant() {
                             </div>
 
                             {mode === "generate" && (
-                                <div className="mb-8">
+                                <div className="mb-6">
                                     <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
                                         Kies de datacontext (optioneel)
                                     </label>
@@ -136,22 +136,20 @@ export default function DaxAssistant() {
                                 </div>
                             )}
 
-                            <div className="mt-auto pt-4">
-                                <button
-                                    type="submit"
-                                    disabled={isLoading || !input.trim()}
-                                    className={`w-full py-4 rounded-xl font-medium flex items-center justify-center gap-2 transition-all ${mode === "generate"
-                                        ? "bg-[var(--accent)] hover:bg-blue-600 text-[var(--text-primary)] shadow-[0_0_15px_rgba(59,130,246,0.3)]"
-                                        : "bg-[var(--accent-warm)] hover:bg-amber-600 text-[#0A0E1A] shadow-[0_0_15px_rgba(245,158,11,0.3)]"
-                                        } disabled:opacity-50 disabled:cursor-not-allowed`}
-                                >
-                                    {isLoading ? (
-                                        <><RefreshCw size={18} className="animate-spin" /> Bezig met verwerken...</>
-                                    ) : (
-                                        mode === "generate" ? <><Play size={18} /> Genereer DAX Formule</> : <><FileText size={18} /> Leg formule uit</>
-                                    )}
-                                </button>
-                            </div>
+                            <button
+                                type="submit"
+                                disabled={isLoading || !input.trim()}
+                                className={`w-full py-4 rounded-xl font-medium flex items-center justify-center gap-2 transition-all ${mode === "generate"
+                                    ? "bg-[var(--accent)] hover:bg-blue-600 text-[var(--text-primary)] shadow-[0_0_15px_rgba(59,130,246,0.3)]"
+                                    : "bg-[var(--accent-warm)] hover:bg-amber-600 text-[#0A0E1A] shadow-[0_0_15px_rgba(245,158,11,0.3)]"
+                                    } disabled:opacity-50 disabled:cursor-not-allowed`}
+                            >
+                                {isLoading ? (
+                                    <><RefreshCw size={18} className="animate-spin" /> Bezig met verwerken...</>
+                                ) : (
+                                    mode === "generate" ? <><Play size={18} /> Genereer DAX Formule</> : <><FileText size={18} /> Leg formule uit</>
+                                )}
+                            </button>
                         </form>
                     </div>
 
@@ -161,7 +159,7 @@ export default function DaxAssistant() {
                         {/* Toolbar */}
                         <div className="flex items-center justify-between p-4 border-b border-[var(--border)] bg-[var(--surface)] shrink-0">
                             <span className="text-sm font-mono text-[var(--text-secondary)] flex items-center gap-2">
-                                <BrainCircuit size={14} className="text-[var(--accent)]" /> Claude 3.5 Sonnet
+                                <BrainCircuit size={14} className="text-[var(--accent)]" /> Claude Sonnet 4
                             </span>
 
                             <button
@@ -183,15 +181,15 @@ export default function DaxAssistant() {
                                 </div>
                             ) : result ? (
                                 <div
-                                    className="dax-result text-sm md:text-base text-gray-300 whitespace-pre-wrap leading-relaxed"
+                                    className="dax-result text-sm md:text-base text-[var(--text-secondary)] whitespace-pre-wrap leading-relaxed"
                                     dangerouslySetInnerHTML={{
                                         __html: result
                                             // Simple regex highlight for the codeblock
                                             .replace(/```(?:dax)?\n([\s\S]*?)```/g,
-                                                '<div class="my-6 bg-[#000] p-4 rounded-lg font-mono text-sm border border-[var(--border)] overflow-x-auto text-[var(--accent)]"><pre><code>$1</code></pre></div>'
+                                                '<div class="my-6 bg-gray-50 p-4 rounded-lg font-mono text-sm border border-[var(--border)] overflow-x-auto text-[#1E3A5F]"><pre><code>$1</code></pre></div>'
                                             )
                                             .replace(/\*\*(.*?)\*\*/g, '<strong class="text-[var(--text-primary)] font-bold">$1</strong>')
-                                            .replace(/\*(.*?)\*/g, '<em class="text-gray-400 italic">$1</em>')
+                                            .replace(/\*(.*?)\*/g, '<em class="text-[var(--text-secondary)] italic">$1</em>')
                                     }}
                                 />
                             ) : (
