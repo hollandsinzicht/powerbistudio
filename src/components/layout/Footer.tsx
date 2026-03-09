@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Linkedin, Mail } from "lucide-react";
 
 export default function Footer() {
@@ -11,12 +12,13 @@ export default function Footer() {
                     {/* Brand Col */}
                     <div className="md:col-span-2">
                         <Link href="/" className="flex items-center gap-2 mb-4 group inline-flex">
-                            <div className="w-8 h-8 bg-gradient-to-br from-[var(--accent)] to-[var(--accent-warm)] rounded-sm flex items-center justify-center opacity-90 group-hover:opacity-100 transition-opacity">
-                                <span className="text-[var(--text-primary)] font-bold font-display leading-none">PB</span>
-                            </div>
-                            <span className="font-display font-bold text-xl tracking-tight text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors">
-                                PowerBIStudio
-                            </span>
+                            <Image
+                                src="/logo.png"
+                                alt="Power BI Studio"
+                                width={180}
+                                height={40}
+                                className="h-8 w-auto opacity-90 group-hover:opacity-100 transition-opacity"
+                            />
                         </Link>
                         <p className="text-[var(--text-secondary)] mb-6 max-w-sm">
                             Power BI & AI specialist voor organisaties die de volgende stap willen zetten.

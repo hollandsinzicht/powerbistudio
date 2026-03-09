@@ -34,7 +34,7 @@ export default function OverPage() {
                             <div className="w-64 h-64 md:w-80 md:h-80 relative rounded-2xl overflow-hidden border border-[var(--border)] shadow-[0_0_40px_rgba(59,130,246,0.15)] group">
                                 <div className="absolute inset-0 bg-gradient-to-t from-[var(--background)] to-transparent z-10 opacity-60" />
                                 <Image
-                                    src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80"
+                                    src="/jan-willem.jpg"
                                     alt="Jan Willem den Hollander"
                                     fill
                                     className="object-cover transition-transform duration-700 group-hover:scale-105"
