@@ -37,7 +37,7 @@ export async function POST(req: Request) {
         const contextText = context && context !== 'Geen context' ? `\n\nContext voor dit model/bedrijf: ${context}` : '';
 
         const response = await anthropic.messages.create({
-            model: 'claude-3-5-sonnet-20241022',
+            model: 'claude-sonnet-4-20250514',
             max_tokens: 1024,
             system: systemPrompt,
             messages: [
@@ -59,6 +59,9 @@ export async function POST(req: Request) {
 
     } catch (error) {
         console.error('Anthropic API Error:', error);
-        return NextResponse.json({ error: 'Failed to process request for DAX assistance' }, { status: 500 });
+        const errorMessage = error instanceof Error ? error.message : 'Onbekende fout';
+        return NextResponse.json({
+            result: `**Er ging iets mis bij het verwerken van je vraag.**\n\nFoutmelding: ${errorMessage}\n\nProbeer het opnieuw of neem contact op via info@powerbistudio.nl.`
+        });
     }
 }
