@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
     title: 'DashPortal — Jouw eigen dataportaal voor Power BI | Power BI Studio',
-    description: 'Deel Power BI rapporten met klanten en collega's via een professioneel, branded portaal — met je eigen logo, kleuren en domein. Inclusief metadatabeheer en data-hygiëne monitoring.',
+    description: 'Deel Power BI rapporten met klanten en collega\u0027s via een professioneel, branded portaal — met je eigen logo, kleuren en domein. Inclusief metadatabeheer en data-hygiëne monitoring.',
 };
 
 const painPoints = [
