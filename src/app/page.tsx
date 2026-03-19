@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, CheckCircle2, BarChart3, Database, BrainCircuit, LineChart } from "lucide-react";
+import { ArrowRight, CheckCircle2, BarChart3, Database, BrainCircuit, LineChart, ExternalLink } from "lucide-react";
 
 export default function Home() {
   return (
@@ -111,11 +111,11 @@ export default function Home() {
           <div className="text-center max-w-2xl mx-auto mb-16">
             <h2 className="text-4xl font-display font-bold mb-4">Tools die voor je werken</h2>
             <p className="text-[var(--text-secondary)] text-lg">
-              Ontdek de volwassenheid van jouw data-organisatie, of laat AI je helpen met complexe DAX formules.
+              Ontdek de volwassenheid van jouw data-organisatie, laat AI je helpen met complexe DAX formules, of publiceer je dashboards via DashPortal.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
 
             {/* Tool 1 */}
             <div className="group border border-[var(--border)] bg-[var(--surface)] p-8 rounded-xl hover:border-[var(--accent)] hover:shadow-[0_0_30px_rgba(59,130,246,0.1)] transition-all flex flex-col h-full cursor-pointer">
@@ -148,6 +148,24 @@ export default function Home() {
                 <Link href="/tools/dax-assistant" className="text-[var(--text-primary)] font-medium flex items-center gap-2 group-hover:gap-3 transition-all">
                   Open de assistant <ArrowRight size={18} className="text-[var(--accent-warm)]" />
                 </Link>
+              </div>
+            </div>
+
+            {/* Tool 3 */}
+            <div className="group border border-[var(--border)] bg-[var(--surface)] p-8 rounded-xl hover:border-[#10b981] hover:shadow-[0_0_30px_rgba(16,185,129,0.1)] transition-all flex flex-col h-full cursor-pointer">
+              <div className="flex items-center gap-3 mb-4">
+                <span className="bg-[rgba(16,185,129,0.1)] text-[#10b981] text-xs font-mono px-3 py-1 border border-[rgba(16,185,129,0.2)] rounded flex items-center gap-1">
+                  <ExternalLink size={12} /> Web app
+                </span>
+              </div>
+              <h3 className="text-2xl font-display font-bold mb-3 group-hover:text-[#10b981] transition-colors">DashPortal.app</h3>
+              <p className="text-[var(--text-secondary)] mb-8 flex-grow">
+                Publiceer en deel je Power BI dashboards via een eigen branded portal. Eenvoudig beheer, veilige toegang en een professionele ervaring voor je stakeholders.
+              </p>
+              <div className="mt-auto">
+                <a href="https://dashportal.app" target="_blank" rel="noopener noreferrer" className="text-[var(--text-primary)] font-medium flex items-center gap-2 group-hover:gap-3 transition-all">
+                  Naar DashPortal.app <ExternalLink size={18} className="text-[#10b981]" />
+                </a>
               </div>
             </div>
 
