@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, BrainCircuit, Activity } from "lucide-react";
+import { ArrowRight, BrainCircuit, Activity, ExternalLink, Globe } from "lucide-react";
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -86,6 +86,39 @@ export default function ToolsPage() {
                                     <Link href="/tools/dax-assistant" className="inline-flex items-center gap-2 bg-[var(--surface)] hover:bg-[#1f2937] text-[var(--text-primary)] border border-[var(--border)] group-hover:border-[var(--accent-warm)] px-6 py-3 rounded text-lg font-medium transition-all shadow-[0_0_15px_rgba(245,158,11,0)] group-hover:shadow-[0_0_15px_rgba(245,158,11,0.2)]">
                                         Open de assistant <ArrowRight size={20} className="text-[var(--accent-warm)]" />
                                     </Link>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Tool 3: DashPortal */}
+                        <div className="group border border-[var(--border)] bg-gray-50 p-10 rounded-2xl hover:border-[#10b981] hover:shadow-[0_0_40px_rgba(16,185,129,0.1)] transition-all flex flex-col h-full relative overflow-hidden lg:col-span-2">
+                            <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
+                                <Globe size={180} />
+                            </div>
+
+                            <div className="relative z-10 flex flex-col h-full">
+                                <div className="flex items-center gap-3 mb-6">
+                                    <span className="bg-[rgba(16,185,129,0.05)] text-[#10b981] text-sm font-mono px-4 py-1.5 border border-[rgba(16,185,129,0.2)] rounded flex items-center gap-2">
+                                        <ExternalLink size={16} /> Web app
+                                    </span>
+                                </div>
+
+                                <h2 className="text-3xl font-display font-bold mb-4 group-hover:text-[#10b981] transition-colors">
+                                    DashPortal.app
+                                </h2>
+
+                                <p className="text-[var(--text-secondary)] text-lg mb-10 flex-grow leading-relaxed max-w-lg">
+                                    Publiceer en deel je Power BI dashboards via een eigen branded portaal. Met je eigen logo, kleuren en domein.
+                                    Inclusief metadatabeheer en data-hygiëne monitoring — zonder technische kennis, binnen 10 minuten live.
+                                </p>
+
+                                <div className="mt-auto flex flex-wrap gap-4">
+                                    <Link href="/dashportal" className="btn-primary inline-flex items-center gap-2 text-lg px-6 py-3" style={{ backgroundColor: '#10b981' }}>
+                                        Meer informatie <ArrowRight size={20} />
+                                    </Link>
+                                    <a href="https://dashportal.app" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-[var(--surface)] hover:bg-[#1f2937] text-[var(--text-primary)] border border-[var(--border)] group-hover:border-[#10b981] px-6 py-3 rounded text-lg font-medium transition-all">
+                                        Naar DashPortal.app <ExternalLink size={20} className="text-[#10b981]" />
+                                    </a>
                                 </div>
                             </div>
                         </div>

@@ -21,6 +21,7 @@ export default function Navbar() {
 
     const navLinks = [
         { name: "Over", href: "/over" },
+        { name: "DashPortal", href: "/dashportal" },
         { name: "Tools", href: "/tools" },
         { name: "Cases", href: "/cases" },
         { name: "Contact", href: "/contact" },
