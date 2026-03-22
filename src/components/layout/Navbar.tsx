@@ -24,6 +24,7 @@ export default function Navbar() {
         { name: "DashPortal", href: "/dashportal" },
         { name: "Tools", href: "/tools" },
         { name: "Cases", href: "/cases" },
+        { name: "Blog", href: "/blog" },
         { name: "Contact", href: "/contact" },
     ];
 
