@@ -1,11 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 export function middleware(request: NextRequest) {
-    const { pathname, searchParams } = request.nextUrl;
-    const post = searchParams.get('post');
+    const post = request.nextUrl.searchParams.get('post');
 
-    // Redirect /blog?post=slug → /blog/slug
-    if (pathname === '/blog' && post) {
+    if (post) {
         const url = request.nextUrl.clone();
         url.pathname = `/blog/${post}`;
         url.searchParams.delete('post');

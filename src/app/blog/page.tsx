@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight, Calendar } from 'lucide-react';
-import { getSoroArticles } from '@/lib/soro';
+import { getArticles } from '@/lib/soro';
 
 export const metadata: Metadata = {
     title: 'Blog | PowerBIStudio',
@@ -10,13 +10,12 @@ export const metadata: Metadata = {
 };
 
 export default async function BlogPage() {
-    const articles = await getSoroArticles();
+    const articles = await getArticles();
 
     return (
         <>
             <section className="pt-32 pb-16 border-b border-[var(--border)] relative overflow-hidden">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(59,130,246,0.1),transparent_50%)] pointer-events-none" />
-
                 <div className="container mx-auto px-6 md:px-12 relative z-10">
                     <div className="max-w-3xl">
                         <h1 className="text-4xl md:text-5xl font-display font-bold mb-6">

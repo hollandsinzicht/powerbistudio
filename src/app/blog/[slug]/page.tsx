@@ -2,7 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowLeft, Calendar } from 'lucide-react';
 import { notFound } from 'next/navigation';
-import { getSoroArticleBySlug, getSoroArticleContent, BASE_URL } from '@/lib/soro';
+import { getArticleBySlug, getArticleContent, BASE_URL } from '@/lib/soro';
 import type { Metadata } from 'next';
 
 type Props = {
@@ -11,9 +11,11 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const { slug } = await params;
-    const article = await getSoroArticleBySlug(slug);
+    const article = await getArticleBySlug(slug);
 
-    if (!article) return { title: 'Artikel niet gevonden | PowerBIStudio' };
+    if (!article) {
+        return { title: 'Artikel niet gevonden | PowerBIStudio' };
+    }
 
     const url = `${BASE_URL}/blog/${slug}`;
     const image = article.image || `${BASE_URL}/og-default.png`;
@@ -45,11 +47,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function BlogPostPage({ params }: Props) {
     const { slug } = await params;
-    const article = await getSoroArticleBySlug(slug);
+    const article = await getArticleBySlug(slug);
 
     if (!article) notFound();
 
-    const content = await getSoroArticleContent(article.id);
+    const content = await getArticleContent(article.id);
 
     const jsonLd = {
         '@context': 'https://schema.org',
@@ -86,7 +88,7 @@ export default async function BlogPostPage({ params }: Props) {
                             className="inline-flex items-center gap-2 text-[var(--text-secondary)] hover:text-[var(--primary)] transition-colors text-sm font-medium mb-8"
                         >
                             <ArrowLeft size={16} />
-                            Terug naar blog
+                            Terug naar alle artikelen
                         </Link>
 
                         <div className="flex items-center gap-2 text-sm text-[var(--text-secondary)] mb-4">

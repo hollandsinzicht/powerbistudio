@@ -1,5 +1,5 @@
 import type { MetadataRoute } from 'next';
-import { getSoroArticles, BASE_URL } from '@/lib/soro';
+import { getArticles, BASE_URL } from '@/lib/soro';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const staticRoutes: MetadataRoute.Sitemap = [
@@ -19,7 +19,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: route === '' ? 1 : route === '/blog' ? 0.9 : 0.8,
     }));
 
-    const articles = await getSoroArticles();
+    const articles = await getArticles();
     const blogRoutes: MetadataRoute.Sitemap = articles.map((article) => ({
         url: `${BASE_URL}/blog/${article.slug}`,
         lastModified: new Date(article.isoDate),
