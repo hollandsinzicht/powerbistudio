@@ -30,6 +30,41 @@ export default function BlogPage() {
                 <div className="container mx-auto px-6 md:px-12">
                     <div id="soro-blog"></div>
                     <Script
+                        id="soro-url-rewrite"
+                        strategy="beforeInteractive"
+                        dangerouslySetInnerHTML={{
+                            __html: `
+                                (function(){
+                                    function rewriteUrl(url) {
+                                        try {
+                                            var u = new URL(url, window.location.origin);
+                                            var post = u.searchParams.get('post');
+                                            if (post && u.pathname === '/blog') {
+                                                u.pathname = '/blog/' + post;
+                                                u.searchParams.delete('post');
+                                                return u.toString();
+                                            }
+                                        } catch(e) {}
+                                        return url;
+                                    }
+
+                                    var origPushState = history.pushState.bind(history);
+                                    var origReplaceState = history.replaceState.bind(history);
+
+                                    history.pushState = function(state, title, url) {
+                                        if (url) url = rewriteUrl(url);
+                                        return origPushState(state, title, url);
+                                    };
+
+                                    history.replaceState = function(state, title, url) {
+                                        if (url) url = rewriteUrl(url);
+                                        return origReplaceState(state, title, url);
+                                    };
+                                })();
+                            `,
+                        }}
+                    />
+                    <Script
                         id="soro-embed"
                         strategy="afterInteractive"
                         dangerouslySetInnerHTML={{

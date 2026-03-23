@@ -1,30 +1,93 @@
 import Script from 'next/script';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
-
-const SORO_ID = '00a5a8cb-bae1-4b5c-9e36-53088412e220';
+import { getSoroArticleBySlug, SORO_ID, BASE_URL } from '@/lib/soro';
+import type { Metadata } from 'next';
 
 type Props = {
     params: Promise<{ slug: string }>;
 };
 
-export async function generateMetadata({ params }: Props) {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const { slug } = await params;
-    const title = slug
+    const article = await getSoroArticleBySlug(slug);
+
+    const fallbackTitle = slug
         .replace(/-/g, ' ')
         .replace(/\b\w/g, (c) => c.toUpperCase());
 
+    const title = article?.title || fallbackTitle;
+    const description = article?.excerpt || `Lees meer over ${fallbackTitle.toLowerCase()} op de Power BI Studio blog.`;
+    const url = `${BASE_URL}/blog/${slug}`;
+    const image = article?.image || `${BASE_URL}/og-default.png`;
+
     return {
         title: `${title} | Blog | PowerBIStudio`,
-        description: `Lees meer over ${title.toLowerCase()} op de Power BI Studio blog.`,
+        description,
+        alternates: {
+            canonical: url,
+        },
+        openGraph: {
+            title,
+            description,
+            url,
+            siteName: 'Power BI Studio',
+            type: 'article',
+            publishedTime: article?.isoDate,
+            locale: 'nl_NL',
+            images: [
+                {
+                    url: image,
+                    width: 1200,
+                    height: 630,
+                    alt: title,
+                },
+            ],
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title,
+            description,
+            images: [image],
+        },
     };
 }
 
 export default async function BlogPostPage({ params }: Props) {
     const { slug } = await params;
+    const article = await getSoroArticleBySlug(slug);
+
+    const jsonLd = article
+        ? {
+              '@context': 'https://schema.org',
+              '@type': 'BlogPosting',
+              headline: article.title,
+              description: article.excerpt,
+              image: article.image,
+              datePublished: article.isoDate,
+              url: `${BASE_URL}/blog/${slug}`,
+              author: {
+                  '@type': 'Organization',
+                  name: 'Power BI Studio',
+                  url: BASE_URL,
+              },
+              publisher: {
+                  '@type': 'Organization',
+                  name: 'Power BI Studio',
+                  url: BASE_URL,
+              },
+          }
+        : null;
 
     return (
         <>
+            {jsonLd && (
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+                />
+            )}
+
             <section className="pt-32 pb-8 relative overflow-hidden">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(59,130,246,0.1),transparent_50%)] pointer-events-none" />
 
