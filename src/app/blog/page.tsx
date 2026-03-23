@@ -6,9 +6,9 @@ export const metadata: Metadata = {
     description: 'Artikelen en inzichten over Power BI, data-analyse en business intelligence.',
 };
 
-export default function BlogPage() {
-    const soroId = '00a5a8cb-bae1-4b5c-9e36-53088412e220';
+const SORO_ID = '00a5a8cb-bae1-4b5c-9e36-53088412e220';
 
+export default function BlogPage() {
     return (
         <>
             <section className="pt-32 pb-16 border-b border-[var(--border)] relative overflow-hidden">
@@ -36,11 +36,31 @@ export default function BlogPage() {
                             __html: `
                                 (function(){
                                     var s = document.createElement('script');
-                                    var p = new URLSearchParams(window.location.search);
-                                    var u = 'https://app.trysoro.com/api/embed/${soroId}';
-                                    if (p.get('post')) u += '?post=' + encodeURIComponent(p.get('post'));
-                                    s.src = u;
+                                    s.src = 'https://app.trysoro.com/api/embed/${SORO_ID}';
                                     document.getElementById('soro-blog').after(s);
+                                })();
+                            `,
+                        }}
+                    />
+                    <Script
+                        id="soro-link-rewrite"
+                        strategy="afterInteractive"
+                        dangerouslySetInnerHTML={{
+                            __html: `
+                                (function(){
+                                    var observer = new MutationObserver(function() {
+                                        document.querySelectorAll('#soro-blog a[href*="?post="]').forEach(function(a) {
+                                            var url = new URL(a.href, window.location.origin);
+                                            var post = url.searchParams.get('post');
+                                            if (post && !a.dataset.rewritten) {
+                                                a.href = '/blog/' + post;
+                                                a.dataset.rewritten = 'true';
+                                            }
+                                        });
+                                    });
+                                    observer.observe(document.getElementById('soro-blog') || document.body, {
+                                        childList: true, subtree: true
+                                    });
                                 })();
                             `,
                         }}
