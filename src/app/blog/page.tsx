@@ -42,29 +42,6 @@ export default function BlogPage() {
                             `,
                         }}
                     />
-                    <Script
-                        id="soro-link-rewrite"
-                        strategy="afterInteractive"
-                        dangerouslySetInnerHTML={{
-                            __html: `
-                                (function(){
-                                    var observer = new MutationObserver(function() {
-                                        document.querySelectorAll('#soro-blog a[href*="?post="]').forEach(function(a) {
-                                            var url = new URL(a.href, window.location.origin);
-                                            var post = url.searchParams.get('post');
-                                            if (post && !a.dataset.rewritten) {
-                                                a.href = '/blog/' + post;
-                                                a.dataset.rewritten = 'true';
-                                            }
-                                        });
-                                    });
-                                    observer.observe(document.getElementById('soro-blog') || document.body, {
-                                        childList: true, subtree: true
-                                    });
-                                })();
-                            `,
-                        }}
-                    />
                 </div>
             </section>
         </>
