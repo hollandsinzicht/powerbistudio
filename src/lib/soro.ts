@@ -30,3 +30,16 @@ export async function getSoroArticleBySlug(slug: string): Promise<SoroArticle | 
     const articles = await getSoroArticles();
     return articles.find((a) => a.slug === slug) || null;
 }
+
+export async function getSoroArticleContent(articleId: string): Promise<string | null> {
+    try {
+        const res = await fetch(
+            `https://app.trysoro.com/api/embed/${SORO_ID}/article/${articleId}`,
+            { next: { revalidate: 3600 } }
+        );
+        const data = await res.json();
+        return data.content || null;
+    } catch {
+        return null;
+    }
+}

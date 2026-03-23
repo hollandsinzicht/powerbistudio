@@ -1,14 +1,17 @@
 import type { Metadata } from 'next';
-import Script from 'next/script';
+import Link from 'next/link';
+import Image from 'next/image';
+import { ArrowRight, Calendar } from 'lucide-react';
+import { getSoroArticles } from '@/lib/soro';
 
 export const metadata: Metadata = {
     title: 'Blog | PowerBIStudio',
     description: 'Artikelen en inzichten over Power BI, data-analyse en business intelligence.',
 };
 
-const SORO_ID = '00a5a8cb-bae1-4b5c-9e36-53088412e220';
+export default async function BlogPage() {
+    const articles = await getSoroArticles();
 
-export default function BlogPage() {
     return (
         <>
             <section className="pt-32 pb-16 border-b border-[var(--border)] relative overflow-hidden">
@@ -28,55 +31,48 @@ export default function BlogPage() {
 
             <section className="py-24">
                 <div className="container mx-auto px-6 md:px-12">
-                    <div id="soro-blog"></div>
-                    <Script
-                        id="soro-url-rewrite"
-                        strategy="beforeInteractive"
-                        dangerouslySetInnerHTML={{
-                            __html: `
-                                (function(){
-                                    function rewriteUrl(url) {
-                                        try {
-                                            var u = new URL(url, window.location.origin);
-                                            var post = u.searchParams.get('post');
-                                            if (post && u.pathname === '/blog') {
-                                                u.pathname = '/blog/' + post;
-                                                u.searchParams.delete('post');
-                                                return u.toString();
-                                            }
-                                        } catch(e) {}
-                                        return url;
-                                    }
-
-                                    var origPushState = history.pushState.bind(history);
-                                    var origReplaceState = history.replaceState.bind(history);
-
-                                    history.pushState = function(state, title, url) {
-                                        if (url) url = rewriteUrl(url);
-                                        return origPushState(state, title, url);
-                                    };
-
-                                    history.replaceState = function(state, title, url) {
-                                        if (url) url = rewriteUrl(url);
-                                        return origReplaceState(state, title, url);
-                                    };
-                                })();
-                            `,
-                        }}
-                    />
-                    <Script
-                        id="soro-embed"
-                        strategy="afterInteractive"
-                        dangerouslySetInnerHTML={{
-                            __html: `
-                                (function(){
-                                    var s = document.createElement('script');
-                                    s.src = 'https://app.trysoro.com/api/embed/${SORO_ID}';
-                                    document.getElementById('soro-blog').after(s);
-                                })();
-                            `,
-                        }}
-                    />
+                    {articles.length === 0 ? (
+                        <p className="text-[var(--text-secondary)] text-center text-lg">
+                            Binnenkort verschijnen hier nieuwe artikelen.
+                        </p>
+                    ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                            {articles.map((article) => (
+                                <Link
+                                    key={article.id}
+                                    href={`/blog/${article.slug}`}
+                                    className="glass-card rounded-2xl overflow-hidden border border-[var(--border)] hover:border-[var(--accent)] transition-all group flex flex-col"
+                                >
+                                    {article.image && (
+                                        <div className="relative w-full aspect-[16/9] overflow-hidden bg-gray-100">
+                                            <Image
+                                                src={article.image}
+                                                alt={article.title}
+                                                fill
+                                                className="object-cover group-hover:scale-105 transition-transform duration-500"
+                                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                            />
+                                        </div>
+                                    )}
+                                    <div className="p-6 flex flex-col flex-1">
+                                        <div className="flex items-center gap-2 text-xs text-[var(--text-secondary)] mb-3">
+                                            <Calendar size={14} />
+                                            <time dateTime={article.isoDate}>{article.date}</time>
+                                        </div>
+                                        <h2 className="text-lg font-display font-bold text-[var(--text-primary)] mb-3 group-hover:text-[var(--accent)] transition-colors">
+                                            {article.title}
+                                        </h2>
+                                        <p className="text-[var(--text-secondary)] text-sm leading-relaxed flex-1">
+                                            {article.excerpt}
+                                        </p>
+                                        <span className="inline-flex items-center gap-1 text-sm font-medium text-[var(--accent)] mt-4">
+                                            Lees meer <ArrowRight size={14} />
+                                        </span>
+                                    </div>
+                                </Link>
+                            ))}
+                        </div>
+                    )}
                 </div>
             </section>
         </>
