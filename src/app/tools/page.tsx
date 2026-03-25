@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, BrainCircuit, Activity, ExternalLink, Globe } from "lucide-react";
+import { ArrowRight, BrainCircuit, Activity, ExternalLink, Globe, ShieldCheck } from "lucide-react";
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -90,7 +90,40 @@ export default function ToolsPage() {
                             </div>
                         </div>
 
-                        {/* Tool 3: DashPortal */}
+                        {/* Tool 3: Report Auditor */}
+                        <div className="group border border-[var(--border)] bg-gray-50 p-10 rounded-2xl hover:border-[var(--primary)] hover:shadow-[0_0_40px_rgba(30,58,95,0.1)] transition-all flex flex-col h-full relative overflow-hidden">
+                            <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
+                                <ShieldCheck size={180} />
+                            </div>
+
+                            <div className="relative z-10 flex flex-col h-full">
+                                <div className="flex items-center gap-3 mb-6">
+                                    <span className="bg-[rgba(30,58,95,0.05)] text-[var(--primary)] text-sm font-mono px-4 py-1.5 border border-[rgba(30,58,95,0.2)] rounded flex items-center gap-2">
+                                        <ShieldCheck size={16} /> Betaald
+                                    </span>
+                                    <span className="bg-[rgba(245,158,11,0.05)] text-[var(--accent-warm)] text-sm font-mono px-4 py-1.5 border border-[rgba(245,158,11,0.2)] rounded flex items-center gap-2">
+                                        <BrainCircuit size={16} /> AI-powered
+                                    </span>
+                                </div>
+
+                                <h2 className="text-3xl font-display font-bold mb-4 group-hover:text-[var(--primary)] transition-colors">
+                                    Report Auditor
+                                </h2>
+
+                                <p className="text-[var(--text-secondary)] text-lg mb-10 flex-grow leading-relaxed max-w-lg">
+                                    Upload je .pbix en ontvang een professionele AI-audit van je datamodel.
+                                    Privacyproof — bewijs van dataverwijdering inbegrepen.
+                                </p>
+
+                                <div className="mt-auto">
+                                    <Link href="/tools/report-auditor" className="btn-primary inline-flex items-center gap-2 text-lg px-6 py-3">
+                                        Start een audit <ArrowRight size={20} />
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Tool 4: DashPortal */}
                         <div className="group border border-[var(--border)] bg-gray-50 p-10 rounded-2xl hover:border-[#10b981] hover:shadow-[0_0_40px_rgba(16,185,129,0.1)] transition-all flex flex-col h-full relative overflow-hidden lg:col-span-2">
                             <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
                                 <Globe size={180} />
