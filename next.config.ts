@@ -9,6 +9,20 @@ const nextConfig: NextConfig = {
             },
         ],
     },
+    async redirects() {
+        return [
+            {
+                source: '/kennisbank',
+                destination: '/blog',
+                permanent: true,
+            },
+            {
+                source: '/kennisbank/:slug',
+                destination: '/blog',
+                permanent: true,
+            },
+        ];
+    },
 };
 
 export default nextConfig;
