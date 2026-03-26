@@ -9,7 +9,7 @@ import {
   updateAuditDestructionProof,
   updateAuditReport,
 } from './audit-store'
-import { sendUploadConfirmationEmail, sendReportReadyEmail } from './emails'
+import { sendReportReadyEmail } from './emails'
 import { supabase } from './supabase'
 
 function generateHash(input: string): string {
@@ -18,6 +18,12 @@ function generateHash(input: string): string {
 
 function generateVerificationSuffix(): string {
   return nanoid(4).toUpperCase()
+}
+
+function formatDateNL(date: Date): string {
+  return date.toLocaleDateString('nl-NL', {
+    day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit',
+  })
 }
 
 export async function processAudit(auditId: string, fileBuffer: Buffer, fileName: string, email: string) {
@@ -32,40 +38,39 @@ export async function processAudit(auditId: string, fileBuffer: Buffer, fileName
       metadata: { objectCount: metadata.objectCount },
     })
 
-    // Step 3: Destroy original file buffer (dereference + hash)
-    const originalHash = generateHash(auditId + 'original' + Date.now())
-    // fileBuffer is not stored anywhere — it's only in memory and will be GC'd
+    // Step 3: Destroy original file (buffer is only in memory — dereference + hash)
+    const originalDestroyedAt = new Date()
+    const originalHash = generateHash(auditId + 'original' + originalDestroyedAt.getTime())
     await updateAuditStatus(auditId, 'destroying_original')
     await updateAuditDestructionProof(auditId, 'original', originalHash)
     await updateAuditStep(auditId, 'original_destroyed', { hash: originalHash })
 
-    // Step 4: AI analysis
+    // Step 4: AI analysis (passes auditId for the new schema)
     await updateAuditStatus(auditId, 'analyzing')
     await updateAuditStep(auditId, 'analyzing')
-    const analysis = await analyzeWithClaude(metadata)
+    const analysis = await analyzeWithClaude(metadata, auditId)
     await updateAuditStep(auditId, 'analyzed')
 
-    // Step 5: Generate PDF
-    await updateAuditStatus(auditId, 'generating')
-    const verificationCode = `${auditId}-${generateVerificationSuffix()}`
-    const now = new Date()
-
-    const pdfBuffer = await generatePdfReport({
-      auditId,
-      fileName,
-      analysis,
-      verificationCode,
-      originalHash,
-      originalDestroyedAt: now.toISOString(),
-      metadataHash: '', // Will be set below
-      metadataDestroyedAt: '', // Will be set below
-    })
-
-    // Step 6: Destroy metadata
-    const metadataHash = generateHash(auditId + 'metadata' + Date.now())
+    // Step 5: Destroy metadata
+    const metadataDestroyedAt = new Date()
+    const metadataHash = generateHash(auditId + 'metadata' + metadataDestroyedAt.getTime())
     await updateAuditStatus(auditId, 'destroying_metadata')
     await updateAuditDestructionProof(auditId, 'metadata', metadataHash)
     await updateAuditStep(auditId, 'metadata_destroyed', { hash: metadataHash })
+
+    // Step 6: Generate PDF with new 6-page layout
+    await updateAuditStatus(auditId, 'generating')
+    const verificationCode = `${auditId}-${generateVerificationSuffix()}`
+
+    const proof = {
+      originalHash,
+      originalDestroyedAt: formatDateNL(originalDestroyedAt),
+      metadataHash,
+      metadataDestroyedAt: formatDateNL(metadataDestroyedAt),
+      verificationCode,
+    }
+
+    const pdfBuffer = await generatePdfReport(analysis, proof)
 
     // Step 7: Upload PDF to Supabase Storage
     const reportPath = `reports/${auditId}.pdf`
@@ -88,36 +93,26 @@ export async function processAudit(auditId: string, fileBuffer: Buffer, fileName
     await updateAuditReport(auditId, reportPath, verificationCode, expiresAt)
     await updateAuditStep(auditId, 'complete')
 
-    // Step 9: Send report email
-    const originalDestroyedAt = now.toLocaleDateString('nl-NL', {
-      day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit',
-    })
-    const metadataDestroyedAt = new Date().toLocaleDateString('nl-NL', {
-      day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit',
-    })
-
-    // Generate a signed URL for the report
+    // Step 9: Send report email (non-blocking)
     const { data: signedUrlData } = await supabase.storage
       .from('audit-reports')
-      .createSignedUrl(reportPath, 48 * 60 * 60) // 48 hours
+      .createSignedUrl(reportPath, 48 * 60 * 60)
 
-    await sendReportReadyEmail({
+    sendReportReadyEmail({
       email,
       auditId,
       pdfUrl: signedUrlData?.signedUrl || '',
-      expiresAt: expiresAt.toLocaleDateString('nl-NL', {
-        day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit',
-      }),
+      expiresAt: formatDateNL(expiresAt),
       originalHash,
-      originalDestroyedAt,
+      originalDestroyedAt: formatDateNL(originalDestroyedAt),
       metadataHash,
-      metadataDestroyedAt,
+      metadataDestroyedAt: formatDateNL(metadataDestroyedAt),
       verificationCode,
-    })
+    }).catch((err) => console.error(`Report email failed for ${auditId}:`, err))
 
   } catch (error) {
     console.error(`Audit processing failed for ${auditId}:`, error)
-    await updateAuditStatus(auditId, 'failed')
+    await updateAuditStatus(auditId, 'failed').catch(() => {})
     throw error
   }
 }

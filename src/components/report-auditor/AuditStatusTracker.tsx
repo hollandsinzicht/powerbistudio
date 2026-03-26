@@ -165,7 +165,7 @@ export default function AuditStatusTracker({ auditId, fileName, steps, verificat
       {isComplete && pdfUrl && (
         <div className="space-y-3">
           <a
-            href={pdfUrl}
+            href={`/api/audit/${auditId}/report?token=${encodeURIComponent(verificationCode || '')}`}
             className="btn-primary w-full py-4 rounded-xl font-medium flex items-center justify-center gap-2 text-lg"
           >
             <Download size={20} /> Download rapport

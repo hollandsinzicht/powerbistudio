@@ -52,12 +52,12 @@ export async function POST(req: Request) {
       plan,
     })
 
-    // Send confirmation email
-    await sendUploadConfirmationEmail({
+    // Send confirmation email (non-blocking — don't fail upload if email fails)
+    sendUploadConfirmationEmail({
       email,
       auditId,
       fileName: file.name,
-    })
+    }).catch((err) => console.error('Confirmation email failed:', err))
 
     // Start processing (async — don't await in request)
     processAudit(auditId, fileBuffer, file.name, email).catch((err) => {
@@ -69,9 +69,10 @@ export async function POST(req: Request) {
       statusUrl: `/tools/report-auditor/status/${auditId}`,
     })
   } catch (error) {
-    console.error('Upload error:', error)
+    const msg = error instanceof Error ? error.message : String(error)
+    console.error('Upload error:', msg, error)
     return NextResponse.json(
-      { error: 'Er ging iets mis bij het uploaden. Probeer het opnieuw.' },
+      { error: `Upload fout: ${msg}` },
       { status: 500 }
     )
   }
