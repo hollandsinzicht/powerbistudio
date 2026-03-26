@@ -2,8 +2,8 @@ import { NextResponse } from 'next/server'
 import { nanoid } from 'nanoid'
 import { createAudit } from '@/lib/audit-store'
 import { validatePbixFile } from '@/lib/pbix-parser'
-import { processAudit } from '@/lib/audit-processor'
 import { sendUploadConfirmationEmail } from '@/lib/emails'
+import { supabase } from '@/lib/supabase'
 import type { AuditPlan } from '@/lib/types/audit'
 
 const MAX_FILE_SIZE = 100 * 1024 * 1024 // 100MB
@@ -44,7 +44,22 @@ export async function POST(req: Request) {
     const randomPart = nanoid(4).replace(/[^a-zA-Z0-9]/g, '').substring(0, 4)
     const auditId = `AU-${year}-${randomPart}`
 
-    // Create audit record
+    // Store .pbix temporarily in Supabase Storage (encrypted at rest)
+    // Will be deleted after processing
+    const uploadPath = `uploads/${auditId}.pbix`
+    const { error: storageError } = await supabase.storage
+      .from('audit-reports')
+      .upload(uploadPath, fileBuffer, {
+        contentType: 'application/octet-stream',
+        upsert: true,
+      })
+
+    if (storageError) {
+      console.error('Storage upload error:', storageError)
+      return NextResponse.json({ error: 'Bestand kon niet worden opgeslagen.' }, { status: 500 })
+    }
+
+    // Create audit record — status: pending_payment
     await createAudit({
       id: auditId,
       email,
@@ -52,17 +67,18 @@ export async function POST(req: Request) {
       plan,
     })
 
-    // Send confirmation email (non-blocking — don't fail upload if email fails)
+    // Mark as pending_payment (Stripe must confirm before processing starts)
+    await supabase
+      .from('audits')
+      .update({ status: 'pending_payment' })
+      .eq('id', auditId)
+
+    // Send confirmation email (non-blocking)
     sendUploadConfirmationEmail({
       email,
       auditId,
       fileName: file.name,
     }).catch((err) => console.error('Confirmation email failed:', err))
-
-    // Start processing (async — don't await in request)
-    processAudit(auditId, fileBuffer, file.name, email).catch((err) => {
-      console.error(`Background processing failed for ${auditId}:`, err)
-    })
 
     return NextResponse.json({
       auditId,

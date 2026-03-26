@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { getAuditById } from '@/lib/audit-store'
+import { processAudit } from '@/lib/audit-processor'
 import { supabase } from '@/lib/supabase'
 
 function getStripe() {
@@ -33,24 +34,41 @@ export async function POST(req: Request) {
 
     if (auditId) {
       // Update audit with Stripe session ID
-      const { error } = await supabase
+      await supabase
         .from('audits')
         .update({
           stripe_session_id: session.id,
+          status: 'paid',
           updated_at: new Date().toISOString(),
         })
         .eq('id', auditId)
 
-      if (error) {
-        console.error('Failed to update audit with Stripe session:', error)
-      }
-
-      // Check if audit exists and start processing if it was waiting for payment
+      // Fetch audit and start processing
       const audit = await getAuditById(auditId)
-      if (audit && audit.status === 'pending_payment') {
-        // Processing will be triggered by the upload flow
-        // This webhook just confirms payment was successful
-        console.log(`Payment confirmed for audit ${auditId}`)
+      if (audit) {
+        // Download .pbix from temporary storage
+        const uploadPath = `uploads/${auditId}.pbix`
+        const { data: fileData, error: downloadError } = await supabase.storage
+          .from('audit-reports')
+          .download(uploadPath)
+
+        if (downloadError || !fileData) {
+          console.error(`Failed to download .pbix for ${auditId}:`, downloadError)
+          await supabase.from('audits').update({ status: 'failed' }).eq('id', auditId)
+          return NextResponse.json({ received: true })
+        }
+
+        const fileBuffer = Buffer.from(await fileData.arrayBuffer())
+
+        // Delete the temporary upload immediately
+        await supabase.storage.from('audit-reports').remove([uploadPath])
+
+        // Start processing (async — don't block webhook response)
+        processAudit(auditId, fileBuffer, audit.file_name, audit.email).catch((err) => {
+          console.error(`Processing failed for ${auditId}:`, err)
+        })
+
+        console.log(`Payment confirmed and processing started for ${auditId}`)
       }
     }
   }
