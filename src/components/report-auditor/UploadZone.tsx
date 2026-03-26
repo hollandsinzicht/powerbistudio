@@ -2,15 +2,13 @@
 
 import { useState, useCallback, useRef } from "react"
 import { useRouter } from "next/navigation"
-import { Upload, FileCheck, Mail, CreditCard, AlertCircle, X } from "lucide-react"
-import type { AuditPlan } from "@/lib/types/audit"
+import { Upload, FileCheck, Mail, AlertCircle, X } from "lucide-react"
 
 const MAX_FILE_SIZE = 100 * 1024 * 1024 // 100MB
 
 export default function UploadZone() {
   const [file, setFile] = useState<File | null>(null)
   const [email, setEmail] = useState("")
-  const [plan, setPlan] = useState<AuditPlan>("single")
   const [agreedToTerms, setAgreedToTerms] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -69,7 +67,7 @@ export default function UploadZone() {
       const formData = new FormData()
       formData.append("file", file)
       formData.append("email", email)
-      formData.append("plan", plan)
+      formData.append("plan", "single")
 
       const uploadRes = await fetch("/api/audit/upload", {
         method: "POST",
@@ -83,29 +81,24 @@ export default function UploadZone() {
         return
       }
 
-      if (plan === "free") {
-        // Free plan: go directly to status page
-        router.push(uploadData.statusUrl)
+      // Redirect to Stripe checkout
+      const checkoutRes = await fetch("/api/stripe/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          auditId: uploadData.auditId,
+          plan: "single",
+          email,
+        }),
+      })
+
+      const checkoutData = await checkoutRes.json()
+
+      if (checkoutData.url) {
+        window.location.href = checkoutData.url
       } else {
-        // Paid plan: redirect to Stripe checkout
-        const checkoutRes = await fetch("/api/stripe/checkout", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            auditId: uploadData.auditId,
-            plan,
-            email,
-          }),
-        })
-
-        const checkoutData = await checkoutRes.json()
-
-        if (checkoutData.url) {
-          window.location.href = checkoutData.url
-        } else {
-          // Stripe not configured — go to status page directly
-          router.push(uploadData.statusUrl)
-        }
+        // Stripe not configured — go to status page directly
+        router.push(uploadData.statusUrl)
       }
     } catch (err) {
       console.error("Upload error:", err)
@@ -202,83 +195,6 @@ export default function UploadZone() {
           />
         </div>
 
-        {/* Plan selector */}
-        <div>
-          <label className="block text-sm font-medium text-[var(--text-secondary)] mb-3">
-            <CreditCard size={14} className="inline mr-1.5 -mt-0.5" />
-            Kies je plan
-          </label>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            {/* Single */}
-            <label
-              className={`relative flex flex-col p-4 rounded-xl border-2 cursor-pointer transition-all ${
-                plan === "single"
-                  ? "border-[var(--primary)] bg-[rgba(30,58,95,0.03)]"
-                  : "border-[var(--border)] hover:border-[var(--text-secondary)]"
-              }`}
-            >
-              <input
-                type="radio"
-                name="plan"
-                value="single"
-                checked={plan === "single"}
-                onChange={() => setPlan("single")}
-                className="sr-only"
-              />
-              <span className="text-lg font-bold text-[var(--text-primary)]">&euro;49</span>
-              <span className="text-sm text-[var(--text-secondary)]">Eenmalige audit</span>
-            </label>
-
-            {/* Bundle */}
-            <label
-              className={`relative flex flex-col p-4 rounded-xl border-2 cursor-pointer transition-all ${
-                plan === "bundle"
-                  ? "border-[var(--primary)] bg-[rgba(30,58,95,0.03)]"
-                  : "border-[var(--border)] hover:border-[var(--text-secondary)]"
-              }`}
-            >
-              <input
-                type="radio"
-                name="plan"
-                value="bundle"
-                checked={plan === "bundle"}
-                onChange={() => setPlan("bundle")}
-                className="sr-only"
-              />
-              <span className="absolute -top-2.5 right-3 bg-[var(--accent)] text-[var(--primary)] text-xs font-bold px-2 py-0.5 rounded-full">
-                Populair
-              </span>
-              <span className="text-lg font-bold text-[var(--text-primary)]">&euro;149</span>
-              <span className="text-sm text-[var(--text-secondary)]">Bundel 5 audits</span>
-            </label>
-
-            {/* Free */}
-            <label
-              className={`relative flex flex-col p-4 rounded-xl border-2 cursor-pointer transition-all ${
-                plan === "free"
-                  ? "border-[var(--primary)] bg-[rgba(30,58,95,0.03)]"
-                  : "border-[var(--border)] hover:border-[var(--text-secondary)]"
-              }`}
-            >
-              <input
-                type="radio"
-                name="plan"
-                value="free"
-                checked={plan === "free"}
-                onChange={() => setPlan("free")}
-                className="sr-only"
-              />
-              <span className="text-lg font-bold text-[var(--text-primary)]">Gratis</span>
-              <span className="text-sm text-[var(--text-secondary)]">Ik ben consultant</span>
-            </label>
-          </div>
-          {plan === "free" && (
-            <p className="text-xs text-[var(--text-secondary)] mt-2">
-              Je ontvangt een gratis rapport. In ruil sturen wij je mogelijk relevante informatie over onze diensten.
-            </p>
-          )}
-        </div>
-
         {/* AVG checkbox */}
         <label className="flex items-start gap-3 cursor-pointer">
           <input
@@ -313,10 +229,8 @@ export default function UploadZone() {
               <div className="h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
               Bezig met uploaden...
             </>
-          ) : plan === "free" ? (
-            "Start gratis audit"
           ) : (
-            `Betaal en start audit — €${plan === "single" ? "49" : "149"}`
+            "Start audit — €49"
           )}
         </button>
 
