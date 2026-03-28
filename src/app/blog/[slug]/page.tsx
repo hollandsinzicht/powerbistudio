@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowLeft, Calendar } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Calendar, LayoutDashboard, Wrench } from 'lucide-react';
 import { notFound } from 'next/navigation';
 import { getArticleBySlug, getArticleContent, BASE_URL } from '@/lib/soro';
 import type { Metadata } from 'next';
@@ -131,6 +131,46 @@ export default async function BlogPostPage({ params }: Props) {
                                 Dit artikel kon niet geladen worden. Probeer het later opnieuw.
                             </p>
                         )}
+                    </div>
+                </div>
+
+                <div className="container mx-auto px-6 md:px-12 mt-16 pt-16 border-t border-[var(--border)]">
+                    <div className="max-w-3xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <Link
+                            href="/dashportal"
+                            className="glass-card rounded-2xl p-6 border border-[var(--border)] hover:border-[var(--accent)] transition-all group"
+                        >
+                            <div className="flex items-center gap-3 mb-3">
+                                <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center border border-[var(--border)] group-hover:border-[var(--accent)] transition-colors">
+                                    <LayoutDashboard size={20} className="text-[var(--accent)]" />
+                                </div>
+                                <h3 className="font-display font-bold text-[var(--text-primary)]">DashPortal</h3>
+                            </div>
+                            <p className="text-sm text-[var(--text-secondary)] mb-4">
+                                Deel Power BI rapporten via een professioneel, branded portaal met je eigen logo, kleuren en domein.
+                            </p>
+                            <span className="inline-flex items-center gap-1 text-sm font-medium text-[var(--accent)]">
+                                Ontdek DashPortal <ArrowRight size={14} />
+                            </span>
+                        </Link>
+
+                        <Link
+                            href="/tools"
+                            className="glass-card rounded-2xl p-6 border border-[var(--border)] hover:border-[var(--accent)] transition-all group"
+                        >
+                            <div className="flex items-center gap-3 mb-3">
+                                <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center border border-[var(--border)] group-hover:border-[var(--accent)] transition-colors">
+                                    <Wrench size={20} className="text-[var(--accent)]" />
+                                </div>
+                                <h3 className="font-display font-bold text-[var(--text-primary)]">Gratis Tools</h3>
+                            </div>
+                            <p className="text-sm text-[var(--text-secondary)] mb-4">
+                                Probeer de Power BI Readiness Scan of de AI-powered DAX Assistant om jouw data-omgeving te verbeteren.
+                            </p>
+                            <span className="inline-flex items-center gap-1 text-sm font-medium text-[var(--accent)]">
+                                Bekijk tools <ArrowRight size={14} />
+                            </span>
+                        </Link>
                     </div>
                 </div>
             </article>
