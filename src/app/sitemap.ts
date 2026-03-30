@@ -1,5 +1,5 @@
 import type { MetadataRoute } from 'next';
-import { getArticles, BASE_URL } from '@/lib/soro';
+import { getArticles, CATEGORIES, BASE_URL } from '@/lib/soro';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const staticRoutes: MetadataRoute.Sitemap = [
@@ -19,6 +19,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: route === '' ? 1 : route === '/blog' ? 0.9 : 0.8,
     }));
 
+    const categoryRoutes: MetadataRoute.Sitemap = CATEGORIES.map((cat) => ({
+        url: `${BASE_URL}/blog/categorie/${cat.slug}`,
+        lastModified: new Date(),
+        changeFrequency: 'weekly',
+        priority: 0.8,
+    }));
+
     const articles = await getArticles();
     const blogRoutes: MetadataRoute.Sitemap = articles.map((article) => ({
         url: `${BASE_URL}/blog/${article.slug}`,
@@ -27,5 +34,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.7,
     }));
 
-    return [...staticRoutes, ...blogRoutes];
+    return [...staticRoutes, ...categoryRoutes, ...blogRoutes];
 }

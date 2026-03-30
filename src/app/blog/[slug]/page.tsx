@@ -91,9 +91,19 @@ export default async function BlogPostPage({ params }: Props) {
                             Terug naar alle artikelen
                         </Link>
 
-                        <div className="flex items-center gap-2 text-sm text-[var(--text-secondary)] mb-4">
-                            <Calendar size={16} />
-                            <time dateTime={article.isoDate}>{article.date}</time>
+                        <div className="flex items-center gap-3 text-sm text-[var(--text-secondary)] mb-4">
+                            <span className="flex items-center gap-1">
+                                <Calendar size={16} />
+                                <time dateTime={article.isoDate}>{article.date}</time>
+                            </span>
+                            {article.category && (
+                                <Link
+                                    href={`/blog/categorie/${article.category.slug}`}
+                                    className="px-2.5 py-0.5 rounded-full bg-gray-100 border border-[var(--border)] text-xs font-medium text-[var(--text-secondary)] hover:border-[var(--accent)] hover:text-[var(--primary)] transition-colors"
+                                >
+                                    {article.category.name}
+                                </Link>
+                            )}
                         </div>
 
                         <h1 className="text-3xl md:text-4xl font-display font-bold text-[var(--text-primary)] mb-8">

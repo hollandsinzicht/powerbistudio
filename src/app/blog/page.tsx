@@ -1,8 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import Image from 'next/image';
-import { ArrowRight, Calendar } from 'lucide-react';
-import { getArticles } from '@/lib/soro';
+import { getArticles, CATEGORIES } from '@/lib/soro';
+import ArticleCard from '@/components/blog/ArticleCard';
 
 export const metadata: Metadata = {
     title: 'Blog | PowerBIStudio',
@@ -30,6 +29,21 @@ export default async function BlogPage() {
 
             <section className="py-24">
                 <div className="container mx-auto px-6 md:px-12">
+                    <div className="flex flex-wrap gap-3 mb-12 max-w-6xl mx-auto">
+                        <span className="px-4 py-2 rounded-full text-sm font-medium bg-[var(--primary)] text-white">
+                            Alles
+                        </span>
+                        {CATEGORIES.map((cat) => (
+                            <Link
+                                key={cat.slug}
+                                href={`/blog/categorie/${cat.slug}`}
+                                className="px-4 py-2 rounded-full text-sm font-medium border border-[var(--border)] text-[var(--text-secondary)] hover:border-[var(--accent)] hover:text-[var(--primary)] transition-colors"
+                            >
+                                {cat.name}
+                            </Link>
+                        ))}
+                    </div>
+
                     {articles.length === 0 ? (
                         <p className="text-[var(--text-secondary)] text-center text-lg">
                             Binnenkort verschijnen hier nieuwe artikelen.
@@ -37,38 +51,7 @@ export default async function BlogPage() {
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
                             {articles.map((article) => (
-                                <Link
-                                    key={article.id}
-                                    href={`/blog/${article.slug}`}
-                                    className="glass-card rounded-2xl overflow-hidden border border-[var(--border)] hover:border-[var(--accent)] transition-all group flex flex-col"
-                                >
-                                    {article.image && (
-                                        <div className="relative w-full aspect-[16/9] overflow-hidden bg-gray-100">
-                                            <Image
-                                                src={article.image}
-                                                alt={article.title}
-                                                fill
-                                                className="object-cover group-hover:scale-105 transition-transform duration-500"
-                                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                            />
-                                        </div>
-                                    )}
-                                    <div className="p-6 flex flex-col flex-1">
-                                        <div className="flex items-center gap-2 text-xs text-[var(--text-secondary)] mb-3">
-                                            <Calendar size={14} />
-                                            <time dateTime={article.isoDate}>{article.date}</time>
-                                        </div>
-                                        <h2 className="text-lg font-display font-bold text-[var(--text-primary)] mb-3 group-hover:text-[var(--accent)] transition-colors">
-                                            {article.title}
-                                        </h2>
-                                        <p className="text-[var(--text-secondary)] text-sm leading-relaxed flex-1">
-                                            {article.excerpt}
-                                        </p>
-                                        <span className="inline-flex items-center gap-1 text-sm font-medium text-[var(--accent)] mt-4">
-                                            Lees meer <ArrowRight size={14} />
-                                        </span>
-                                    </div>
-                                </Link>
+                                <ArticleCard key={article.id} article={article} />
                             ))}
                         </div>
                     )}
