@@ -35,17 +35,31 @@ export const CATEGORIES: Category[] = [
     },
 ];
 
-// Article slug → category slug mapping
-const ARTICLE_CATEGORIES: Record<string, string> = {
-    'power-bi-performance-verbeteren': 'power-bi',
-    'power-bi-dashboard-laten-maken': 'power-bi',
-    'wanneer-overstappen-van-excel-naar-power-bi': 'power-bi',
-    'dax-formules-laten-schrijven': 'dax-datamodellering',
-    'hoe-maak-je-een-goed-datamodel': 'dax-datamodellering',
-    'azure-data-platform-opzetten-zonder-ruis': 'data-platform',
-    'microsoft-fabric-implementatie': 'data-platform',
-    'etl-proces-automatiseren-met-python': 'data-platform',
-    'sql-voor-power-bi-rapportages': 'data-platform',
+// Keywords per category for automatic matching (matched against title + slug + excerpt)
+const CATEGORY_KEYWORDS: Record<string, string[]> = {
+    'power-bi': [
+        'power bi', 'powerbi', 'dashboard', 'rapport', 'rapportage', 'rapportages',
+        'visualisatie', 'visual', 'excel', 'workspace', 'service', 'gateway',
+        'embedded', 'paginated', 'row-level security', 'rls', 'pbi',
+    ],
+    'dax-datamodellering': [
+        'dax', 'datamodel', 'data model', 'datamodellering', 'modellering',
+        'formule', 'formules', 'measure', 'measures', 'calculated column',
+        'star schema', 'dimensie', 'feitentabel', 'relatie', 'relaties',
+        'cardinality', 'many-to-many', 'filter context',
+    ],
+    'data-platform': [
+        'azure', 'fabric', 'etl', 'elt', 'sql', 'python', 'pipeline', 'pipelines',
+        'datawarehouse', 'data warehouse', 'lakehouse', 'data lake', 'synapse',
+        'databricks', 'dataflow', 'dataflows', 'cloud', 'api', 'automatiseren',
+        'automatisering', 'integratie', 'brondata', 'bron',
+    ],
+    'strategie': [
+        'strategie', 'overstappen', 'migratie', 'migreren', 'besluit', 'besluitvorming',
+        'roadmap', 'organisatie', 'advies', 'wanneer', 'kiezen', 'keuze',
+        'governance', 'volwassenheid', 'maturity', 'adoptie', 'implementatie',
+        'kosten', 'roi', 'business case', 'aanpak', 'waar let je op',
+    ],
 };
 
 // --- Articles ---
@@ -71,7 +85,11 @@ export async function getArticles(): Promise<SoroArticle[]> {
         const raw = JSON.parse(match[1]);
         return raw.map((a: Record<string, unknown>) => ({
             ...a,
-            category: getCategoryForArticle(a.slug as string),
+            category: getCategoryForArticle(
+                a.title as string,
+                a.slug as string,
+                a.excerpt as string,
+            ),
         }));
     } catch {
         return [];
@@ -102,8 +120,20 @@ export function getCategoryBySlug(slug: string): Category | null {
     return CATEGORIES.find((c) => c.slug === slug) ?? null;
 }
 
-function getCategoryForArticle(articleSlug: string): Category | null {
-    const catSlug = ARTICLE_CATEGORIES[articleSlug];
-    if (!catSlug) return null;
-    return CATEGORIES.find((c) => c.slug === catSlug) ?? null;
+function getCategoryForArticle(title: string, slug: string, excerpt: string): Category | null {
+    const text = `${title} ${slug.replace(/-/g, ' ')} ${excerpt}`.toLowerCase();
+
+    let bestMatch: string | null = null;
+    let bestScore = 0;
+
+    for (const [catSlug, keywords] of Object.entries(CATEGORY_KEYWORDS)) {
+        const score = keywords.reduce((count, kw) => count + (text.includes(kw) ? 1 : 0), 0);
+        if (score > bestScore) {
+            bestScore = score;
+            bestMatch = catSlug;
+        }
+    }
+
+    if (!bestMatch || bestScore === 0) return null;
+    return CATEGORIES.find((c) => c.slug === bestMatch) ?? null;
 }
