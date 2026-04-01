@@ -62,6 +62,19 @@ export default function RootLayout({
             alt=""
           />
         </noscript>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'Organization',
+              name: 'Power BI Studio',
+              url: 'https://www.powerbistudio.nl',
+              description: 'Power BI consulting, dashboards en data-platform services voor Nederlandse organisaties.',
+              knowsAbout: ['Power BI', 'DAX', 'Microsoft Fabric', 'Azure', 'SQL', 'Data Engineering', 'ETL', 'Business Intelligence'],
+            }),
+          }}
+        />
       </head>
       <body
         className={`${geistSans.variable} ${dmSans.variable} ${jetbrainsMono.variable} antialiased min-h-screen flex flex-col`}
