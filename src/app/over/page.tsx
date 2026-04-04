@@ -1,35 +1,31 @@
 import Image from "next/image";
 import Link from "next/link";
-import { CheckCircle2, ArrowRight } from "lucide-react";
+import { ArrowRight, Code2, Users, Lightbulb } from "lucide-react";
 import type { Metadata } from 'next';
+import { StatBlok } from '@/components/ui';
 
 export const metadata: Metadata = {
-    title: 'Over | PowerBIStudio',
-    description: 'Mijn naam is Jan Willem den Hollander. Ik werk al 15 jaar in de wereld van data en business intelligence als specialist in Power BI, DAX, SQL en Python.',
+    title: 'Over Jan Willem den Hollander — Power BI architect, LSS Black Belt | PowerBIStudio.nl',
+    description: '15 jaar Power BI specialist. LSS Black Belt. Maker van DashPortal. Developer, interim lead én product owner in één persoon. Bewezen in publieke sector, energie en finance.',
+    alternates: { canonical: 'https://www.powerbistudio.nl/over' },
 };
 
 export default function OverPage() {
     const skills = [
-        "Power BI",
-        "DAX",
-        "SQL",
-        "Python",
-        "Azure Data Factory",
-        "Microsoft Fabric",
-        "Datamodellering",
-        "ETL Processen",
-        "AI-integraties"
+        "Power BI", "DAX", "SQL", "Python",
+        "Azure Data Factory", "Microsoft Fabric",
+        "Datamodellering", "ETL Processen", "AI-integraties",
+        "Lean Six Sigma Black Belt", "Deployment Pipelines",
+        "Power BI Embedded", "RLS-architectuur", "TMDL/versiecontrole",
     ];
 
     return (
         <>
-            {/* Hero Section */}
+            {/* Hero */}
             <section className="pt-32 pb-16 border-b border-[var(--border)] relative overflow-hidden">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(59,130,246,0.1),transparent_50%)] pointer-events-none" />
-
                 <div className="container mx-auto px-6 md:px-12 relative z-10">
                     <div className="flex flex-col md:flex-row items-center gap-12 md:gap-24">
-
                         <div className="w-full md:w-1/2 flex justify-center md:justify-end order-2 md:order-1 relative">
                             <div className="w-64 h-64 md:w-80 md:h-80 relative rounded-2xl overflow-hidden border border-[var(--border)] shadow-[0_0_40px_rgba(59,130,246,0.15)] group">
                                 <div className="absolute inset-0 bg-gradient-to-t from-[var(--background)] to-transparent z-10 opacity-60" />
@@ -46,60 +42,127 @@ export default function OverPage() {
                                 </div>
                             </div>
                         </div>
-
                         <div className="w-full md:w-1/2 order-1 md:order-2">
-                            <h1 className="text-4xl md:text-5xl font-display font-bold mb-6 pb-2">
-                                Specialist zijn is een keuze. <span className="text-[var(--accent)]">Mijn keuze.</span>
+                            <h1 className="text-3xl md:text-5xl font-display font-bold mb-6">
+                                De Power BI architect die procesverbetering als <span className="text-[var(--accent)]">uitkomst</span> levert
                             </h1>
-                            <p className="text-xl text-[var(--text-secondary)] mb-6 leading-relaxed">
-                                Mijn naam is Jan Willem. Ik implementeer geen "standaard pakketten".
-                                Ik bouw op maat gemaakte data-fundamenten die meegroeien met jouw organisatie.
+                            <p className="text-lg text-[var(--text-secondary)] leading-relaxed">
+                                Niet &ldquo;ook een goede Power BI consultant&rdquo;. De enige die publieke
+                                sector-bewijs, Lean Six Sigma-methodiek, eigen product-IP en
+                                hands-on senioriteit als developer, interim lead én product owner
+                                combineert.
                             </p>
                         </div>
-
                     </div>
                 </div>
             </section>
 
-            {/* Main Content */}
+            {/* StatBlokken */}
+            <section className="py-12 border-b border-[var(--border)] bg-gray-50">
+                <div className="container mx-auto px-6 md:px-12">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+                        <StatBlok value="15 jaar" label="Power BI-ervaring" />
+                        <StatBlok value="25+" label="GGD-regio's bediend" />
+                        <StatBlok value="5" label="Sectoren" />
+                        <StatBlok value="3" label="Eigen producten" />
+                    </div>
+                </div>
+            </section>
+
+            {/* Drie rollen */}
             <section className="py-24">
                 <div className="container mx-auto px-6 md:px-12">
+                    <span className="text-[0.7rem] font-semibold tracking-widest uppercase text-[var(--text-secondary)] mb-4 block">
+                        Drie rollen — één specialist
+                    </span>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-2">
+                        <div className="glass-card rounded-xl p-6 md:p-8 border border-[var(--border)]">
+                            <Code2 size={24} className="text-[var(--primary)] mb-4" />
+                            <h3 className="text-lg font-display font-bold mb-3">Als developer</h3>
+                            <p className="text-[var(--text-secondary)] text-sm leading-relaxed mb-4">
+                                Ik bouw het zelf. DAX, Power Query, semantische modellen,
+                                RLS-architectuur, deployment pipelines. Geen interpretatie
+                                verloren in een overdracht.
+                            </p>
+                            <p className="text-xs text-[var(--text-secondary)]">
+                                Referentie: <Link href="/cases/ggdghor" className="text-[var(--primary)] hover:underline">GGDGHOR — nationaal dataportaal</Link>
+                            </p>
+                        </div>
+                        <div className="glass-card rounded-xl p-6 md:p-8 border border-[var(--border)]">
+                            <Users size={24} className="text-[var(--primary)] mb-4" />
+                            <h3 className="text-lg font-display font-bold mb-3">Als interim lead</h3>
+                            <p className="text-[var(--text-secondary)] text-sm leading-relaxed mb-4">
+                                Ik neem tijdelijk de leiding van een data team. Prioritering,
+                                stakeholdermanagement, backlog, governance. Ik vertaal
+                                bedrijfsvragen naar technische beslissingen.
+                            </p>
+                            <p className="text-xs text-[var(--text-secondary)]">
+                                Referentie: <Link href="/cases/lyreco" className="text-[var(--primary)] hover:underline">Lyreco — interim data team lead Benelux</Link>
+                            </p>
+                        </div>
+                        <div className="glass-card rounded-xl p-6 md:p-8 border border-[var(--border)]">
+                            <Lightbulb size={24} className="text-[var(--primary)] mb-4" />
+                            <h3 className="text-lg font-display font-bold mb-3">Als product owner</h3>
+                            <p className="text-[var(--text-secondary)] text-sm leading-relaxed mb-4">
+                                Ik vertaal gebruikersbehoeften naar product. Van epics en
+                                user stories tot acceptance criteria en sprintplanning.
+                                Met een oog op de technische haalbaarheid.
+                            </p>
+                            <p className="text-xs text-[var(--text-secondary)]">
+                                Referentie: <Link href="/dashportal" className="text-[var(--primary)] hover:underline">DashPortal — van idee tot SaaS-product</Link>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* Verhaal */}
+            <section className="py-24 bg-gray-50 border-y border-[var(--border)]">
+                <div className="container mx-auto px-6 md:px-12">
                     <div className="flex flex-col lg:flex-row gap-16 lg:gap-24 max-w-6xl mx-auto">
-
-                        {/* Story */}
-                        <div className="w-full lg:w-3/5 prose prose-invert prose-lg">
-                            <h2 className="text-3xl font-display font-bold mb-8 text-[var(--text-primary)]">Mijn Verhaal</h2>
-
-                            <p className="text-[var(--text-secondary)] leading-relaxed mb-6">
-                                Ik werk al 15 jaar in de wereld van data en business intelligence. Niet als generalist, maar als specialist: Power BI, DAX, SQL en Python. Ik heb gewerkt voor organisaties als GGDGHOR, Lyreco, Vattenfall en Renewi &mdash; en ik weet wat het verschil maakt tussen een dashboard dat er mooi uitziet en een dashboard dat echt gebruikt wordt.
-                            </p>
-
-                            <p className="text-[var(--text-secondary)] leading-relaxed mb-6">
-                                In de loop der jaren heb ik veel bedrijven zien worstelen met dezelfde problemen. De data is versnipperd, de dashboards zijn traag, en het management vertrouwt de cijfers niet. Dit gebeurt vaak wanneer data als een "IT-projectje" wordt gezien in plaats van een strategisch middel.
-                            </p>
-
-                            <blockquote className="border-l-4 border-[var(--accent)] pl-6 py-2 my-10 bg-[rgba(59,130,246,0.05)] rounded-r-lg italic text-lg text-[var(--text-primary)]">
-                                "Mijn overtuiging: de combinatie van Power BI en AI is de grootste kans die er nu ligt voor organisaties die datagedreven willen werken."
-                            </blockquote>
-
-                            <p className="text-[var(--text-secondary)] leading-relaxed mb-6">
-                                De meeste bedrijven weten echter niet waar ze moeten beginnen. Ik help ze om die stap te zetten &mdash; met een aanpak die werkt, niet een project dat na zes maanden in de prullenbak belandt.
-                            </p>
-
-                            <div className="mt-12 pt-8 border-t border-[var(--border)]">
-                                <Link href="/contact" className="inline-flex items-center gap-2 text-[var(--accent)] hover:text-[var(--text-primary)] transition-colors font-medium text-lg">
-                                    Laten we kennismaken <ArrowRight size={20} />
+                        <div className="w-full lg:w-3/5">
+                            <h2 className="text-3xl font-display font-bold mb-8 text-[var(--text-primary)]">Mijn achtergrond</h2>
+                            <div className="text-[var(--text-secondary)] leading-relaxed space-y-6">
+                                <p>
+                                    Ik werk al 15 jaar in de wereld van data en business intelligence.
+                                    Niet als generalist die alles een beetje doet, maar als specialist:
+                                    Power BI, de volledige Microsoft Data stack, en de bedrijfsprocessen
+                                    die eromheen draaien.
+                                </p>
+                                <p>
+                                    Wat mij onderscheidt van de meeste BI-consultants is mijn achtergrond
+                                    in Lean Six Sigma. Ik ben gecertificeerd Black Belt — en ik gebruik die
+                                    methodiek actief. Niet als marketingterm op een CV, maar als lens
+                                    waarmee ik naar data kijk. Elk dashboard heeft een procesreden. Elke
+                                    vertraging in een rapport heeft een oorzaak. Ik zoek die oorzaak op.
+                                </p>
+                                <p>
+                                    Ik heb gewerkt voor organisaties als GGDGHOR (25 GGD-regio&apos;s + RIVM),
+                                    Lyreco (finance dashboards Benelux), Vattenfall (energie), Technische
+                                    Unie (groothandel) en Renewi (afvalbeheer). In die trajecten heb ik
+                                    niet alleen gebouwd — ik heb aangestuurd, geadviseerd en meegedacht
+                                    over architectuur op organisatieniveau.
+                                </p>
+                                <p>
+                                    Naast interim- en advieswerk bouw ik eigen producten. DashPortal is
+                                    een white-label Power BI portal die organisaties en softwarebedrijven
+                                    gebruiken om dashboards te delen met klanten zonder Microsoft-licenties.
+                                    De Report Auditor is een AI-tool die Power BI datamodellen analyseert
+                                    op kwaliteit. Dat zijn niet bijzaken — ze zijn het bewijs dat de kennis
+                                    dieper gaat dan een projectklus.
+                                </p>
+                            </div>
+                            <div className="mt-8">
+                                <Link href="/procesverbetering" className="inline-flex items-center gap-2 font-medium text-[var(--primary)] hover:gap-3 transition-all">
+                                    Lees meer over de Lean-aanpak <ArrowRight size={16} />
                                 </Link>
                             </div>
                         </div>
 
-                        {/* Sidebar Skills & Timeline */}
+                        {/* Sidebar */}
                         <div className="w-full lg:w-2/5">
-
                             <div className="glass-card p-8 rounded-xl mb-8">
-                                <h3 className="text-xl font-display font-bold mb-6 flex items-center gap-2">
-                                    Technische Stack
-                                </h3>
+                                <h3 className="text-xl font-display font-bold mb-6">Technische Stack</h3>
                                 <div className="flex flex-wrap gap-2">
                                     {skills.map(skill => (
                                         <span key={skill} className="bg-gray-50 border border-[var(--border)] text-[var(--text-secondary)] px-3 py-1.5 rounded-md text-sm cursor-default hover:border-[var(--accent)] hover:text-[var(--text-primary)] transition-colors">
@@ -109,53 +172,30 @@ export default function OverPage() {
                                 </div>
                             </div>
 
-
-
-                        </div>
-
-                    </div>
-
-                    {/* Horizontal Timeline */}
-                    <div className="mt-24 max-w-6xl mx-auto">
-                        <h3 className="text-3xl font-display font-bold mb-12 text-center text-[var(--text-primary)]">Relevante Opdrachten</h3>
-
-                        <div className="relative">
-                            {/* Horizontal Line (visible on md+) */}
-                            <div className="hidden md:block absolute top-[28px] left-8 right-8 h-0.5 bg-gradient-to-r from-[var(--surface)] via-[var(--border)] to-[var(--surface)]"></div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
-                                {/* Timeline Item 1 */}
-                                <div className="relative flex flex-col items-center group">
-                                    <div className="flex items-center justify-center w-5 h-5 rounded-full border-[3px] border-[var(--surface)] bg-[var(--accent)] shadow z-10 mb-6 group-hover:scale-125 transition-transform"></div>
-                                    <div className="p-6 bg-[var(--surface)] text-center border border-[var(--border)] rounded-xl shadow hover:border-[var(--accent)] transition-colors w-full h-full">
-                                        <span className="text-[var(--accent)] font-mono text-xs tracking-wider uppercase">Interim</span>
-                                        <h4 className="text-[var(--text-primary)] font-bold mt-2">GGDGHOR</h4>
-                                        <p className="text-[var(--text-secondary)] text-sm mt-3">Ontwikkeling Nationaal Dataportaal. Architectuur & Realisatie.</p>
-                                    </div>
-                                </div>
-
-                                {/* Timeline Item 2 */}
-                                <div className="relative flex flex-col items-center group">
-                                    <div className="flex items-center justify-center w-5 h-5 rounded-full border-[3px] border-[var(--surface)] bg-[var(--surface)] ring-1 ring-[var(--border)] shadow z-10 mb-6 group-hover:scale-125 group-hover:bg-[var(--accent-warm)] group-hover:ring-0 transition-all"></div>
-                                    <div className="p-6 bg-[var(--surface)] text-center border border-[var(--border)] rounded-xl shadow hover:border-[var(--accent-warm)] transition-colors w-full h-full">
-                                        <span className="text-[var(--accent-warm)] font-mono text-xs tracking-wider uppercase">Project</span>
-                                        <h4 className="text-[var(--text-primary)] font-bold mt-2">Technische Unie</h4>
-                                        <p className="text-[var(--text-secondary)] text-sm mt-3">Afdelingsoverstijgende business intelligence opzet.</p>
-                                    </div>
-                                </div>
-
-                                {/* Timeline Item 3 */}
-                                <div className="relative flex flex-col items-center group">
-                                    <div className="flex items-center justify-center w-5 h-5 rounded-full border-[3px] border-[var(--surface)] bg-[var(--surface)] ring-1 ring-[var(--border)] shadow z-10 mb-6 group-hover:scale-125 group-hover:bg-gray-400 group-hover:ring-0 transition-all"></div>
-                                    <div className="p-6 bg-[var(--surface)] text-center border border-[var(--border)] rounded-xl shadow hover:border-gray-400 transition-colors w-full h-full">
-                                        <span className="text-[var(--text-secondary)] font-mono text-xs tracking-wider uppercase">Consultancy</span>
-                                        <h4 className="text-[var(--text-primary)] font-bold mt-2">Lyreco</h4>
-                                        <p className="text-[var(--text-secondary)] text-sm mt-3">Financiële dashboards voor Benelux management.</p>
-                                    </div>
-                                </div>
+                            {/* Klantcitaat placeholder */}
+                            <div className="glass-card p-8 rounded-xl border-l-4 border-[var(--accent)]">
+                                <blockquote className="italic text-[var(--text-secondary)] leading-relaxed">
+                                    &ldquo;[Citaat van contactpersoon — in te vullen met toestemming van opdrachtgever]&rdquo;
+                                </blockquote>
+                                <p className="text-sm text-[var(--text-secondary)] mt-4">— [Naam], [Functie], [Organisatie]</p>
                             </div>
                         </div>
                     </div>
+                </div>
+            </section>
+
+            {/* CTA */}
+            <section className="py-24">
+                <div className="container mx-auto px-6 md:px-12 text-center max-w-2xl">
+                    <h2 className="text-2xl md:text-3xl font-display font-bold mb-6">
+                        Laten we kennismaken
+                    </h2>
+                    <p className="text-[var(--text-secondary)] mb-8">
+                        Ik reageer binnen één werkdag. Geen automatische opvolging, geen sales-funnel.
+                    </p>
+                    <Link href="/contact" className="btn-primary inline-flex items-center gap-2 text-lg px-8 py-3">
+                        Neem contact op <ArrowRight size={18} />
+                    </Link>
                 </div>
             </section>
         </>

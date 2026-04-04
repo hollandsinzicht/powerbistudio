@@ -1,5 +1,6 @@
 import type { MetadataRoute } from 'next';
 import { getArticles, CATEGORIES, BASE_URL } from '@/lib/soro';
+import { getAllCaseSlugs } from '@/lib/cases-data';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const staticRoutes: MetadataRoute.Sitemap = [
@@ -9,14 +10,27 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         '/tools',
         '/tools/dax-assistant',
         '/tools/readiness-scan',
+        '/tools/report-auditor',
         '/cases',
         '/blog',
         '/contact',
+        '/saas',
+        '/publieke-sector',
+        '/fabric-migratie',
+        '/copilot-readiness',
+        '/procesverbetering',
     ].map((route) => ({
         url: `${BASE_URL}${route}`,
         lastModified: new Date(),
         changeFrequency: route === '/blog' ? 'daily' : 'monthly',
         priority: route === '' ? 1 : route === '/blog' ? 0.9 : 0.8,
+    }));
+
+    const caseRoutes: MetadataRoute.Sitemap = getAllCaseSlugs().map((slug) => ({
+        url: `${BASE_URL}/cases/${slug}`,
+        lastModified: new Date(),
+        changeFrequency: 'monthly',
+        priority: 0.7,
     }));
 
     const categoryRoutes: MetadataRoute.Sitemap = CATEGORIES.map((cat) => ({
@@ -34,5 +48,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.7,
     }));
 
-    return [...staticRoutes, ...categoryRoutes, ...blogRoutes];
+    return [...staticRoutes, ...caseRoutes, ...categoryRoutes, ...blogRoutes];
 }

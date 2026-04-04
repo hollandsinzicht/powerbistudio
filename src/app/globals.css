@@ -9,6 +9,12 @@
   --accent: #F59E0B;
   --text-primary: #111827;
   --text-secondary: #6B7280;
+
+  /* Sector kleuren */
+  --color-sector-zorg: #0F6E56;
+  --color-sector-saas: #534AB7;
+  --color-sector-data: #D85A30;
+  --color-accent-lean: #B8963E;
 }
 
 @theme inline {

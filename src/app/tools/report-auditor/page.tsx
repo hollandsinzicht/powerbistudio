@@ -21,9 +21,10 @@ import UploadZone from "@/components/report-auditor/UploadZone"
 import VerificationInput from "@/components/report-auditor/VerificationInput"
 
 export const metadata: Metadata = {
-  title: "Power BI Report Auditor | PowerBIStudio",
+  title: "Power BI Report Auditor — AI-audit van je datamodel in 24 uur | PowerBIStudio.nl",
   description:
-    "Upload je .pbix bestand en ontvang een professionele AI-audit van je datamodel. Privacy-first — cryptografisch bewijs van dataverwijdering inbegrepen.",
+    "Is je Power BI rapport traag? Foute DAX-metingen? Upload je .pbix en ontvang een professionele AI-audit met actielijst. €49. Privacy-first — bestand vernietigd na analyse.",
+  alternates: { canonical: "https://www.powerbistudio.nl/tools/report-auditor" },
 }
 
 const analysisYes = [
@@ -75,8 +76,28 @@ const howItWorks = [
 export default function ReportAuditorPage() {
   return (
     <>
+      {/* ProbleemIntro */}
+      <section className="pt-32 pb-0 relative overflow-hidden">
+        <div className="container mx-auto px-6 md:px-12">
+          <div className="max-w-3xl mx-auto">
+            <div className="bg-[rgba(245,158,11,0.05)] border-l-4 border-[var(--accent)] rounded-r-xl p-6 md:p-8">
+              <h2 className="font-display font-bold text-lg mb-3">Herken je dit?</h2>
+              <ul className="text-[var(--text-secondary)] leading-relaxed space-y-2 text-[0.95rem]">
+                <li>→ Je rapport laadt 30 seconden. Collega&apos;s klikken weg.</li>
+                <li>→ De cijfers kloppen niet maar niemand weet waarom.</li>
+                <li>→ Het model is door vijf mensen aangepast en niemand begrijpt het geheel nog.</li>
+                <li>→ Je weet dat er iets mis is, maar niet wat — of hoe urgent.</li>
+              </ul>
+              <p className="text-[var(--text-secondary)] mt-4 text-[0.95rem]">
+                De Report Auditor geeft je in 24 uur een helder overzicht: wat klopt er niet, waarom, en hoe los je het op.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Hero Section */}
-      <section className="pt-32 pb-16 border-b border-[var(--border)] relative overflow-hidden">
+      <section className="pt-12 pb-16 border-b border-[var(--border)] relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(30,58,95,0.08),transparent_50%)] pointer-events-none" />
 
         <div className="container mx-auto px-6 md:px-12 relative z-10">
@@ -178,8 +199,13 @@ export default function ReportAuditorPage() {
             <h2 className="text-3xl font-display font-bold mb-3 text-center">
               Start je <span className="text-[var(--accent)]">audit</span>
             </h2>
-            <p className="text-[var(--text-secondary)] text-center mb-10">
+            <p className="text-[var(--text-secondary)] text-center mb-4">
               Upload je .pbix bestand en ontvang je rapport binnen 5 minuten.
+            </p>
+            <p className="text-xs text-[var(--text-secondary)] text-center mb-10 max-w-md mx-auto">
+              Een consultant vraagt €750+ voor een handmatige modelreview.
+              De Report Auditor doet hetzelfde in 24 uur voor €49 — en laat je
+              cryptografisch bewijs achter dat je data veilig is.
             </p>
 
             <div className="glass-card rounded-2xl p-8 border border-[var(--border)]">

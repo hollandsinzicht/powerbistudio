@@ -1,246 +1,343 @@
-import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, CheckCircle2, BarChart3, Database, BrainCircuit, LineChart, ExternalLink } from "lucide-react";
+import { ArrowRight, BrainCircuit, FileSearch, Sparkles, Globe, ShieldCheck, Zap } from "lucide-react";
+import type { Metadata } from 'next';
+import { DoelgroepBlok, SectorBadge, PriorityBadge } from '@/components/ui';
 
-export default function Home() {
-  return (
-    <>
-      {/* Hero Section */}
-      <section className="relative min-h-[90vh] flex items-center pt-24 pb-16 overflow-hidden">
-        {/* Abstract Background */}
-        <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(59,130,246,0.15),transparent_40%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(245,158,11,0.08),transparent_40%)]" />
-          <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.03] mix-blend-overlay" />
-        </div>
+export const metadata: Metadata = {
+    title: 'Power BI architect & AI specialist | Jan Willem den Hollander — PowerBIStudio.nl',
+    description: 'Power BI die écht werkt. Jan Willem den Hollander — 15 jaar specialist, LSS Black Belt, maker van DashPortal. Voor SaaS-bedrijven, data teams en de publieke sector.',
+    openGraph: {
+        title: 'Power BI architect & AI specialist | PowerBIStudio.nl',
+        description: 'Van Fabric-migratie tot embedded analytics voor SaaS. Bewezen aanpak, eigen producten, publieke sector-referenties.',
+    },
+    alternates: { canonical: 'https://www.powerbistudio.nl/' },
+};
 
-        <div className="container relative z-10 mx-auto px-6 md:px-12">
-          <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-5xl md:text-7xl font-display font-bold tracking-tight mb-8">
-              Power BI. <span className="text-[var(--accent)]">AI.</span> Resultaat.
-            </h1>
-            <p className="text-xl md:text-2xl text-[var(--text-secondary)] mb-12 leading-relaxed max-w-3xl mx-auto">
-              Jan Willem den Hollander — 15 jaar Power BI specialist. Ik help
-              organisaties die klaar zijn voor de volgende stap: van losse
-              Excel-bestanden naar een Power BI omgeving die écht werkt,
-              versterkt met AI.
-            </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link href="/over" className="btn-primary w-full sm:w-auto text-lg flex items-center justify-center gap-2">
-                Bekijk mijn aanpak <ArrowRight size={20} />
-              </Link>
-              <Link href="/tools" className="btn-secondary w-full sm:w-auto text-lg">
-                Probeer de tools
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
+export default function HomePage() {
+    return (
+        <>
+            {/* ═══ HERO ═══ */}
+            <section className="min-h-[90vh] flex items-center relative overflow-hidden border-b border-[var(--border)]">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(30,58,95,0.1),transparent_50%)] pointer-events-none" />
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(245,158,11,0.06),transparent_50%)] pointer-events-none" />
 
-      {/* Social Proof */}
-      <section className="py-8 border-y border-[var(--border)] bg-gray-50">
-        <div className="container mx-auto px-6 md:px-12">
-          <p className="text-center text-sm font-medium text-[var(--text-secondary)] mb-6 uppercase tracking-wider">
-            Vertrouwd door organisaties die data serieus nemen
-          </p>
-          <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-60">
-            {/* Using text representation for now instead of actual SVGs to keep it clean */}
-            {["GGDGHOR", "Lyreco", "Vattenfall", "Renewi", "iO", "Technische Unie"].map((client) => (
-              <span key={client} className="font-display font-bold text-xl md:text-2xl grayscale hover:grayscale-0 transition-all cursor-default">
-                {client}
-              </span>
-            ))}
-          </div>
-        </div>
-      </section>
+                <div className="container mx-auto px-6 md:px-12 relative z-10 py-32">
+                    <div className="max-w-3xl">
+                        <h1 className="text-4xl md:text-6xl font-display font-bold leading-[1.15] mb-6">
+                            Power BI dat werkt.<br />
+                            Processen die verbeteren.<br />
+                            Resultaten die <span className="text-[var(--accent)]">blijven</span>.
+                        </h1>
+                        <p className="text-[var(--text-secondary)] text-lg md:text-xl leading-relaxed mb-8 max-w-xl">
+                            Jan Willem den Hollander — Power BI architect met 15 jaar ervaring,
+                            LSS Black Belt-achtergrond en eigen productstack. Voor organisaties
+                            die meer willen dan mooie dashboards.
+                        </p>
+                        <div className="flex flex-wrap gap-4">
+                            <Link href="/over" className="btn-primary inline-flex items-center gap-2 text-lg px-6 py-3">
+                                Bekijk mijn aanpak <ArrowRight size={18} />
+                            </Link>
+                            <Link href="/tools" className="btn-secondary inline-flex items-center gap-2 text-lg px-6 py-3">
+                                Probeer de tools
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
-      {/* Positioning / Expertise */}
-      <section className="py-24">
-        <div className="container mx-auto px-6 md:px-12">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+            {/* ═══ LOGOBALK ═══ */}
+            <section className="py-8 border-b border-[var(--border)] bg-gray-50">
+                <div className="container mx-auto px-6 md:px-12">
+                    <div className="flex flex-wrap items-center justify-center gap-x-12 gap-y-4 text-[var(--text-secondary)]">
+                        {["GGDGHOR", "Lyreco", "Vattenfall", "Renewi", "iO", "Technische Unie"].map((name) => (
+                            <span key={name} className="text-sm font-medium tracking-wide opacity-60 hover:opacity-100 transition-opacity">
+                                {name}
+                            </span>
+                        ))}
+                    </div>
+                </div>
+            </section>
 
-            <div className="glass-card p-8 rounded-lg relative overflow-hidden group">
-              <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
-                <Database size={120} />
-              </div>
-              <Database className="text-[var(--accent)] mb-6" size={32} />
-              <h3 className="text-2xl font-display font-bold mb-4">Expertise</h3>
-              <p className="text-[var(--text-secondary)] leading-relaxed mb-6">
-                Specialist in de volledige Microsoft Data stack. Van ruwe data tot board-level inzichten.
-              </p>
-              <ul className="space-y-2">
-                {["Power BI & DAX", "SQL & Datamodellering", "Python & ETL", "Fabric & Azure"].map(skill => (
-                  <li key={skill} className="flex items-center gap-2 text-sm">
-                    <CheckCircle2 size={16} className="text-[var(--accent)]" /> {skill}
-                  </li>
-                ))}
-              </ul>
-            </div>
+            {/* ═══ DRIE DOELGROEP-BLOKKEN ═══ */}
+            <section className="py-24">
+                <div className="container mx-auto px-6 md:px-12">
+                    <span className="text-[0.7rem] font-semibold tracking-widest uppercase text-[var(--text-secondary)] mb-4 block">
+                        Voor wie werk ik
+                    </span>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-2">
+                        <DoelgroepBlok
+                            sector="saas"
+                            label="Ik bouw software"
+                            title="Analytics embedded in jouw product"
+                            description="Jouw klanten willen dashboards in jouw app — niet in een apart Microsoft-portaal. Ik ontwerp de architectuur die dat mogelijk maakt, veilig en schaalbaar."
+                            linkText="Meer over embedded analytics →"
+                            href="/saas"
+                        />
+                        <DoelgroepBlok
+                            sector="data"
+                            label="Ik heb een data team"
+                            title="Audit, Fabric-migratie of interim begeleiding"
+                            description="Van slecht presterend datamodel tot Fabric-transitie. Ik kom erin als developer, lead of product owner — afhankelijk van wat jouw team nodig heeft."
+                            linkText="Bekijk mijn aanpak →"
+                            href="/over"
+                        />
+                        <DoelgroepBlok
+                            sector="zorg"
+                            label="Ik werk in zorg of overheid"
+                            title="Rapportages voor meerdere locaties of regio's"
+                            description="Van 25 GGD-regio's naar één gedeeld datamodel. Ik ken de eisen van de publieke sector: AVG, multi-tenant RLS, en governance die gecontroleerd wordt."
+                            linkText="Bekijk de publieke sector aanpak →"
+                            href="/publieke-sector"
+                        />
+                    </div>
+                </div>
+            </section>
 
-            <div className="glass-card p-8 rounded-lg relative overflow-hidden group">
-              <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
-                <BarChart3 size={120} />
-              </div>
-              <BarChart3 className="text-[var(--accent)] mb-6" size={32} />
-              <h3 className="text-2xl font-display font-bold mb-4">Aanpak</h3>
-              <p className="text-[var(--text-secondary)] leading-relaxed">
-                Interim + advies. Geen standaard traject, maar een aanpak die past bij jouw organisatie. Ik bouw dashboards die niet na 6 maanden in de la verdwijnen, maar het fundament worden van jullie besluitvorming.
-              </p>
-            </div>
+            {/* ═══ LEAN-LENS ═══ */}
+            <section className="py-24 border-y border-[var(--border)] bg-gray-50">
+                <div className="container mx-auto px-6 md:px-12">
+                    <div className="max-w-3xl mx-auto">
+                        <span className="text-[0.7rem] font-semibold tracking-widest uppercase mb-4 block" style={{ color: 'var(--color-accent-lean)' }}>
+                            Wat mij onderscheidt
+                        </span>
+                        <h2 className="text-3xl md:text-4xl font-display font-bold mb-6">
+                            Dashboards zijn het middel. Procesverbetering is het doel.
+                        </h2>
+                        <div className="text-[var(--text-secondary)] leading-relaxed space-y-4">
+                            <p>
+                                Met een achtergrond als Lean Six Sigma Black Belt kijk ik naar data
+                                anders dan de meeste Power BI-consultants. Ik verbind BI aan
+                                bedrijfsprocessen — niet alleen aan rapportage. De vraag is niet
+                                &ldquo;hoe ziet het dashboard eruit?&rdquo;, maar &ldquo;welk besluit moet sneller
+                                worden genomen, en wat kost het als dat nu misgaat?&rdquo;
+                            </p>
+                            <p>
+                                Dat is de taal die CFO&apos;s en COO&apos;s spreken. En het is de reden dat
+                                organisaties als Lyreco mij inzetten op BI-vraagstukken die verder
+                                gaan dan een dashboard-klus.
+                            </p>
+                        </div>
+                        <Link
+                            href="/procesverbetering"
+                            className="inline-flex items-center gap-2 mt-6 font-medium hover:gap-3 transition-all"
+                            style={{ color: 'var(--color-accent-lean)' }}
+                        >
+                            Lees meer over de Lean-aanpak <ArrowRight size={16} />
+                        </Link>
+                    </div>
+                </div>
+            </section>
 
-            <div className="glass-card p-8 rounded-lg relative overflow-hidden group">
-              <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
-                <BrainCircuit size={120} />
-              </div>
-              <BrainCircuit className="text-[var(--accent-warm)] mb-6" size={32} />
-              <h3 className="text-2xl font-display font-bold mb-4">Visie</h3>
-              <p className="text-[var(--text-secondary)] leading-relaxed">
-                AI + Power BI is geen toekomstmuziek. Het is nu. De meeste organisaties missen de expertise om die stap te zetten. Dat is precies waar ik help om de brug te slaan tussen data analytics en artificial intelligence.
-              </p>
-            </div>
+            {/* ═══ AI + POWER BI ═══ */}
+            <section className="py-24">
+                <div className="container mx-auto px-6 md:px-12">
+                    <span className="text-[0.7rem] font-semibold tracking-widest uppercase text-[var(--accent)] mb-4 block">
+                        AI + Power BI — concreet
+                    </span>
+                    <h2 className="text-3xl md:text-4xl font-display font-bold mb-12 max-w-2xl">
+                        AI is geen toevoeging. Het is de volgende laag van je datamodel.
+                    </h2>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        {/* DAX Assistant */}
+                        <div className="glass-card rounded-xl p-6 md:p-8 border border-[var(--border)] hover:border-[var(--accent)] transition-all">
+                            <div className="flex items-center gap-3 mb-4">
+                                <BrainCircuit size={24} className="text-[var(--accent)]" />
+                                <PriorityBadge tier="gratis" />
+                            </div>
+                            <h3 className="text-lg font-display font-bold mb-3">DAX in gewone taal</h3>
+                            <p className="text-[var(--text-secondary)] text-sm leading-relaxed mb-4">
+                                Beschrijf wat je wilt berekenen. De DAX Formula Assistant schrijft
+                                de formule — inclusief uitleg. Geen DAX-kennis vereist voor complexe
+                                berekeningen.
+                            </p>
+                            <Link href="/tools/dax-assistant" className="inline-flex items-center gap-2 text-sm font-medium text-[var(--primary)] hover:gap-3 transition-all">
+                                Open de assistant <ArrowRight size={16} />
+                            </Link>
+                        </div>
 
-          </div>
-        </div>
-      </section>
+                        {/* Report Auditor */}
+                        <div className="glass-card rounded-xl p-6 md:p-8 border border-[var(--border)] hover:border-[var(--accent)] transition-all">
+                            <div className="flex items-center gap-3 mb-4">
+                                <FileSearch size={24} className="text-[var(--primary)]" />
+                                <PriorityBadge tier="betaald" label="€49" />
+                            </div>
+                            <h3 className="text-lg font-display font-bold mb-3">Rapport-audit in 24 uur</h3>
+                            <p className="text-[var(--text-secondary)] text-sm leading-relaxed mb-4">
+                                Upload je .pbix. AI analyseert je datamodel op vijf kwaliteits&shy;categorieën
+                                en geeft je een actielijst. Sneller dan een consultant
+                                een offerte schrijft.
+                            </p>
+                            <Link href="/tools/report-auditor" className="inline-flex items-center gap-2 text-sm font-medium text-[var(--primary)] hover:gap-3 transition-all">
+                                Start een audit <ArrowRight size={16} />
+                            </Link>
+                        </div>
 
-      {/* Tools Preview */}
-      <section className="py-24 bg-[var(--surface)] border-y border-[var(--border)] relative overflow-hidden">
-        <div className="absolute left-0 top-1/2 -translate-y-1/2 w-96 h-96 bg-[var(--accent)] rounded-full blur-[150px] opacity-10 pointer-events-none" />
+                        {/* Copilot Readiness */}
+                        <div className="glass-card rounded-xl p-6 md:p-8 border border-[var(--border)] hover:border-[var(--accent)] transition-all">
+                            <div className="flex items-center gap-3 mb-4">
+                                <Sparkles size={24} style={{ color: 'var(--color-sector-saas)' }} />
+                                <PriorityBadge tier="op-aanvraag" />
+                            </div>
+                            <h3 className="text-lg font-display font-bold mb-3">Copilot-klaar maken</h3>
+                            <p className="text-[var(--text-secondary)] text-sm leading-relaxed mb-4">
+                                Copilot in Power BI is beschikbaar — maar de meeste modellen zijn
+                                er niet op gebouwd. Ik check je semantic model en geef je een
+                                concreet actieplan.
+                            </p>
+                            <Link href="/copilot-readiness" className="inline-flex items-center gap-2 text-sm font-medium text-[var(--primary)] hover:gap-3 transition-all">
+                                Vraag een audit aan <ArrowRight size={16} />
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
-        <div className="container mx-auto px-6 md:px-12 relative z-10">
-          <div className="text-center max-w-2xl mx-auto mb-16">
-            <h2 className="text-4xl font-display font-bold mb-4">Tools die voor je werken</h2>
-            <p className="text-[var(--text-secondary)] text-lg">
-              Ontdek de volwassenheid van jouw data-organisatie, laat AI je helpen met complexe DAX formules, of publiceer je dashboards via DashPortal.
-            </p>
-          </div>
+            {/* ═══ PRODUCTSTACK ═══ */}
+            <section className="py-24 border-y border-[var(--border)] bg-gray-50">
+                <div className="container mx-auto px-6 md:px-12">
+                    <span className="text-[0.7rem] font-semibold tracking-widest uppercase text-[var(--text-secondary)] mb-4 block">
+                        Eigen producten
+                    </span>
+                    <h2 className="text-3xl md:text-4xl font-display font-bold mb-4 max-w-2xl">
+                        De enige Power BI specialist in Nederland met een eigen productstack
+                    </h2>
+                    <p className="text-[var(--text-secondary)] mb-12 max-w-2xl leading-relaxed">
+                        Alle andere consultants verkopen uren. Ik bouw ook producten — omdat
+                        het bouwen van producten een ander niveau van architectuurkennis
+                        vereist. DashPortal, de Report Auditor en de DAX Assistant zijn niet
+                        bijzaken. Ze zijn het bewijs dat de kennis dieper gaat.
+                    </p>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <Link href="/dashportal" className="glass-card rounded-xl p-6 border border-[var(--border)] hover:border-emerald-400 transition-all group">
+                            <Globe size={28} className="text-emerald-500 mb-4" />
+                            <h3 className="text-lg font-display font-bold mb-2">DashPortal</h3>
+                            <p className="text-[var(--text-secondary)] text-sm leading-relaxed">
+                                Branded Power BI portalen voor organisaties en ISVs.
+                            </p>
+                            <span className="inline-flex items-center gap-2 text-sm font-medium text-emerald-600 mt-4 group-hover:gap-3 transition-all">
+                                Bekijk DashPortal <ArrowRight size={16} />
+                            </span>
+                        </Link>
+                        <Link href="/tools/report-auditor" className="glass-card rounded-xl p-6 border border-[var(--border)] hover:border-[var(--accent)] transition-all group">
+                            <ShieldCheck size={28} className="text-[var(--primary)] mb-4" />
+                            <h3 className="text-lg font-display font-bold mb-2">Report Auditor</h3>
+                            <p className="text-[var(--text-secondary)] text-sm leading-relaxed">
+                                AI-audit van je Power BI datamodel. Privacy-first, €49.
+                            </p>
+                            <span className="inline-flex items-center gap-2 text-sm font-medium text-[var(--primary)] mt-4 group-hover:gap-3 transition-all">
+                                Start een audit <ArrowRight size={16} />
+                            </span>
+                        </Link>
+                        <Link href="/tools/dax-assistant" className="glass-card rounded-xl p-6 border border-[var(--border)] hover:border-[var(--accent)] transition-all group">
+                            <Zap size={28} className="text-[var(--accent)] mb-4" />
+                            <h3 className="text-lg font-display font-bold mb-2">DAX Formula Assistant</h3>
+                            <p className="text-[var(--text-secondary)] text-sm leading-relaxed">
+                                DAX in gewone taal. Gratis.
+                            </p>
+                            <span className="inline-flex items-center gap-2 text-sm font-medium text-[var(--accent)] mt-4 group-hover:gap-3 transition-all">
+                                Open de assistant <ArrowRight size={16} />
+                            </span>
+                        </Link>
+                    </div>
+                </div>
+            </section>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {/* ═══ CASES PREVIEW ═══ */}
+            <section className="py-24">
+                <div className="container mx-auto px-6 md:px-12">
+                    <span className="text-[0.7rem] font-semibold tracking-widest uppercase text-[var(--text-secondary)] mb-4 block">
+                        Impact in de praktijk
+                    </span>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-2">
+                        {[
+                            {
+                                client: 'GGDGHOR',
+                                sector: 'zorg' as const,
+                                label: 'Zorg & overheid',
+                                description: 'Één bron van waarheid voor 25 GGD-regio\'s en het RIVM.',
+                                highlight: 'Rapportagetijd van uren naar realtime voor alle regio\'s',
+                                href: '/cases/ggdghor',
+                            },
+                            {
+                                client: 'Lyreco',
+                                sector: 'data' as const,
+                                label: 'Finance & operations',
+                                description: 'Real-time finance dashboards voor Benelux management.',
+                                highlight: 'Wekelijkse rapportagecyclus geautomatiseerd',
+                                href: '/cases/lyreco',
+                            },
+                            {
+                                client: 'Technische Unie',
+                                sector: 'data' as const,
+                                label: 'Groothandel',
+                                description: 'Afdelingsoverstijgend inzicht over sales, finance en voorraad.',
+                                highlight: 'Handmatig rapportagewerk geëlimineerd',
+                                href: '/cases/technische-unie',
+                            },
+                        ].map((c) => (
+                            <Link
+                                key={c.client}
+                                href={c.href}
+                                className="glass-card rounded-xl p-6 md:p-8 border border-[var(--border)] hover:border-[var(--accent)] transition-all group"
+                            >
+                                <SectorBadge sector={c.sector} label={c.label} />
+                                <h3 className="text-xl font-display font-bold mt-3 mb-2">{c.client}</h3>
+                                <p className="text-[var(--text-secondary)] text-sm mb-3">{c.description}</p>
+                                <p className="font-semibold text-sm text-[var(--text-primary)]">{c.highlight}</p>
+                                <span className="inline-flex items-center gap-2 text-sm font-medium text-[var(--primary)] mt-4 group-hover:gap-3 transition-all">
+                                    Lees de volledige case <ArrowRight size={16} />
+                                </span>
+                            </Link>
+                        ))}
+                    </div>
+                    <div className="text-center mt-10">
+                        <Link href="/cases" className="btn-secondary inline-flex items-center gap-2 px-6 py-3">
+                            Bekijk alle cases <ArrowRight size={18} />
+                        </Link>
+                    </div>
+                </div>
+            </section>
 
-            {/* Tool 1 */}
-            <div className="group border border-[var(--border)] bg-[var(--surface)] p-8 rounded-xl hover:border-[var(--accent)] hover:shadow-[0_0_30px_rgba(59,130,246,0.1)] transition-all flex flex-col h-full cursor-pointer">
-              <div className="flex items-center gap-3 mb-4">
-                <span className="bg-[var(--surface)] text-[var(--text-secondary)] text-xs font-mono px-3 py-1 border border-[var(--border)] rounded">Gratis tool</span>
-              </div>
-              <h3 className="text-2xl font-display font-bold mb-3 group-hover:text-[var(--accent)] transition-colors">Power BI Readiness Scan</h3>
-              <p className="text-[var(--text-secondary)] mb-8 flex-grow">
-                Weet jij waar jouw organisatie staat? Beantwoord vragen en ontvang een persoonlijk rapport met jouw BI-volwassenheidsniveau en concrete stappen.
-              </p>
-              <div className="mt-auto">
-                <Link href="/tools/readiness-scan" className="text-[var(--text-primary)] font-medium flex items-center gap-2 group-hover:gap-3 transition-all">
-                  Start de scan <ArrowRight size={18} className="text-[var(--accent)]" />
-                </Link>
-              </div>
-            </div>
-
-            {/* Tool 2 */}
-            <div className="group border border-[var(--border)] bg-[var(--surface)] p-8 rounded-xl hover:border-[var(--accent-warm)] hover:shadow-[0_0_30px_rgba(245,158,11,0.1)] transition-all flex flex-col h-full cursor-pointer">
-              <div className="flex items-center gap-3 mb-4">
-                <span className="bg-[rgba(245,158,11,0.1)] text-[var(--accent-warm)] text-xs font-mono px-3 py-1 border border-[rgba(245,158,11,0.2)] rounded flex items-center gap-1">
-                  <BrainCircuit size={12} /> AI-powered
-                </span>
-              </div>
-              <h3 className="text-2xl font-display font-bold mb-3 group-hover:text-[var(--accent-warm)] transition-colors">DAX Formula Assistant</h3>
-              <p className="text-[var(--text-secondary)] mb-8 flex-grow">
-                Beschrijf in gewone taal wat je wilt berekenen, en ontvang de juiste DAX-formule. Of plak een bestaande formule in voor een heldere uitleg.
-              </p>
-              <div className="mt-auto">
-                <Link href="/tools/dax-assistant" className="text-[var(--text-primary)] font-medium flex items-center gap-2 group-hover:gap-3 transition-all">
-                  Open de assistant <ArrowRight size={18} className="text-[var(--accent-warm)]" />
-                </Link>
-              </div>
-            </div>
-
-            {/* Tool 3 */}
-            <div className="group border border-[var(--border)] bg-[var(--surface)] p-8 rounded-xl hover:border-[#10b981] hover:shadow-[0_0_30px_rgba(16,185,129,0.1)] transition-all flex flex-col h-full cursor-pointer">
-              <div className="flex items-center gap-3 mb-4">
-                <span className="bg-[rgba(16,185,129,0.1)] text-[#10b981] text-xs font-mono px-3 py-1 border border-[rgba(16,185,129,0.2)] rounded flex items-center gap-1">
-                  <ExternalLink size={12} /> Web app
-                </span>
-              </div>
-              <h3 className="text-2xl font-display font-bold mb-3 group-hover:text-[#10b981] transition-colors">DashPortal.app</h3>
-              <p className="text-[var(--text-secondary)] mb-8 flex-grow">
-                Publiceer en deel je Power BI dashboards via een eigen branded portal. Eenvoudig beheer, veilige toegang en een professionele ervaring voor je stakeholders.
-              </p>
-              <div className="mt-auto">
-                <a href="https://dashportal.app" target="_blank" rel="noopener noreferrer" className="text-[var(--text-primary)] font-medium flex items-center gap-2 group-hover:gap-3 transition-all">
-                  Naar DashPortal.app <ExternalLink size={18} className="text-[#10b981]" />
-                </a>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </section>
-
-      {/* Cases Preview */}
-      <section className="py-24">
-        <div className="container mx-auto px-6 md:px-12">
-          <div className="flex justify-between items-end mb-12">
-            <div>
-              <h2 className="text-4xl font-display font-bold mb-4">Impact in de praktijk</h2>
-              <p className="text-[var(--text-secondary)] text-lg max-w-xl">
-                Van publieke gezondheid tot groothandel. Dashboarding die direct invloed heeft op de resultaten.
-              </p>
-            </div>
-            <Link href="/cases" className="hidden md:flex items-center gap-2 hover:text-[var(--accent)] transition-colors">
-              Bekijk alle cases <ArrowRight size={18} />
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 md:mb-0">
-            {[
-              {
-                name: "GGDGHOR",
-                desc: "Centraal dataportaal in Power BI voor 25 GGD-regio's.",
-                challenge: "Eén bron van waarheid voor alle gezondheidsdata in Nederland."
-              },
-              {
-                name: "Technische Unie",
-                desc: "Complete Power BI structuur met meerdere apps per afdeling.",
-                challenge: "Gefragmenteerde data inzichtelijk maken over sales, finance en voorraad."
-              },
-              {
-                name: "Lyreco",
-                desc: "Geautomatiseerde finance dashboards en SMT-rapportage.",
-                challenge: "Snellere besluitvorming realiseren op basis van real-time financiële data."
-              }
-            ].map(kase => (
-              <div key={kase.name} className="glass-card p-6 flex flex-col">
-                <LineChart className="text-[var(--text-secondary)] mb-4 opacity-50" size={24} />
-                <h4 className="text-xl font-display font-bold mb-2">{kase.name}</h4>
-                <p className="text-sm font-medium text-[var(--accent)] mb-3">{kase.challenge}</p>
-                <p className="text-[var(--text-secondary)] text-sm leading-relaxed">{kase.desc}</p>
-              </div>
-            ))}
-          </div>
-
-          <Link href="/cases" className="md:hidden flex items-center justify-center mt-8 gap-2 hover:text-[var(--accent)] transition-colors text-center font-medium">
-            Bekijk alle cases <ArrowRight size={18} />
-          </Link>
-        </div>
-      </section>
-
-      {/* Final CTA */}
-      <section className="py-24 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-t from-[rgba(59,130,246,0.1)] to-transparent" />
-        <div className="container mx-auto px-6 md:px-12 relative z-10 text-center">
-          <h2 className="text-5xl font-display font-bold mb-8">Klaar om te beginnen?</h2>
-          <p className="text-xl text-[var(--text-secondary)] mb-10 max-w-2xl mx-auto">
-            Laten we samen kijken hoe we jouw data voor je kunnen laten werken.
-            Geen vrijblijvende rapporten, maar direct resultaat.
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link href="/contact" className="btn-primary flex items-center justify-center gap-2 px-8 py-4 text-lg">
-              Neem direct contact op
-            </Link>
-            <span className="text-[var(--text-secondary)] sm:mx-4 font-mono">of</span>
-            <a href="mailto:info@powerbistudio.nl" className="hover:text-[var(--text-primary)] hover:underline transition-all">
-              info@powerbistudio.nl
-            </a>
-          </div>
-        </div>
-      </section>
-    </>
-  );
+            {/* ═══ DRIE SEGMENT CTA'S ═══ */}
+            <section className="py-24 border-t border-[var(--border)]">
+                <div className="container mx-auto px-6 md:px-12">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div className="rounded-xl p-6 md:p-8" style={{ backgroundColor: 'rgba(83, 74, 183, 0.05)', borderLeft: '4px solid var(--color-sector-saas)' }}>
+                            <span className="text-[0.7rem] font-semibold tracking-widest uppercase mb-3 block" style={{ color: 'var(--color-sector-saas)' }}>
+                                Voor ISV/SaaS-bedrijven
+                            </span>
+                            <p className="text-[var(--text-primary)] font-medium mb-4">
+                                Jouw klanten willen analytics in jouw product.
+                            </p>
+                            <Link href="/contact?type=saas" className="inline-flex items-center gap-2 text-sm font-medium hover:gap-3 transition-all" style={{ color: 'var(--color-sector-saas)' }}>
+                                Plan een architectuurreview <ArrowRight size={16} />
+                            </Link>
+                        </div>
+                        <div className="rounded-xl p-6 md:p-8" style={{ backgroundColor: 'rgba(216, 90, 48, 0.05)', borderLeft: '4px solid var(--color-sector-data)' }}>
+                            <span className="text-[0.7rem] font-semibold tracking-widest uppercase mb-3 block" style={{ color: 'var(--color-sector-data)' }}>
+                                Voor data teams
+                            </span>
+                            <p className="text-[var(--text-primary)] font-medium mb-4">
+                                Slecht presterend model of Fabric-migratie?
+                            </p>
+                            <Link href="/tools/readiness-scan" className="inline-flex items-center gap-2 text-sm font-medium hover:gap-3 transition-all" style={{ color: 'var(--color-sector-data)' }}>
+                                Start een Readiness Scan <ArrowRight size={16} />
+                            </Link>
+                        </div>
+                        <div className="rounded-xl p-6 md:p-8" style={{ backgroundColor: 'rgba(15, 110, 86, 0.05)', borderLeft: '4px solid var(--color-sector-zorg)' }}>
+                            <span className="text-[0.7rem] font-semibold tracking-widest uppercase mb-3 block" style={{ color: 'var(--color-sector-zorg)' }}>
+                                Voor zorg & overheid
+                            </span>
+                            <p className="text-[var(--text-primary)] font-medium mb-4">
+                                Meerdere locaties, één BI-omgeving.
+                            </p>
+                            <Link href="/cases/ggdghor" className="inline-flex items-center gap-2 text-sm font-medium hover:gap-3 transition-all" style={{ color: 'var(--color-sector-zorg)' }}>
+                                Bekijk de GGDGHOR case <ArrowRight size={16} />
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </>
+    );
 }

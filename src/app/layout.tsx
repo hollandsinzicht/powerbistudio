@@ -21,8 +21,9 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "PowerBIStudio | Jan Willem den Hollander | Power BI & AI Specialist",
-  description: "Jan Willem den Hollander — 15 jaar Power BI specialist. Ik help organisaties die klaar zijn voor de volgende stap: van losse Excel-bestanden naar een Power BI omgeving die écht werkt.",
+  title: "Power BI architect & AI specialist | Jan Willem den Hollander — PowerBIStudio.nl",
+  description: "Power BI die écht werkt. Jan Willem den Hollander — 15 jaar specialist, LSS Black Belt, maker van DashPortal. Voor SaaS-bedrijven, data teams en de publieke sector.",
+  metadataBase: new URL('https://www.powerbistudio.nl'),
 };
 
 export default function RootLayout({
@@ -70,8 +71,19 @@ export default function RootLayout({
               '@type': 'Organization',
               name: 'Power BI Studio',
               url: 'https://www.powerbistudio.nl',
-              description: 'Power BI consulting, dashboards en data-platform services voor Nederlandse organisaties.',
-              knowsAbout: ['Power BI', 'DAX', 'Microsoft Fabric', 'Azure', 'SQL', 'Data Engineering', 'ETL', 'Business Intelligence'],
+              description: 'Power BI architect met 15 jaar ervaring. LSS Black Belt. Maker van DashPortal. Embedded analytics, Fabric migratie, Copilot readiness en procesverbetering.',
+              knowsAbout: ['Power BI', 'DAX', 'Microsoft Fabric', 'Azure', 'SQL', 'Data Engineering', 'ETL', 'Business Intelligence', 'Lean Six Sigma', 'Power BI Embedded', 'Copilot'],
+              hasOfferCatalog: {
+                '@type': 'OfferCatalog',
+                name: 'Diensten',
+                itemListElement: [
+                  { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Power BI voor SaaS & ISV' } },
+                  { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Power BI voor zorg & overheid' } },
+                  { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Fabric migratie' } },
+                  { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Copilot Readiness Audit' } },
+                  { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Procesverbetering met Power BI' } },
+                ],
+              },
             }),
           }}
         />

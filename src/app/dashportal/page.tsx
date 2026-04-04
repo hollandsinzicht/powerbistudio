@@ -3,8 +3,9 @@ import { ArrowRight, ExternalLink, Monitor, Database, ShieldCheck, Users, Clock,
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'DashPortal — Jouw eigen dataportaal voor Power BI | Power BI Studio',
-    description: 'Deel Power BI rapporten met klanten en collega\u0027s via een professioneel, branded portaal — met je eigen logo, kleuren en domein. Inclusief metadatabeheer en data-hygiëne monitoring.',
+    title: 'DashPortal — branded Power BI portaal voor organisaties en ISVs | PowerBIStudio.nl',
+    description: 'Deel Power BI dashboards via een eigen branded portaal. Voor interne teams én voor softwarebedrijven die analytics willen embedden in hun product. Geen Microsoft-licentie voor eindgebruikers.',
+    alternates: { canonical: 'https://www.powerbistudio.nl/dashportal' },
 };
 
 const painPoints = [
@@ -136,6 +137,21 @@ export default function DashPortalPage() {
                 </div>
             </section>
 
+            {/* Doelgroep-splitsing */}
+            <section className="py-12 border-b border-[var(--border)] bg-gray-50">
+                <div className="container mx-auto px-6 md:px-12">
+                    <p className="text-center text-[var(--text-secondary)] mb-6 font-medium">Voor welke situatie zoek je een oplossing?</p>
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                        <a href="#intern-gebruik" className="btn-secondary inline-flex items-center gap-2 px-6 py-3">
+                            Ik wil intern dashboards delen
+                        </a>
+                        <a href="#isv-gebruik" className="btn-secondary inline-flex items-center gap-2 px-6 py-3">
+                            Ik wil analytics aanbieden aan mijn klanten
+                        </a>
+                    </div>
+                </div>
+            </section>
+
             {/* Pain Points Section */}
             <section className="py-24 bg-[var(--surface)] border-y border-[var(--border)]">
                 <div className="container mx-auto px-6 md:px-12">
@@ -244,6 +260,80 @@ export default function DashPortalPage() {
                         <p className="text-lg text-[var(--text-secondary)] leading-relaxed italic">
                             &ldquo;DashPortal is ontwikkeld door Power BI Studio — met jarenlange ervaring in het bouwen van Power BI oplossingen voor organisaties in heel Nederland. We kennen de uitdagingen, want we lossen ze dagelijks op voor onze klanten.&rdquo;
                         </p>
+                    </div>
+                </div>
+            </section>
+
+            {/* ISV Sectie */}
+            <section id="isv-gebruik" className="py-24">
+                <div className="container mx-auto px-6 md:px-12">
+                    <div className="max-w-4xl mx-auto">
+                        <span className="text-[0.7rem] font-semibold tracking-widest uppercase mb-4 block" style={{ color: '#534AB7' }}>
+                            ISV & agency
+                        </span>
+                        <h2 className="text-3xl md:text-4xl font-display font-bold mb-6">
+                            Voor softwarebedrijven en consultants
+                        </h2>
+                        <p className="text-[var(--text-secondary)] leading-relaxed mb-10 max-w-2xl">
+                            Jouw klanten verwachten analytics in jouw product — niet in een
+                            apart Microsoft-portaal met een login die ze niet begrijpen.
+                            DashPortal biedt een white-label laag: jouw branding, jouw domein,
+                            jouw klantportalen.
+                        </p>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                            <div className="border border-[var(--border)] bg-[var(--surface)] p-6 rounded-xl">
+                                <h3 className="font-display font-bold mb-2">White-label per klant</h3>
+                                <p className="text-[var(--text-secondary)] text-sm leading-relaxed">
+                                    Elk klantportaal heeft eigen logo, kleuren en domein. De klant ziet alleen jouw product.
+                                </p>
+                            </div>
+                            <div className="border border-[var(--border)] bg-[var(--surface)] p-6 rounded-xl">
+                                <h3 className="font-display font-bold mb-2">Multi-tenant architectuur</h3>
+                                <p className="text-[var(--text-secondary)] text-sm leading-relaxed">
+                                    Workspaces per klant, RLS-isolatie, gebruikersbeheer via API.
+                                    Schaalbaar van 10 naar 1.000 klanten.
+                                </p>
+                            </div>
+                            <div className="border border-[var(--border)] bg-[var(--surface)] p-6 rounded-xl">
+                                <h3 className="font-display font-bold mb-2">Agency-programma</h3>
+                                <p className="text-[var(--text-secondary)] text-sm leading-relaxed">
+                                    Consultant of BI-bureau? Bied DashPortal aan als onderdeel van
+                                    jouw dienstverlening. Eigen pricing, eigen klantrelatie.
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* Vergelijkingstabel */}
+                        <h3 className="text-xl font-display font-bold mb-4">DashPortal vs. alternatieven</h3>
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-sm border border-[var(--border)] rounded-xl overflow-hidden">
+                                <thead>
+                                    <tr className="bg-gray-50">
+                                        <th className="text-left p-3 font-medium text-[var(--text-secondary)]"></th>
+                                        <th className="text-left p-3 font-medium text-[#10b981]">DashPortal</th>
+                                        <th className="text-left p-3 font-medium text-[var(--text-secondary)]">Zelf bouwen</th>
+                                        <th className="text-left p-3 font-medium text-[var(--text-secondary)]">PBI Embedded direct</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-[var(--border)]">
+                                    {[
+                                        ['Tijd tot live', '< 10 minuten', '3-6 maanden', '2-4 weken'],
+                                        ['MS-licentie eindgebruiker', 'Niet nodig', 'Niet nodig', 'Niet nodig'],
+                                        ['White-label', 'Ja', 'Ja', 'Gedeeltelijk'],
+                                        ['Multi-tenant RLS', 'Ingebouwd', 'Zelf bouwen', 'Zelf bouwen'],
+                                        ['Technische kennis', 'Geen', 'Hoog', 'Gemiddeld'],
+                                        ['Maandelijkse kosten', 'Laag', 'Hoog (dev-uren)', 'Gemiddeld'],
+                                    ].map(([label, d, z, p]) => (
+                                        <tr key={label} className="hover:bg-gray-50">
+                                            <td className="p-3 font-medium text-[var(--text-primary)]">{label}</td>
+                                            <td className="p-3 text-[#10b981] font-medium">{d}</td>
+                                            <td className="p-3 text-[var(--text-secondary)]">{z}</td>
+                                            <td className="p-3 text-[var(--text-secondary)]">{p}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </section>
