@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
-import { getAllPosts, getPostById, createPost, updatePost, publishPost, archivePost, schedulePost } from '@/lib/blog-store'
+import { getAllPosts, getPostById, createPost, updatePost, publishPost, archivePost, schedulePost, getPublishedPosts } from '@/lib/blog-store'
 import { getIdeas, updateIdeaStatus } from '@/lib/blog-store'
+import { suggestInternalLinks } from '@/lib/blog-writer'
 
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin'
 
@@ -74,12 +75,52 @@ export async function PUT(req: Request) {
 
     if (putAction === 'publish') {
       await publishPost(id)
+
+      // Automatisch interne links updaten in bestaande posts (non-blocking)
+      const newPost = await getPostById(id)
+      if (newPost) {
+        const existingPosts = await getPublishedPosts()
+        let linkedCount = 0
+        for (const ep of existingPosts) {
+          if (ep.id === id) continue
+          try {
+            const suggestions = await suggestInternalLinks({
+              postTitle: ep.title, postContent: ep.content,
+              newPostSlug: newPost.slug, newPostTitle: newPost.title,
+            })
+            if (suggestions.length > 0) {
+              let updated = ep.content
+              for (const s of suggestions) {
+                if (updated.includes(s.elementToFind)) {
+                  updated = updated.replace(s.elementToFind, s.replacement)
+                }
+              }
+              if (updated !== ep.content) {
+                await updatePost(ep.id, { content: updated })
+                linkedCount++
+              }
+            }
+          } catch { /* non-blocking */ }
+        }
+        console.log(`[PUBLISH] Interne links bijgewerkt in ${linkedCount} bestaande artikelen`)
+      }
+
       return NextResponse.json({ success: true, action: 'published' })
     }
 
     if (putAction === 'archive') {
       await archivePost(id)
       return NextResponse.json({ success: true, action: 'archived' })
+    }
+
+    if (putAction === 'approve_idea') {
+      await updateIdeaStatus(id, 'approved')
+      return NextResponse.json({ success: true, action: 'idea_approved' })
+    }
+
+    if (putAction === 'reject_idea') {
+      await updateIdeaStatus(id, 'rejected')
+      return NextResponse.json({ success: true, action: 'idea_rejected' })
     }
 
     if (putAction === 'schedule') {

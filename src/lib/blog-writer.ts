@@ -230,30 +230,39 @@ export async function suggestInternalLinks(params: {
   const response = await client.messages.create({
     model: 'claude-sonnet-4-20250514',
     max_tokens: 1500,
-    system: `Je analyseert een bestaand blogartikel en zoekt plekken waar een link naar een nieuw artikel natuurlijk past. Geef maximaal 2 suggesties.
+    system: `Je zoekt in een bestaand blogartikel naar woorden of korte woordgroepen die je kunt omzetten naar een link. Je taak is UITSLUITEND om een <a> tag om BESTAANDE woorden te plaatsen.
 
-Antwoord als JSON array:
-[{
-  "elementToFind": "het exacte stuk tekst uit de bestaande content dat vervangen moet worden",
-  "replacement": "dezelfde tekst maar dan met een <a href=\\"/blog/nieuwe-slug\\">relevante anchor tekst</a> erin verwerkt"
-}]
+STRIKTE REGELS:
+1. Je mag GEEN tekst toevoegen, verwijderen of herschrijven. Alleen een <a> tag om bestaande woorden plaatsen.
+2. De "elementToFind" moet een EXACT stuk tekst zijn dat letterlijk in de content voorkomt.
+3. De "replacement" is EXACT dezelfde tekst, maar met een <a href="..."> tag om het relevante woord of de relevante woordgroep.
+4. Maximaal 2 suggesties per artikel.
+5. Als er geen woord of term in het artikel staat dat direct gerelateerd is aan het nieuwe artikel, return een lege array [].
+6. Link NIET als het woord al in een <a> tag staat.
+7. De omringende zin mag NIET veranderen — alleen de anchor tag wordt toegevoegd.
 
-Regels:
-- Alleen linken als het echt relevant is — niet forceren
-- De anchor tekst moet natuurlijk lezen
-- Zoek naar zinnen die het onderwerp van het nieuwe artikel bespreken
-- Als er geen goede plek is, return een lege array []`,
+GOED voorbeeld:
+elementToFind: "Een goed datamodel is de basis van elke rapportage"
+replacement: "Een goed <a href=\\"/blog/datamodel-ontwerpen\\">datamodel</a> is de basis van elke rapportage"
+
+FOUT voorbeeld (voegt tekst toe — VERBODEN):
+elementToFind: "Een goed datamodel is de basis"
+replacement: "Een goed datamodel is de basis. Lees meer over datamodellen in onze gids."
+
+Antwoord als JSON array. Geen uitleg, alleen JSON:
+[{ "elementToFind": "...", "replacement": "..." }]`,
     messages: [{
       role: 'user',
       content: `Bestaand artikel: "${params.postTitle}"
-Content (bekijk waar een link past):
-${params.postContent.slice(0, 3000)}
+
+Content:
+${params.postContent.slice(0, 4000)}
 
 Nieuw artikel om naar te linken:
 - Titel: "${params.newPostTitle}"
 - URL: /blog/${params.newPostSlug}
 
-Waar in het bestaande artikel past een link naar dit nieuwe artikel?`,
+Zoek woorden in het bestaande artikel die je kunt linken naar dit nieuwe artikel.`,
     }],
   })
 
@@ -262,7 +271,15 @@ Waar in het bestaande artikel past een link naar dit nieuwe artikel?`,
 
   try {
     const cleaned = text.text.replace(/```json?\n?/g, '').replace(/```/g, '').trim()
-    return JSON.parse(cleaned)
+    const suggestions = JSON.parse(cleaned) as { elementToFind: string; replacement: string }[]
+
+    // Validatie: controleer dat de replacement geen tekst toevoegt, alleen een <a> tag
+    return suggestions.filter((s) => {
+      const findClean = s.elementToFind.replace(/<[^>]*>/g, '').trim()
+      const replaceClean = s.replacement.replace(/<[^>]*>/g, '').trim()
+      // De tekst zonder HTML tags moet identiek zijn
+      return findClean === replaceClean
+    })
   } catch {
     return []
   }
