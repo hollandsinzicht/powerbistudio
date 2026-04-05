@@ -31,6 +31,8 @@ export default function Footer() {
                             <li><Link href="/tools/report-auditor" className={linkClass}>Report Auditor</Link></li>
                             <li><Link href="/tools/dax-assistant" className={linkClass}>DAX Formula Assistant</Link></li>
                             <li><Link href="/tools/readiness-scan" className={linkClass}>Power BI Readiness Scan</Link></li>
+                            <li><Link href="/tools/bi-kosten-calculator" className={linkClass}>BI-Kosten Calculator</Link></li>
+                            <li><Link href="/resources" className={linkClass}>Resources & Downloads</Link></li>
                         </ul>
                     </div>
 

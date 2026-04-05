@@ -127,6 +127,73 @@ export async function sendReportReadyEmail(params: {
   )
 }
 
+// ===== LEAD GENERATION EMAILS =====
+
+export async function sendLeadConfirmationEmail(params: {
+  email: string
+  name?: string
+  downloadUrl?: string
+  resourceTitle: string
+}) {
+  await sendEmail(
+    params.email,
+    `Je download: ${params.resourceTitle}`,
+    `
+    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; color: #111827;">
+      <h2 style="color: #1E3A5F;">Bedankt${params.name ? `, ${params.name}` : ''}!</h2>
+      <p>Je hebt <strong>${params.resourceTitle}</strong> aangevraagd.</p>
+      ${params.downloadUrl ? `
+      <p><a href="${params.downloadUrl}" style="display: inline-block; background: #1E3A5F; color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: 500;">Download nu</a></p>
+      ` : '<p>Je ontvangt je download binnenkort per e-mail.</p>'}
+      <p style="color: #6B7280; font-size: 14px; margin-top: 24px;">
+        In de komende weken ontvang je een aantal verdiepende inzichten die aansluiten bij dit onderwerp. Je kunt je op elk moment uitschrijven.
+      </p>
+      <hr style="border: none; border-top: 1px solid #E5E7EB; margin: 24px 0;" />
+      <p style="color: #9CA3AF; font-size: 12px;">Jan Willem den Hollander — PowerBIStudio.nl</p>
+    </div>
+    `
+  )
+}
+
+export async function sendCalculatorResultEmail(params: {
+  email: string
+  name?: string
+  monthlyCost: number
+  recommendation: string
+}) {
+  const formattedCost = new Intl.NumberFormat('nl-NL', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(params.monthlyCost)
+  await sendEmail(
+    params.email,
+    `Je BI-kostenberekening: ${formattedCost} per maand`,
+    `
+    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; color: #111827;">
+      <h2 style="color: #1E3A5F;">Je BI-kostenberekening</h2>
+      <div style="background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 8px; padding: 24px; margin: 20px 0; text-align: center;">
+        <p style="color: #6B7280; font-size: 14px; margin: 0 0 8px 0;">Geschatte maandelijkse kosten van slechte data</p>
+        <p style="font-size: 36px; font-weight: bold; color: #1E3A5F; margin: 0;">${formattedCost}</p>
+        <p style="color: #6B7280; font-size: 14px; margin: 8px 0 0 0;">per maand</p>
+      </div>
+      <p><strong>Aanbeveling:</strong> ${params.recommendation}</p>
+      <p style="margin-top: 24px;">
+        <a href="${BASE_URL}/contact?type=procesverbetering" style="display: inline-block; background: #1E3A5F; color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: 500;">Plan een procesverbeterings-intake</a>
+      </p>
+      <hr style="border: none; border-top: 1px solid #E5E7EB; margin: 24px 0;" />
+      <p style="color: #9CA3AF; font-size: 12px;">Jan Willem den Hollander — PowerBIStudio.nl</p>
+    </div>
+    `
+  )
+}
+
+export async function sendNurtureEmail(params: {
+  email: string
+  subject: string
+  bodyHtml: string
+  unsubscribeUrl: string
+}) {
+  const html = params.bodyHtml.replace(/\{\{unsubscribe_url\}\}/g, params.unsubscribeUrl)
+  await sendEmail(params.email, params.subject, html)
+}
+
 export async function sendReportDeletedEmail(params: {
   email: string
   auditId: string

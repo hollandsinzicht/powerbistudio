@@ -19,6 +19,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         '/fabric-migratie',
         '/copilot-readiness',
         '/procesverbetering',
+        '/tools/bi-kosten-calculator',
+        '/resources',
+        '/resources/publieke-sector-checklist',
+        '/resources/isv-architectuurgids',
     ].map((route) => ({
         url: `${BASE_URL}${route}`,
         lastModified: new Date(),

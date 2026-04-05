@@ -76,28 +76,8 @@ const howItWorks = [
 export default function ReportAuditorPage() {
   return (
     <>
-      {/* ProbleemIntro */}
-      <section className="pt-32 pb-0 relative overflow-hidden">
-        <div className="container mx-auto px-6 md:px-12">
-          <div className="max-w-3xl mx-auto">
-            <div className="bg-[rgba(245,158,11,0.05)] border-l-4 border-[var(--accent)] rounded-r-xl p-6 md:p-8">
-              <h2 className="font-display font-bold text-lg mb-3">Herken je dit?</h2>
-              <ul className="text-[var(--text-secondary)] leading-relaxed space-y-2 text-[0.95rem]">
-                <li>→ Je rapport laadt 30 seconden. Collega&apos;s klikken weg.</li>
-                <li>→ De cijfers kloppen niet maar niemand weet waarom.</li>
-                <li>→ Het model is door vijf mensen aangepast en niemand begrijpt het geheel nog.</li>
-                <li>→ Je weet dat er iets mis is, maar niet wat — of hoe urgent.</li>
-              </ul>
-              <p className="text-[var(--text-secondary)] mt-4 text-[0.95rem]">
-                De Report Auditor geeft je in 24 uur een helder overzicht: wat klopt er niet, waarom, en hoe los je het op.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Hero Section */}
-      <section className="pt-12 pb-16 border-b border-[var(--border)] relative overflow-hidden">
+      <section className="pt-32 pb-16 border-b border-[var(--border)] relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(30,58,95,0.08),transparent_50%)] pointer-events-none" />
 
         <div className="container mx-auto px-6 md:px-12 relative z-10">
@@ -147,11 +127,31 @@ export default function ReportAuditorPage() {
         </div>
       </section>
 
+      {/* ProbleemIntro — onder de hero */}
+      <section className="py-16">
+        <div className="container mx-auto px-6 md:px-12">
+          <div className="max-w-3xl">
+            <div className="bg-[rgba(245,158,11,0.05)] border-l-4 border-[var(--accent)] rounded-r-xl p-6 md:p-8">
+              <h2 className="font-display font-bold text-lg mb-3">Herken je dit?</h2>
+              <ul className="text-[var(--text-secondary)] leading-relaxed space-y-2 text-[0.95rem]">
+                <li>→ Je rapport laadt 30 seconden. Collega&apos;s klikken weg.</li>
+                <li>→ De cijfers kloppen niet maar niemand weet waarom.</li>
+                <li>→ Het model is door vijf mensen aangepast en niemand begrijpt het geheel nog.</li>
+                <li>→ Je weet dat er iets mis is, maar niet wat — of hoe urgent.</li>
+              </ul>
+              <p className="text-[var(--text-secondary)] mt-4 text-[0.95rem]">
+                De Report Auditor geeft je in 24 uur een helder overzicht: wat klopt er niet, waarom, en hoe los je het op.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* What We Analyze */}
       <section className="py-20">
         <div className="container mx-auto px-6 md:px-12">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-display font-bold mb-10 text-center">
+          <div className="max-w-4xl">
+            <h2 className="text-3xl font-display font-bold mb-10">
               Wat we <span className="text-[var(--accent)]">analyseren</span>
             </h2>
 
@@ -218,8 +218,8 @@ export default function ReportAuditorPage() {
       {/* How It Works */}
       <section className="py-20">
         <div className="container mx-auto px-6 md:px-12">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-display font-bold mb-12 text-center">
+          <div className="max-w-4xl">
+            <h2 className="text-3xl font-display font-bold mb-12">
               Hoe het <span className="text-[var(--accent)]">werkt</span>
             </h2>
 
@@ -257,8 +257,8 @@ export default function ReportAuditorPage() {
       {/* What You Get */}
       <section className="py-20 bg-gray-50 border-y border-[var(--border)]">
         <div className="container mx-auto px-6 md:px-12">
-          <div className="max-w-5xl mx-auto">
-            <h2 className="text-3xl font-display font-bold mb-12 text-center">
+          <div className="max-w-5xl">
+            <h2 className="text-3xl font-display font-bold mb-12">
               Wat je <span className="text-[var(--accent)]">krijgt</span>
             </h2>
 

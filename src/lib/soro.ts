@@ -33,6 +33,26 @@ export const CATEGORIES: Category[] = [
         name: 'Strategie',
         description: 'Inzichten over data-strategie, besluitvorming en de juiste aanpak voor jouw organisatie.',
     },
+    {
+        slug: 'fabric-migratie',
+        name: 'Fabric & migratie',
+        description: 'Alles over de overgang van Power BI Premium naar Microsoft Fabric: licenties, planning en architectuur.',
+    },
+    {
+        slug: 'governance-avg',
+        name: 'Governance & AVG',
+        description: 'Data governance, AVG-compliance, Row-Level Security en privacy by design in Power BI.',
+    },
+    {
+        slug: 'embedded-analytics',
+        name: 'Embedded analytics',
+        description: 'Power BI Embedded voor ISVs en SaaS-bedrijven: architectuur, multi-tenant en white-label.',
+    },
+    {
+        slug: 'procesverbetering-bi',
+        name: 'Procesverbetering & BI',
+        description: 'Lean Six Sigma meets Power BI: hoe je dashboards inzet als middel voor procesverbetering.',
+    },
 ];
 
 // Keywords per category for automatic matching (matched against title + slug + excerpt)
@@ -55,10 +75,26 @@ const CATEGORY_KEYWORDS: Record<string, string[]> = {
         'automatisering', 'integratie', 'brondata', 'bron',
     ],
     'strategie': [
-        'strategie', 'overstappen', 'migratie', 'migreren', 'besluit', 'besluitvorming',
+        'strategie', 'overstappen', 'besluit', 'besluitvorming',
         'roadmap', 'organisatie', 'advies', 'wanneer', 'kiezen', 'keuze',
-        'governance', 'volwassenheid', 'maturity', 'adoptie', 'implementatie',
+        'volwassenheid', 'maturity', 'adoptie', 'implementatie',
         'kosten', 'roi', 'business case', 'aanpak', 'waar let je op',
+    ],
+    'fabric-migratie': [
+        'fabric', 'migratie', 'migreren', 'premium', 'f-sku', 'onelake', 'capacity',
+        'capaciteit', 'p-sku', 'a-sku', 'overstap', 'licentie', 'licenties',
+    ],
+    'governance-avg': [
+        'governance', 'avg', 'privacy', 'gdpr', 'rls', 'row-level', 'beveiliging',
+        'audit trail', 'compliance', 'dataclassificatie', 'toegangsbeheer',
+    ],
+    'embedded-analytics': [
+        'embedded', 'embed', 'isv', 'multi-tenant', 'white-label', 'white label',
+        'sku', 'portaal', 'portal', 'saas', 'klantportaal',
+    ],
+    'procesverbetering-bi': [
+        'proces', 'lean', 'six sigma', 'dmaic', 'kpi', 'dso', 'bottleneck',
+        'cyclustijd', 'waste', 'efficiëntie', 'procesverbetering', 'operationeel',
     ],
 };
 

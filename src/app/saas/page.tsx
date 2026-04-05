@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowRight, Code2, Building2, Heart, Briefcase, Server, Shield, DollarSign } from "lucide-react";
 import type { Metadata } from 'next';
 import { ProbleemIntro, SectorBadge } from '@/components/ui';
+import LeadCaptureForm from '@/components/lead/LeadCaptureForm';
 
 export const metadata: Metadata = {
     title: 'Power BI analytics in jouw SaaS-product — embedded architectuur | PowerBIStudio.nl',
@@ -128,6 +129,21 @@ export default function SaaSPage() {
                             </div>
                         ))}
                     </div>
+                </div>
+            </section>
+
+            {/* Lead magnet inline */}
+            <section className="py-20 border-t border-[var(--border)]">
+                <div className="container mx-auto px-6 md:px-12 max-w-3xl">
+                    <LeadCaptureForm
+                        vertical="isv"
+                        source="architectuurgids"
+                        title="Download: 5 architectuurbeslissingen voor Power BI Embedded"
+                        description="Gratis 2-pagina PDF met SKU-keuze, workspace-patroon, RLS-strategie, Copilot-implicaties en kosteninschatting."
+                        buttonText="Download gratis PDF"
+                        fields={['name', 'email']}
+                        downloadUrl="/downloads/isv-architectuurgids.pdf"
+                    />
                 </div>
             </section>
 

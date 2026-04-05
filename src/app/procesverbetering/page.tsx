@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Search, BarChart3, Microscope, Wrench, ShieldCheck } from "lucide-react";
+import { ArrowRight, Search, BarChart3, Microscope, Wrench, ShieldCheck, Calculator } from "lucide-react";
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -128,8 +128,28 @@ export default function ProcesverbeteringPage() {
                 </div>
             </section>
 
+            {/* Calculator CTA */}
+            <section className="py-20">
+                <div className="container mx-auto px-6 md:px-12 max-w-3xl">
+                    <Link href="/tools/bi-kosten-calculator" className="glass-card rounded-xl p-6 md:p-8 border border-[var(--border)] hover:border-[#B8963E] transition-all group flex items-start gap-4">
+                        <div className="w-12 h-12 rounded-lg flex items-center justify-center shrink-0" style={{ backgroundColor: 'rgba(184, 150, 62, 0.1)' }}>
+                            <Calculator size={24} style={{ color: '#B8963E' }} />
+                        </div>
+                        <div>
+                            <h3 className="font-display font-bold text-lg mb-1">Bereken wat slechte data jouw organisatie kost</h3>
+                            <p className="text-[var(--text-secondary)] text-sm leading-relaxed mb-2">
+                                De BI-Kosten Calculator rekent het uit in euro&apos;s — de taal die CFO&apos;s en COO&apos;s spreken.
+                            </p>
+                            <span className="inline-flex items-center gap-2 text-sm font-medium group-hover:gap-3 transition-all" style={{ color: '#B8963E' }}>
+                                Open de calculator <ArrowRight size={16} />
+                            </span>
+                        </div>
+                    </Link>
+                </div>
+            </section>
+
             {/* CTA */}
-            <section className="py-24">
+            <section className="py-24 border-t border-[var(--border)]">
                 <div className="container mx-auto px-6 md:px-12 text-center max-w-2xl">
                     <p className="text-xl md:text-2xl font-display font-bold mb-6">
                         Is jouw BI-vraagstuk eigenlijk een procesverbeteringsvraagstuk?

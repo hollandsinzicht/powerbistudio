@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowRight, Shield, Building, Users, Lock } from "lucide-react";
 import type { Metadata } from 'next';
 import { ProbleemIntro, SectorBadge, StatBlok } from '@/components/ui';
+import LeadCaptureForm from '@/components/lead/LeadCaptureForm';
 
 export const metadata: Metadata = {
     title: 'Power BI voor zorg en overheid — multi-regio, AVG-compliant | PowerBIStudio.nl',
@@ -102,6 +103,21 @@ export default function PubliekeSectorPage() {
                             overheidsorganisaties van binnenuit.
                         </p>
                     </blockquote>
+                </div>
+            </section>
+
+            {/* Lead magnet inline */}
+            <section className="py-20 border-t border-[var(--border)]">
+                <div className="container mx-auto px-6 md:px-12 max-w-3xl">
+                    <LeadCaptureForm
+                        vertical="publieke-sector"
+                        source="checklist"
+                        title="Download: BI-Checklist voor de publieke sector"
+                        description="12 vragen die je moet stellen vóór een BI-aanbesteding. Over AVG, RLS, multi-locatie, governance en overdracht."
+                        buttonText="Download gratis PDF"
+                        fields={['name', 'email', 'company']}
+                        downloadUrl="/downloads/publieke-sector-checklist.pdf"
+                    />
                 </div>
             </section>
 

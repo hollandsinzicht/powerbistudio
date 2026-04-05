@@ -18,6 +18,7 @@ const navLinks = [
     { name: "Over", href: "/over" },
     { name: "DashPortal", href: "/dashportal" },
     { name: "Tools", href: "/tools" },
+    { name: "Resources", href: "/resources" },
     { name: "Cases", href: "/cases" },
     { name: "Blog", href: "/blog" },
     { name: "Contact", href: "/contact" },
