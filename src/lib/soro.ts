@@ -1,8 +1,14 @@
-export const SORO_ID = '00a5a8cb-bae1-4b5c-9e36-53088412e220';
-export const BASE_URL = 'https://www.powerbistudio.nl';
+/**
+ * Blog data layer — oorspronkelijk Soro CMS, nu Supabase-backed.
+ *
+ * Alle exports blijven identiek zodat blog-pagina's, ArticleCard,
+ * BlogCTA en sitemap NIET aangepast hoeven te worden.
+ */
 
-const EMBED_URL = `https://app.trysoro.com/api/embed/${SORO_ID}`;
-const ARTICLE_URL = `https://app.trysoro.com/api/embed/${SORO_ID}/article`;
+import { getPublishedPosts, getPostBySlug as getStorePostBySlug } from './blog-store'
+import type { BlogPost } from './blog-store'
+
+export const BASE_URL = 'https://www.powerbistudio.nl';
 
 // --- Categories ---
 
@@ -24,9 +30,6 @@ export const CATEGORIES: Category[] = [
 ];
 
 // --- Weighted keyword scoring ---
-// weight 3 = highly specific (definitief voor deze categorie)
-// weight 2 = moderately specific (sterk suggestief maar kan elders voorkomen)
-// weight 1 = generic (verschijnt in bijna elk BI-artikel)
 
 interface WeightedKeyword {
     term: string;
@@ -99,7 +102,7 @@ const CATEGORY_KEYWORDS: Record<string, WeightedKeyword[]> = {
 
 const CATEGORY_THRESHOLD = 3;
 
-// --- Articles ---
+// --- Articles interface (backward compatible) ---
 
 export interface SoroArticle {
     id: string;
@@ -110,30 +113,35 @@ export interface SoroArticle {
     isoDate: string;
     image: string | null;
     categories: Category[];
-    /** @deprecated Gebruik `categories` — dit is backward-compat alias voor `categories[0]` */
+    /** @deprecated Gebruik `categories` — backward-compat alias voor `categories[0]` */
     category: Category | null;
 }
 
+// --- Helper: BlogPost → SoroArticle ---
+
+function toSoroArticle(post: BlogPost): SoroArticle {
+    const categories = getCategoriesForArticle(post.title, post.slug, post.excerpt);
+    const publishedDate = post.published_at ? new Date(post.published_at) : new Date(post.created_at);
+
+    return {
+        id: post.id,
+        title: post.title,
+        slug: post.slug,
+        excerpt: post.excerpt,
+        date: publishedDate.toLocaleDateString('nl-NL', { day: 'numeric', month: 'short', year: 'numeric' }),
+        isoDate: publishedDate.toISOString(),
+        image: post.image,
+        categories,
+        category: categories[0] ?? null,
+    };
+}
+
+// --- Public API (zelfde exports als voorheen) ---
+
 export async function getArticles(): Promise<SoroArticle[]> {
     try {
-        const res = await fetch(EMBED_URL, { next: { revalidate: 3600 } });
-        const script = await res.text();
-        const match = script.match(/SORO_ARTICLES\s*=\s*(\[[\s\S]*?\]);/);
-        if (!match) return [];
-
-        const raw = JSON.parse(match[1]);
-        return raw.map((a: Record<string, unknown>) => {
-            const categories = getCategoriesForArticle(
-                a.title as string,
-                a.slug as string,
-                a.excerpt as string,
-            );
-            return {
-                ...a,
-                categories,
-                category: categories[0] ?? null,
-            };
-        });
+        const posts = await getPublishedPosts();
+        return posts.map(toSoroArticle);
     } catch {
         return [];
     }
@@ -145,15 +153,27 @@ export async function getArticlesByCategory(categorySlug: string): Promise<SoroA
 }
 
 export async function getArticleBySlug(slug: string): Promise<SoroArticle | null> {
-    const articles = await getArticles();
-    return articles.find((a) => a.slug === slug) ?? null;
+    try {
+        const post = await getStorePostBySlug(slug);
+        if (!post) return null;
+        return toSoroArticle(post);
+    } catch {
+        return null;
+    }
 }
 
 export async function getArticleContent(id: string): Promise<string | null> {
     try {
-        const res = await fetch(`${ARTICLE_URL}/${id}`, { next: { revalidate: 3600 } });
-        const data = await res.json();
-        return data.content ?? null;
+        // Content is al opgeslagen in blog_posts — we hoeven geen aparte fetch te doen
+        const { data, error } = await (await import('./supabase')).supabase
+            .from('blog_posts')
+            .select('content')
+            .eq('id', id)
+            .eq('status', 'published')
+            .maybeSingle();
+
+        if (error || !data) return null;
+        return data.content;
     } catch {
         return null;
     }
@@ -163,7 +183,9 @@ export function getCategoryBySlug(slug: string): Category | null {
     return CATEGORIES.find((c) => c.slug === slug) ?? null;
 }
 
-function getCategoriesForArticle(title: string, slug: string, excerpt: string): Category[] {
+// --- Category scoring (exported for reuse in blog-writer) ---
+
+export function getCategoriesForArticle(title: string, slug: string, excerpt: string): Category[] {
     const text = `${title} ${slug.replace(/-/g, ' ')} ${excerpt}`.toLowerCase();
 
     const scored: { slug: string; score: number }[] = [];
