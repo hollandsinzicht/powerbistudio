@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, BrainCircuit, Play, Copy, RefreshCw, FileText, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, BrainCircuit, Play, Copy, RefreshCw, FileText, CheckCircle2, Download } from "lucide-react";
+import LeadCaptureForm from "@/components/lead/LeadCaptureForm";
 
 export default function DaxAssistant() {
     const [mode, setMode] = useState<"generate" | "explain">("generate");
@@ -221,6 +222,36 @@ export default function DaxAssistant() {
                     </div>
 
                 </div>
+
+                {/* DAX-fouten lead magnet */}
+                <div id="dax-fouten" className="mt-16 pt-12 border-t border-[var(--border)]">
+                    <div className="glass-card rounded-xl p-6 md:p-8 border border-[var(--border)]">
+                        <div className="flex items-start gap-4 mb-6">
+                            <div className="w-10 h-10 rounded-lg bg-[rgba(30,58,95,0.1)] flex items-center justify-center shrink-0">
+                                <Download size={20} className="text-[var(--primary)]" />
+                            </div>
+                            <div>
+                                <h3 className="text-lg font-display font-bold mb-1">
+                                    Download: 10 meest voorkomende DAX-fouten in productie-modellen
+                                </h3>
+                                <p className="text-[var(--text-secondary)] text-sm leading-relaxed">
+                                    Van verkeerde CALCULATE-filters tot onnodige DISTINCTCOUNT op grote tabellen.
+                                    Met uitleg waarom het fout is en hoe je het oplost. Gratis PDF.
+                                </p>
+                            </div>
+                        </div>
+                        <LeadCaptureForm
+                            vertical="vakgenoot"
+                            source="dax-fouten"
+                            title=""
+                            buttonText="Download gratis PDF"
+                            fields={['name', 'email']}
+                            compact
+                            downloadUrl="/downloads/dax-fouten-top10.pdf"
+                        />
+                    </div>
+                </div>
+
             </div>
         </div>
     );
