@@ -96,22 +96,21 @@ export default function DashPortalPage() {
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(59,130,246,0.06),transparent_50%)]" />
 
                 <div className="container mx-auto px-6 md:px-12 relative z-10">
-                    <div className="max-w-4xl mx-auto text-center">
+                    <div className="max-w-3xl">
                         <div className="inline-flex items-center gap-2 bg-[rgba(16,185,129,0.1)] text-[#10b981] text-sm font-mono px-4 py-1.5 border border-[rgba(16,185,129,0.2)] rounded mb-8">
                             <ExternalLink size={14} />
                             Nu beschikbaar — start in 10 minuten
                         </div>
 
-                        <h1 className="text-4xl md:text-6xl font-display font-bold mb-6 leading-tight">
-                            Jouw eigen dataportaal<br />
-                            voor <span className="text-[#10b981]">Power BI</span>
+                        <h1 className="text-4xl md:text-5xl font-display font-bold mb-6 leading-tight">
+                            Jouw eigen dataportaal voor <span className="text-[#10b981]">Power BI</span>
                         </h1>
 
-                        <p className="text-xl text-[var(--text-secondary)] leading-relaxed max-w-2xl mx-auto mb-10">
+                        <p className="text-xl text-[var(--text-secondary)] leading-relaxed max-w-2xl mb-10">
                             Deel Power BI rapporten met klanten en collega&apos;s via een professioneel, branded portaal — met je eigen logo, kleuren en domein. Inclusief metadatabeheer en data-hygiëne monitoring.
                         </p>
 
-                        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                        <div className="flex flex-wrap gap-4">
                             <a
                                 href="https://dashportal.app/onboarding/plan"
                                 target="_blank"
@@ -155,7 +154,7 @@ export default function DashPortalPage() {
             {/* Pain Points Section */}
             <section className="py-24 bg-[var(--surface)] border-y border-[var(--border)]">
                 <div className="container mx-auto px-6 md:px-12">
-                    <div className="text-center max-w-2xl mx-auto mb-16">
+                    <div className="max-w-2xl mb-16">
                         <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">Herken je dit?</h2>
                         <p className="text-[var(--text-secondary)] text-lg">
                             Power BI is krachtig, maar het delen van rapporten met externe gebruikers is dat niet.
@@ -177,7 +176,7 @@ export default function DashPortalPage() {
             {/* Solution Statement */}
             <section className="py-20">
                 <div className="container mx-auto px-6 md:px-12">
-                    <div className="max-w-4xl mx-auto text-center">
+                    <div className="max-w-3xl">
                         <p className="text-2xl md:text-3xl font-display font-bold leading-snug">
                             Eén platform dat Power BI rapporten omzet naar een{" "}
                             <span className="text-[#10b981]">professioneel klantportaal</span>{" "}
@@ -192,7 +191,7 @@ export default function DashPortalPage() {
                 <div className="absolute right-0 top-1/2 -translate-y-1/2 w-96 h-96 bg-[#10b981] rounded-full blur-[150px] opacity-10 pointer-events-none" />
 
                 <div className="container mx-auto px-6 md:px-12 relative z-10">
-                    <div className="text-center max-w-2xl mx-auto mb-16">
+                    <div className="max-w-2xl mb-16">
                         <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">Alles wat je nodig hebt</h2>
                         <p className="text-[var(--text-secondary)] text-lg">
                             Drie pijlers die samen zorgen voor een professionele en beheersbare data-ervaring.
@@ -232,7 +231,7 @@ export default function DashPortalPage() {
             {/* Steps Section */}
             <section className="py-24">
                 <div className="container mx-auto px-6 md:px-12">
-                    <div className="text-center max-w-2xl mx-auto mb-16">
+                    <div className="max-w-2xl mb-16">
                         <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">In 5 stappen live</h2>
                         <p className="text-[var(--text-secondary)] text-lg">
                             Van aanmelding tot een werkend portaal in minder dan 10 minuten.
@@ -256,10 +255,12 @@ export default function DashPortalPage() {
             {/* Trust Section */}
             <section className="py-16 bg-[var(--surface)] border-y border-[var(--border)]">
                 <div className="container mx-auto px-6 md:px-12">
-                    <div className="max-w-3xl mx-auto text-center">
-                        <p className="text-lg text-[var(--text-secondary)] leading-relaxed italic">
-                            &ldquo;DashPortal is ontwikkeld door Power BI Studio — met jarenlange ervaring in het bouwen van Power BI oplossingen voor organisaties in heel Nederland. We kennen de uitdagingen, want we lossen ze dagelijks op voor onze klanten.&rdquo;
-                        </p>
+                    <div className="max-w-3xl">
+                        <blockquote className="border-l-4 border-[#10b981] pl-6 py-2">
+                            <p className="text-lg text-[var(--text-secondary)] leading-relaxed italic">
+                                &ldquo;DashPortal is ontwikkeld door Power BI Studio — met jarenlange ervaring in het bouwen van Power BI oplossingen voor organisaties in heel Nederland. We kennen de uitdagingen, want we lossen ze dagelijks op voor onze klanten.&rdquo;
+                            </p>
+                        </blockquote>
                     </div>
                 </div>
             </section>
