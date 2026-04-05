@@ -130,6 +130,13 @@ export async function archivePost(id: string) {
   await updatePost(id, { status: 'archived' })
 }
 
+export async function schedulePost(id: string, scheduledFor: string) {
+  await updatePost(id, {
+    status: 'scheduled',
+    scheduled_for: scheduledFor,
+  })
+}
+
 export async function getScheduledPostsDue(): Promise<BlogPost[]> {
   const { data, error } = await supabase
     .from('blog_posts')

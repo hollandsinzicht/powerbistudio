@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { getAllPosts, getPostById, createPost, updatePost, publishPost, archivePost } from '@/lib/blog-store'
+import { getAllPosts, getPostById, createPost, updatePost, publishPost, archivePost, schedulePost } from '@/lib/blog-store'
 import { getIdeas, updateIdeaStatus } from '@/lib/blog-store'
 
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin'
@@ -80,6 +80,15 @@ export async function PUT(req: Request) {
     if (putAction === 'archive') {
       await archivePost(id)
       return NextResponse.json({ success: true, action: 'archived' })
+    }
+
+    if (putAction === 'schedule') {
+      const { scheduled_for } = body
+      if (!scheduled_for) {
+        return NextResponse.json({ error: 'scheduled_for is verplicht' }, { status: 400 })
+      }
+      await schedulePost(id, scheduled_for)
+      return NextResponse.json({ success: true, action: 'scheduled' })
     }
 
     // Gewone update

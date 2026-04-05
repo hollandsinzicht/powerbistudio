@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
-import { generateBlogIdeas, generateBlogPost } from '@/lib/blog-writer'
-import { createIdea, getIdeaById, updateIdeaStatus, createPost, getPublishedPosts } from '@/lib/blog-store'
+import { generateBlogIdeas, generateBlogPost, suggestInternalLinks } from '@/lib/blog-writer'
+import { generateBlogImage } from '@/lib/blog-image-generator'
+import { createIdea, getIdeaById, updateIdeaStatus, createPost, updatePost, getPublishedPosts, getPostById } from '@/lib/blog-store'
 
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin'
 
@@ -19,13 +20,12 @@ export async function POST(req: Request) {
     const { action } = body
 
     if (action === 'ideas') {
-      // Haal bestaande titels op om overlap te voorkomen
+      const { seedKeywords } = body
       const existingPosts = await getPublishedPosts()
       const existingTitles = existingPosts.map((p) => p.title)
 
-      const ideas = await generateBlogIdeas(existingTitles)
+      const ideas = await generateBlogIdeas(existingTitles, seedKeywords || undefined)
 
-      // Sla op in database
       const savedIds: string[] = []
       for (const idea of ideas) {
         const id = await createIdea({
@@ -47,7 +47,6 @@ export async function POST(req: Request) {
       let writeKeywords = keywords || []
       let writeAudience = targetAudience
 
-      // Als er een ideaId is, haal de idea op
       if (ideaId) {
         const idea = await getIdeaById(ideaId)
         if (!idea) return NextResponse.json({ error: 'Idea niet gevonden' }, { status: 404 })
@@ -60,11 +59,16 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: 'Titel is verplicht' }, { status: 400 })
       }
 
-      // Genereer artikel
+      // Haal bestaande posts op voor interne links
+      const existingPosts = await getPublishedPosts()
+      const existingPostSlugs = existingPosts.map((p) => ({ slug: p.slug, title: p.title }))
+
+      // Genereer artikel met interne links
       const post = await generateBlogPost({
         title: writeTitle,
         keywords: writeKeywords,
         targetAudience: writeAudience,
+        existingPostSlugs,
       })
 
       // Sla op als draft
@@ -80,12 +84,67 @@ export async function POST(req: Request) {
         status: 'draft',
       })
 
-      // Update idea status als die er was
+      // Genereer header image
+      try {
+        const imageUrl = await generateBlogImage({
+          title: post.title,
+          slug: post.slug,
+          excerpt: post.excerpt,
+        })
+        if (imageUrl) {
+          await updatePost(postId, { image: imageUrl })
+        }
+      } catch (imgErr) {
+        console.error('Image generation failed (non-blocking):', imgErr)
+      }
+
       if (ideaId) {
         await updateIdeaStatus(ideaId, 'written', postId)
       }
 
       return NextResponse.json({ success: true, post, postId })
+    }
+
+    // Actie: update interne links in bestaande posts na publicatie van een nieuw artikel
+    if (action === 'update-links') {
+      const { postId } = body
+      if (!postId) return NextResponse.json({ error: 'postId is verplicht' }, { status: 400 })
+
+      const newPost = await getPostById(postId)
+      if (!newPost) return NextResponse.json({ error: 'Post niet gevonden' }, { status: 404 })
+
+      const existingPosts = await getPublishedPosts()
+      let updatedCount = 0
+
+      for (const existingPost of existingPosts) {
+        if (existingPost.id === postId) continue // skip zichzelf
+
+        try {
+          const suggestions = await suggestInternalLinks({
+            postTitle: existingPost.title,
+            postContent: existingPost.content,
+            newPostSlug: newPost.slug,
+            newPostTitle: newPost.title,
+          })
+
+          if (suggestions.length > 0) {
+            let updatedContent = existingPost.content
+            for (const s of suggestions) {
+              if (updatedContent.includes(s.elementToFind)) {
+                updatedContent = updatedContent.replace(s.elementToFind, s.replacement)
+              }
+            }
+            if (updatedContent !== existingPost.content) {
+              await updatePost(existingPost.id, { content: updatedContent })
+              updatedCount++
+            }
+          }
+        } catch (err) {
+          console.error(`Failed to update links in "${existingPost.title}":`, err)
+        }
+      }
+
+      return NextResponse.json({ success: true, updatedCount })
     }
 
     return NextResponse.json({ error: 'Onbekende actie' }, { status: 400 })
