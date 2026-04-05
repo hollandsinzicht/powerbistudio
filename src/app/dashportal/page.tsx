@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, ExternalLink, Monitor, Database, ShieldCheck, Users, Clock, Palette, Globe, BarChart3, AlertTriangle, CheckCircle2, ChevronRight } from "lucide-react";
+import { ArrowRight, ExternalLink, Monitor, Database, ShieldCheck, Users, Clock, Palette, Globe, BarChart3, AlertTriangle, CheckCircle2, ChevronRight, TrendingUp, DollarSign, Ban } from "lucide-react";
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -142,10 +142,13 @@ export default function DashPortalPage() {
                     <p className="text-center text-[var(--text-secondary)] mb-6 font-medium">Voor welke situatie zoek je een oplossing?</p>
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                         <a href="#intern-gebruik" className="btn-secondary inline-flex items-center gap-2 px-6 py-3">
-                            Ik wil intern dashboards delen
+                            Intern dashboards delen
+                        </a>
+                        <a href="#embedded-kosten" className="btn-secondary inline-flex items-center gap-2 px-6 py-3">
+                            Embedded te duur geworden?
                         </a>
                         <a href="#isv-gebruik" className="btn-secondary inline-flex items-center gap-2 px-6 py-3">
-                            Ik wil analytics aanbieden aan mijn klanten
+                            Analytics voor mijn klanten
                         </a>
                     </div>
                 </div>
@@ -265,8 +268,98 @@ export default function DashPortalPage() {
                 </div>
             </section>
 
+            {/* Embedded kosten-realiteit */}
+            <section id="embedded-kosten" className="py-24">
+                <div className="container mx-auto px-6 md:px-12">
+                    <div className="max-w-4xl">
+                        <span className="text-[0.7rem] font-semibold tracking-widest uppercase mb-4 block text-red-500">
+                            De embedded-kostenvalkuil
+                        </span>
+                        <h2 className="text-3xl md:text-4xl font-display font-bold mb-6">
+                            Microsoft maakt Power BI Embedded onbetaalbaar voor mid-market ISVs
+                        </h2>
+                        <p className="text-[var(--text-secondary)] leading-relaxed mb-8 max-w-2xl">
+                            Als je Power BI-rapporten wilt tonen aan gebruikers buiten jouw organisatie — klanten van een SaaS-product,
+                            of een portaal voor externe partijen — gebruik je Power BI Embedded. De eindgebruiker heeft zelf geen licentie nodig.
+                            Tot voor kort was dat betaalbaar. Dat is het niet meer.
+                        </p>
+
+                        {/* Vroeger vs nu */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+                            <div className="border border-[var(--border)] bg-[var(--surface)] p-6 rounded-xl">
+                                <h3 className="font-display font-bold mb-3 flex items-center gap-2">
+                                    <CheckCircle2 size={18} className="text-green-500" /> Hoe het was
+                                </h3>
+                                <ul className="text-[var(--text-secondary)] text-sm leading-relaxed space-y-2">
+                                    <li><strong>A-SKUs</strong> (Azure, pay-as-you-go) — flexibel, uur-gebaseerd. Begin op A1 voor circa &euro;700/maand.</li>
+                                    <li><strong>EM-SKUs</strong> (via Microsoft 365) — goedkoper instapniveau, breed gebruikt voor portaal-toepassingen.</li>
+                                    <li>Een kleine ISV kon betaalbaar starten en doorgroeien.</li>
+                                </ul>
+                            </div>
+                            <div className="border border-red-200 bg-red-50 p-6 rounded-xl">
+                                <h3 className="font-display font-bold mb-3 flex items-center gap-2">
+                                    <AlertTriangle size={18} className="text-red-500" /> Wat er is veranderd
+                                </h3>
+                                <ul className="text-[var(--text-secondary)] text-sm leading-relaxed space-y-2">
+                                    <li>EM-SKUs zijn <strong>afgeschaft</strong>. A-SKUs zijn herzien.</li>
+                                    <li>De vervanging is de <strong>F-SKU</strong> (Fabric capacity).</li>
+                                    <li>Minimum voor embedding: <strong>F64 — circa &euro;6.000&ndash;&euro;8.000/maand</strong>.</li>
+                                    <li>Zonder hoge capaciteit: elke externe gebruiker heeft een <strong>Pro-licentie</strong> nodig.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        {/* Drie pijnpunten */}
+                        <h3 className="text-xl font-display font-bold mb-6">De drie pijnpunten voor ISVs</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                            <div className="border border-[var(--border)] bg-[var(--surface)] p-6 rounded-xl">
+                                <TrendingUp size={24} className="text-red-500 mb-3" />
+                                <h4 className="font-display font-bold text-sm mb-2">Kostendrempel omhoog</h4>
+                                <p className="text-[var(--text-secondary)] text-sm leading-relaxed">
+                                    De laagste Fabric-capaciteit die embedding ondersteunt voor externe gebruikers
+                                    ligt een factor 8&ndash;10 hoger dan voorheen. Kleine ISVs worden de markt uitgeduwd.
+                                </p>
+                            </div>
+                            <div className="border border-[var(--border)] bg-[var(--surface)] p-6 rounded-xl">
+                                <DollarSign size={24} className="text-red-500 mb-3" />
+                                <h4 className="font-display font-bold text-sm mb-2">Per-user licenties</h4>
+                                <p className="text-[var(--text-secondary)] text-sm leading-relaxed">
+                                    Zonder hoge capaciteit moet elke externe klant-gebruiker een eigen Pro-licentie hebben.
+                                    Bij honderden of duizenden eindgebruikers is dat financieel onhaalbaar.
+                                </p>
+                            </div>
+                            <div className="border border-[var(--border)] bg-[var(--surface)] p-6 rounded-xl">
+                                <Ban size={24} className="text-red-500 mb-3" />
+                                <h4 className="font-display font-bold text-sm mb-2">Korte aankondigingstermijnen</h4>
+                                <p className="text-[var(--text-secondary)] text-sm leading-relaxed">
+                                    ISVs worden met weinig aankondiging geconfronteerd met het afschaffen van SKUs.
+                                    Lopende klantcontracten kunnen niet snel genoeg worden aangepast.
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* DashPortal als antwoord */}
+                        <div className="border-l-4 border-[#10b981] bg-[rgba(16,185,129,0.04)] rounded-r-xl p-6 md:p-8">
+                            <h3 className="font-display font-bold text-lg mb-3 flex items-center gap-2">
+                                <Globe size={20} className="text-[#10b981]" /> Waarom ISVs naar DashPortal kijken
+                            </h3>
+                            <p className="text-[var(--text-secondary)] leading-relaxed mb-4">
+                                Dit is precies het landschap waar DashPortal in opereert. De kostenpijn bij embedding
+                                is de marktopening: ISVs zoeken alternatieven voor rechtstreekse Power BI Embedded
+                                omdat de Microsoft-route te duur of te complex wordt.
+                            </p>
+                            <p className="text-[var(--text-secondary)] leading-relaxed">
+                                DashPortal biedt een white-label portaal dat de complexiteit wegneemt en de
+                                licentiekosten beheersbaar maakt. Geen F64 nodig. Geen Pro-licenties voor
+                                eindgebruikers. Live in 10 minuten.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             {/* ISV Sectie */}
-            <section id="isv-gebruik" className="py-24">
+            <section id="isv-gebruik" className="py-24 bg-gray-50 border-y border-[var(--border)]">
                 <div className="container mx-auto px-6 md:px-12">
                     <div className="max-w-4xl mx-auto">
                         <span className="text-[0.7rem] font-semibold tracking-widest uppercase mb-4 block" style={{ color: '#534AB7' }}>

@@ -21,16 +21,19 @@ export default function ArticleCard({ article }: { article: SoroArticle }) {
                 </div>
             )}
             <div className="p-6 flex flex-col flex-1">
-                <div className="flex items-center gap-3 text-xs text-[var(--text-secondary)] mb-3">
+                <div className="flex flex-wrap items-center gap-2 text-xs text-[var(--text-secondary)] mb-3">
                     <span className="flex items-center gap-1">
                         <Calendar size={14} />
                         <time dateTime={article.isoDate}>{article.date}</time>
                     </span>
-                    {article.category && (
-                        <span className="px-2 py-0.5 rounded-full bg-gray-100 border border-[var(--border)] text-[var(--text-secondary)] font-medium">
-                            {article.category.name}
+                    {article.categories.map((cat) => (
+                        <span
+                            key={cat.slug}
+                            className="px-2 py-0.5 rounded-full bg-gray-100 border border-[var(--border)] text-[var(--text-secondary)] font-medium"
+                        >
+                            {cat.name}
                         </span>
-                    )}
+                    ))}
                 </div>
                 <h2 className="text-lg font-display font-bold text-[var(--text-primary)] mb-3 group-hover:text-[var(--accent)] transition-colors">
                     {article.title}
