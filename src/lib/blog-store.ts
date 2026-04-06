@@ -137,6 +137,58 @@ export async function schedulePost(id: string, scheduledFor: string) {
   })
 }
 
+/**
+ * Bepaal de volgende vrije publicatiedatum.
+ * = dag na de laatst geplande post + 07:00 UTC
+ * Als er geen geplande posts zijn → morgen 07:00 UTC
+ */
+export async function getNextAvailableScheduleDate(): Promise<string> {
+  const { data, error } = await supabase
+    .from('blog_posts')
+    .select('scheduled_for')
+    .eq('status', 'scheduled')
+    .order('scheduled_for', { ascending: false })
+    .limit(1)
+    .maybeSingle()
+
+  if (error) throw new Error(`Failed to get next schedule date: ${error.message}`)
+
+  let baseDate: Date
+  if (data?.scheduled_for) {
+    baseDate = new Date(data.scheduled_for)
+  } else {
+    baseDate = new Date()
+  }
+
+  // Volgende dag, 07:00 UTC
+  const nextDate = new Date(baseDate)
+  nextDate.setUTCDate(nextDate.getUTCDate() + 1)
+  nextDate.setUTCHours(7, 0, 0, 0)
+
+  return nextDate.toISOString()
+}
+
+/**
+ * Wissel de scheduled_for datums van twee posts om.
+ * Gebruikt voor reorder via pijl-knoppen.
+ */
+export async function swapScheduleDates(idA: string, idB: string): Promise<void> {
+  const [{ data: postA, error: errA }, { data: postB, error: errB }] = await Promise.all([
+    supabase.from('blog_posts').select('scheduled_for').eq('id', idA).maybeSingle(),
+    supabase.from('blog_posts').select('scheduled_for').eq('id', idB).maybeSingle(),
+  ])
+
+  if (errA || errB) throw new Error(`Failed to fetch posts for swap: ${errA?.message || errB?.message}`)
+  if (!postA?.scheduled_for || !postB?.scheduled_for) {
+    throw new Error('Beide posts moeten een scheduled_for datum hebben')
+  }
+
+  await Promise.all([
+    updatePost(idA, { scheduled_for: postB.scheduled_for }),
+    updatePost(idB, { scheduled_for: postA.scheduled_for }),
+  ])
+}
+
 export async function getScheduledPostsDue(): Promise<BlogPost[]> {
   const { data, error } = await supabase
     .from('blog_posts')

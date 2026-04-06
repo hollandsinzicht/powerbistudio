@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { Sparkles, FileText, Plus, CheckCircle2, XCircle, PenLine, Eye, Send, Archive, Loader2, CalendarDays, Clock, Link2 } from "lucide-react";
+import { Sparkles, FileText, Plus, CheckCircle2, XCircle, PenLine, Eye, Send, Archive, Loader2, Clock, Link2, ArrowUp, ArrowDown } from "lucide-react";
 
 interface BlogPost {
   id: string; slug: string; title: string; excerpt: string; status: string;
@@ -22,24 +22,23 @@ function formatDate(iso: string | null): string {
   return new Date(iso).toLocaleDateString("nl-NL", { day: "numeric", month: "short", year: "numeric" });
 }
 
+function dateInputValue(iso: string | null): string {
+  if (!iso) return "";
+  return new Date(iso).toISOString().split("T")[0];
+}
+
 export default function AdminDashboard() {
-  const [tab, setTab] = useState<"posts" | "ideas" | "new" | "planning">("posts");
+  const [tab, setTab] = useState<"posts" | "ideas" | "new">("posts");
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [ideas, setIdeas] = useState<BlogIdea[]>([]);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
   const [statusFilter, setStatusFilter] = useState<string>("all");
 
-  // Ideas tab
   const [seedKeywords, setSeedKeywords] = useState("");
-
-  // Nieuw artikel
   const [newTitle, setNewTitle] = useState("");
   const [newKeywords, setNewKeywords] = useState("");
   const [useAi, setUseAi] = useState(true);
-
-  // Planning
-  const [scheduleDates, setScheduleDates] = useState<Record<string, string>>({});
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -65,15 +64,22 @@ export default function AdminDashboard() {
     setGenerating(false);
   };
 
-  const handleWriteFromIdea = async (ideaId: string) => {
+  const handleApproveIdea = async (ideaId: string) => {
     setGenerating(true);
     try {
-      const res = await fetch("/api/admin/blog/generate", {
-        method: "POST",
+      const res = await fetch("/api/admin/blog", {
+        method: "PUT",
         headers: { "Content-Type": "application/json", "x-admin-token": getToken() },
-        body: JSON.stringify({ action: "write", ideaId }),
+        body: JSON.stringify({ id: ideaId, action: "approve_idea" }),
       });
-      if (res.ok) { await fetchData(); setTab("posts"); }
+      if (res.ok) {
+        const data = await res.json();
+        await fetchData();
+        setTab("posts");
+        if (data.scheduledFor) {
+          alert(`Artikel geschreven en ingepland voor ${formatDate(data.scheduledFor)}`);
+        }
+      }
     } catch (e) { console.error(e); }
     setGenerating(false);
   };
@@ -122,9 +128,34 @@ export default function AdminDashboard() {
     } catch (e) { console.error(e); }
   };
 
-  const filteredPosts = statusFilter === "all" ? posts : posts.filter((p) => p.status === statusFilter);
-  const scheduledPosts = posts.filter((p) => p.status === "scheduled").sort((a, b) => (a.scheduled_for || "").localeCompare(b.scheduled_for || ""));
-  const draftPosts = posts.filter((p) => p.status === "draft");
+  const handleDateChange = async (id: string, dateStr: string) => {
+    if (!dateStr) return;
+    const isoDate = new Date(dateStr + "T07:00:00Z").toISOString();
+    await handlePostAction(id, "schedule", { scheduled_for: isoDate });
+  };
+
+  const handleSwapDates = async (idA: string, idB: string) => {
+    await handlePostAction(idA, "swap_dates", { other_id: idB });
+  };
+
+  // Sorteer posts: scheduled (op datum ASC) → drafts (op created_at DESC) → published (op published_at DESC) → archived
+  const sortedPosts = [...posts].sort((a, b) => {
+    const order = { scheduled: 0, draft: 1, published: 2, archived: 3 };
+    const oA = order[a.status as keyof typeof order] ?? 4;
+    const oB = order[b.status as keyof typeof order] ?? 4;
+    if (oA !== oB) return oA - oB;
+
+    if (a.status === "scheduled" && b.status === "scheduled") {
+      return (a.scheduled_for || "").localeCompare(b.scheduled_for || "");
+    }
+    if (a.status === "published" && b.status === "published") {
+      return (b.published_at || "").localeCompare(a.published_at || "");
+    }
+    return (b.created_at || "").localeCompare(a.created_at || "");
+  });
+
+  const filteredPosts = statusFilter === "all" ? sortedPosts : sortedPosts.filter((p) => p.status === statusFilter);
+  const scheduledPosts = sortedPosts.filter((p) => p.status === "scheduled");
 
   const tabClass = (t: string) =>
     `px-4 py-2 text-sm font-medium rounded-lg transition-colors ${tab === t ? "bg-[var(--primary)] text-white" : "text-[var(--text-secondary)] hover:bg-gray-100"}`;
@@ -138,9 +169,6 @@ export default function AdminDashboard() {
         </button>
         <button onClick={() => setTab("ideas")} className={tabClass("ideas")}>
           <span className="flex items-center gap-2"><Sparkles size={16} /> Onderwerpen ({ideas.length})</span>
-        </button>
-        <button onClick={() => setTab("planning")} className={tabClass("planning")}>
-          <span className="flex items-center gap-2"><CalendarDays size={16} /> Planning ({scheduledPosts.length})</span>
         </button>
         <button onClick={() => setTab("new")} className={tabClass("new")}>
           <span className="flex items-center gap-2"><Plus size={16} /> Nieuw artikel</span>
@@ -158,57 +186,115 @@ export default function AdminDashboard() {
         <div className="text-center py-20 text-[var(--text-secondary)]">Laden...</div>
       ) : (
         <>
-          {/* ===== TAB: ARTIKELEN ===== */}
+          {/* ===== TAB: ARTIKELEN — UNIFIED TABEL ===== */}
           {tab === "posts" && (
             <>
               <div className="flex gap-2 mb-6">
-                {["all", "draft", "published", "scheduled", "archived"].map((s) => (
+                {["all", "draft", "scheduled", "published", "archived"].map((s) => (
                   <button key={s} onClick={() => setStatusFilter(s)}
                     className={`px-3 py-1.5 text-xs font-medium rounded-full border transition-colors ${statusFilter === s ? "bg-[var(--primary)] text-white border-[var(--primary)]" : "bg-[var(--surface)] text-[var(--text-secondary)] border-[var(--border)]"}`}>
                     {s === "all" ? "Alle" : s}
                   </button>
                 ))}
               </div>
-              <div className="space-y-3">
-                {filteredPosts.map((post) => (
-                  <div key={post.id} className="glass-card rounded-lg p-4 border border-[var(--border)] flex items-center gap-4">
-                    {post.image && (
-                      <div className="w-16 h-10 rounded overflow-hidden shrink-0 bg-gray-100">
-                        <img src={post.image} alt="" className="w-full h-full object-cover" />
+
+              <div className="space-y-2">
+                {filteredPosts.map((post) => {
+                  // Bepaal index in scheduled lijst voor reorder pijlen
+                  const scheduledIndex = post.status === "scheduled"
+                    ? scheduledPosts.findIndex((p) => p.id === post.id)
+                    : -1;
+                  const canMoveUp = scheduledIndex > 0;
+                  const canMoveDown = scheduledIndex >= 0 && scheduledIndex < scheduledPosts.length - 1;
+
+                  return (
+                    <div key={post.id} className="glass-card rounded-lg p-3 border border-[var(--border)] flex items-center gap-3">
+                      {/* Reorder arrows (alleen voor scheduled) */}
+                      {post.status === "scheduled" && (
+                        <div className="flex flex-col shrink-0">
+                          <button
+                            onClick={() => canMoveUp && handleSwapDates(post.id, scheduledPosts[scheduledIndex - 1].id)}
+                            disabled={!canMoveUp}
+                            className="p-0.5 text-[var(--text-secondary)] hover:text-[var(--primary)] disabled:opacity-20 disabled:cursor-not-allowed"
+                            title="Eerder"
+                          >
+                            <ArrowUp size={14} />
+                          </button>
+                          <button
+                            onClick={() => canMoveDown && handleSwapDates(post.id, scheduledPosts[scheduledIndex + 1].id)}
+                            disabled={!canMoveDown}
+                            className="p-0.5 text-[var(--text-secondary)] hover:text-[var(--primary)] disabled:opacity-20 disabled:cursor-not-allowed"
+                            title="Later"
+                          >
+                            <ArrowDown size={14} />
+                          </button>
+                        </div>
+                      )}
+
+                      {/* Thumbnail */}
+                      {post.image ? (
+                        <div className="w-14 h-9 rounded overflow-hidden shrink-0 bg-gray-100">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={post.image} alt="" className="w-full h-full object-cover" />
+                        </div>
+                      ) : (
+                        <div className="w-14 h-9 rounded shrink-0 bg-gray-100 flex items-center justify-center text-[var(--text-secondary)]">
+                          <FileText size={14} />
+                        </div>
+                      )}
+
+                      {/* Content */}
+                      <div className="flex-grow min-w-0">
+                        <div className="flex items-center gap-2 mb-0.5">
+                          <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
+                            post.status === "published" ? "bg-green-100 text-green-700" :
+                            post.status === "draft" ? "bg-yellow-100 text-yellow-700" :
+                            post.status === "scheduled" ? "bg-blue-100 text-blue-700" :
+                            "bg-gray-100 text-gray-500"
+                          }`}>{post.status}</span>
+                          {post.ai_generated && <span className="text-[10px] text-[var(--accent)]">AI</span>}
+                        </div>
+                        <h3 className="font-medium text-sm truncate">{post.title}</h3>
                       </div>
-                    )}
-                    <div className="flex-grow min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
-                          post.status === "published" ? "bg-green-100 text-green-700" :
-                          post.status === "draft" ? "bg-yellow-100 text-yellow-700" :
-                          post.status === "scheduled" ? "bg-blue-100 text-blue-700" :
-                          "bg-gray-100 text-gray-500"
-                        }`}>{post.status}</span>
-                        {post.ai_generated && <span className="text-[10px] text-[var(--accent)]">AI</span>}
-                        {post.scheduled_for && post.status === "scheduled" && (
-                          <span className="text-[10px] text-blue-500 flex items-center gap-1"><Clock size={10} /> {formatDate(post.scheduled_for)}</span>
+
+                      {/* Datum (editbaar) */}
+                      <div className="shrink-0 flex items-center gap-1">
+                        {post.status === "scheduled" || post.status === "draft" ? (
+                          <input
+                            type="date"
+                            value={dateInputValue(post.scheduled_for)}
+                            onChange={(e) => handleDateChange(post.id, e.target.value)}
+                            min={new Date().toISOString().split("T")[0]}
+                            className="bg-[var(--surface)] border border-[var(--border)] rounded px-2 py-1 text-xs focus:outline-none focus:border-[var(--accent)]"
+                          />
+                        ) : post.status === "published" ? (
+                          <span className="text-[10px] text-[var(--text-secondary)] flex items-center gap-1">
+                            <Clock size={10} /> {formatDate(post.published_at)}
+                          </span>
+                        ) : (
+                          <span className="text-[10px] text-[var(--text-secondary)]">{formatDate(post.created_at)}</span>
                         )}
                       </div>
-                      <h3 className="font-medium text-sm truncate">{post.title}</h3>
+
+                      {/* Acties */}
+                      <div className="flex items-center gap-0.5 shrink-0">
+                        {post.status === "published" && (
+                          <>
+                            <a href={`/blog/${post.slug}`} target="_blank" className="p-2 text-[var(--text-secondary)] hover:text-[var(--primary)]" title="Bekijk"><Eye size={15} /></a>
+                            <button onClick={() => handleUpdateLinks(post.id)} disabled={generating} className="p-2 text-[var(--text-secondary)] hover:text-blue-500" title="Update interne links"><Link2 size={15} /></button>
+                          </>
+                        )}
+                        <Link href={`/admin/edit/${post.id}`} className="p-2 text-[var(--text-secondary)] hover:text-[var(--primary)]" title="Bewerk"><PenLine size={15} /></Link>
+                        {(post.status === "draft" || post.status === "scheduled") && (
+                          <button onClick={() => handlePostAction(post.id, "publish")} className="p-2 text-green-500 hover:text-green-700" title="Nu publiceren"><Send size={15} /></button>
+                        )}
+                        {post.status !== "archived" && (
+                          <button onClick={() => handlePostAction(post.id, "archive")} className="p-2 text-[var(--text-secondary)] hover:text-red-500" title="Archiveer"><Archive size={15} /></button>
+                        )}
+                      </div>
                     </div>
-                    <div className="flex items-center gap-1 shrink-0">
-                      {post.status === "published" && (
-                        <>
-                          <a href={`/blog/${post.slug}`} target="_blank" className="p-2 text-[var(--text-secondary)] hover:text-[var(--primary)]" title="Bekijk"><Eye size={16} /></a>
-                          <button onClick={() => handleUpdateLinks(post.id)} disabled={generating} className="p-2 text-[var(--text-secondary)] hover:text-blue-500" title="Update interne links in andere artikelen"><Link2 size={16} /></button>
-                        </>
-                      )}
-                      <Link href={`/admin/edit/${post.id}`} className="p-2 text-[var(--text-secondary)] hover:text-[var(--primary)]" title="Bewerk"><PenLine size={16} /></Link>
-                      {post.status === "draft" && (
-                        <button onClick={() => handlePostAction(post.id, "publish")} className="p-2 text-green-500 hover:text-green-700" title="Publiceer"><Send size={16} /></button>
-                      )}
-                      {post.status !== "archived" && (
-                        <button onClick={() => handlePostAction(post.id, "archive")} className="p-2 text-[var(--text-secondary)] hover:text-red-500" title="Archiveer"><Archive size={16} /></button>
-                      )}
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
                 {filteredPosts.length === 0 && <p className="text-center py-12 text-[var(--text-secondary)] text-sm">Geen artikelen gevonden.</p>}
               </div>
             </>
@@ -217,7 +303,6 @@ export default function AdminDashboard() {
           {/* ===== TAB: ONDERWERPEN ===== */}
           {tab === "ideas" && (
             <>
-              {/* Seed keywords */}
               <div className="mb-6">
                 <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
                   Keywords of thema&apos;s (optioneel)
@@ -257,15 +342,10 @@ export default function AdminDashboard() {
                         </div>
                       </div>
                       <div className="flex items-center gap-1 shrink-0">
-                        {(idea.status === "suggested" || idea.status === "approved") && (
+                        {idea.status === "suggested" && (
                           <>
-                            {idea.status === "suggested" && (
-                              <>
-                                <button onClick={() => handlePostAction(idea.id, "approve_idea")} className="p-2 text-green-500 hover:text-green-700" title="Goedkeuren"><CheckCircle2 size={16} /></button>
-                                <button onClick={() => handlePostAction(idea.id, "reject_idea")} className="p-2 text-red-400 hover:text-red-600" title="Afwijzen"><XCircle size={16} /></button>
-                              </>
-                            )}
-                            <button onClick={() => handleWriteFromIdea(idea.id)} disabled={generating} className="p-2 text-[var(--accent)] hover:text-[var(--primary)]" title="Schrijf artikel"><PenLine size={16} /></button>
+                            <button onClick={() => handleApproveIdea(idea.id)} disabled={generating} className="p-2 text-green-500 hover:text-green-700 disabled:opacity-50" title="Goedkeuren → schrijf artikel + plan in"><CheckCircle2 size={16} /></button>
+                            <button onClick={() => handlePostAction(idea.id, "reject_idea")} className="p-2 text-red-400 hover:text-red-600" title="Afwijzen"><XCircle size={16} /></button>
                           </>
                         )}
                       </div>
@@ -278,73 +358,6 @@ export default function AdminDashboard() {
                   </p>
                 )}
               </div>
-            </>
-          )}
-
-          {/* ===== TAB: PLANNING ===== */}
-          {tab === "planning" && (
-            <>
-              <h2 className="text-lg font-display font-bold mb-6">Geplande publicaties</h2>
-
-              {scheduledPosts.length > 0 ? (
-                <div className="space-y-3 mb-10">
-                  {scheduledPosts.map((post) => (
-                    <div key={post.id} className="glass-card rounded-lg p-4 border border-blue-200 bg-blue-50 flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center shrink-0">
-                        <CalendarDays size={20} className="text-blue-600" />
-                      </div>
-                      <div className="flex-grow">
-                        <h3 className="font-medium text-sm">{post.title}</h3>
-                        <p className="text-xs text-blue-600 mt-1">
-                          Gepland voor: {formatDate(post.scheduled_for)}
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-2 shrink-0">
-                        <Link href={`/admin/edit/${post.id}`} className="p-2 text-[var(--text-secondary)] hover:text-[var(--primary)]"><PenLine size={16} /></Link>
-                        <button onClick={() => handlePostAction(post.id, "publish")} className="text-xs btn-primary px-3 py-1.5">Nu publiceren</button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-[var(--text-secondary)] text-sm mb-10">Geen geplande publicaties.</p>
-              )}
-
-              {/* Drafts inplannen */}
-              {draftPosts.length > 0 && (
-                <>
-                  <h3 className="text-sm font-display font-bold mb-4 text-[var(--text-secondary)]">Drafts — kies een publicatiedatum</h3>
-                  <div className="space-y-3">
-                    {draftPosts.map((post) => (
-                      <div key={post.id} className="glass-card rounded-lg p-4 border border-[var(--border)] flex items-center gap-4">
-                        <div className="flex-grow">
-                          <h3 className="font-medium text-sm">{post.title}</h3>
-                          <p className="text-xs text-[var(--text-secondary)] mt-1">Draft — {formatDate(post.created_at)}</p>
-                        </div>
-                        <div className="flex items-center gap-2 shrink-0">
-                          <input
-                            type="date"
-                            value={scheduleDates[post.id] || ""}
-                            onChange={(e) => setScheduleDates((prev) => ({ ...prev, [post.id]: e.target.value }))}
-                            min={new Date().toISOString().split("T")[0]}
-                            className="bg-[var(--surface)] border border-[var(--border)] rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-[var(--accent)]"
-                          />
-                          <button
-                            onClick={() => {
-                              const date = scheduleDates[post.id];
-                              if (date) handlePostAction(post.id, "schedule", { scheduled_for: new Date(date + "T07:00:00Z").toISOString() });
-                            }}
-                            disabled={!scheduleDates[post.id]}
-                            className="text-xs btn-primary px-3 py-1.5 disabled:opacity-50"
-                          >
-                            Inplannen
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </>
-              )}
             </>
           )}
 

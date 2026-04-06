@@ -162,7 +162,7 @@ function ContactContent() {
                                     <p className="text-[var(--text-secondary)] text-sm mb-3">
                                         Kies zelf een moment — ik reageer anders binnen één werkdag.
                                     </p>
-                                    <a href="https://calendly.com/powerbistudio" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-sm font-medium text-[var(--accent)] hover:gap-3 transition-all">
+                                    <a href="https://calendly.com/powerbistudio-info/30min" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-sm font-medium text-[var(--accent)] hover:gap-3 transition-all">
                                         Plan een gesprek via Calendly <ArrowRight size={16} />
                                     </a>
                                 </div>

@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server'
-import { getAllPosts, getPostById, createPost, updatePost, publishPost, archivePost, schedulePost, getPublishedPosts } from '@/lib/blog-store'
-import { getIdeas, updateIdeaStatus } from '@/lib/blog-store'
-import { suggestInternalLinks } from '@/lib/blog-writer'
+import { getAllPosts, getPostById, createPost, updatePost, publishPost, archivePost, schedulePost, getPublishedPosts, getNextAvailableScheduleDate, swapScheduleDates } from '@/lib/blog-store'
+import { getIdeas, updateIdeaStatus, getIdeaById } from '@/lib/blog-store'
+import { suggestInternalLinks, generateBlogPost } from '@/lib/blog-writer'
+import { generateBlogImage } from '@/lib/blog-image-generator'
 
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin'
 
@@ -114,8 +115,68 @@ export async function PUT(req: Request) {
     }
 
     if (putAction === 'approve_idea') {
+      // Volledige flow: schrijf artikel + image + auto-schedule
+      const idea = await getIdeaById(id)
+      if (!idea) {
+        return NextResponse.json({ error: 'Idea niet gevonden' }, { status: 404 })
+      }
+
+      // Markeer als approved
       await updateIdeaStatus(id, 'approved')
-      return NextResponse.json({ success: true, action: 'idea_approved' })
+
+      // Schrijf artikel
+      const existingPosts = await getPublishedPosts()
+      const existingPostSlugs = existingPosts.map((p) => ({ slug: p.slug, title: p.title }))
+
+      const post = await generateBlogPost({
+        title: idea.title,
+        keywords: idea.keywords,
+        targetAudience: idea.target_audience || undefined,
+        existingPostSlugs,
+      })
+
+      // Bepaal volgende vrije datum
+      const scheduledFor = await getNextAvailableScheduleDate()
+
+      // Sla op als scheduled (niet als draft)
+      const postId = await createPost({
+        slug: post.slug,
+        title: post.title,
+        excerpt: post.excerpt,
+        content: post.content,
+        seo_title: post.seoTitle,
+        seo_description: post.seoDescription,
+        target_keywords: idea.keywords,
+        ai_generated: true,
+        status: 'draft', // Eerst draft, dan schedulen
+      })
+
+      // Schedule op de berekende datum
+      await schedulePost(postId, scheduledFor)
+
+      // Genereer image (non-blocking)
+      try {
+        const imageUrl = await generateBlogImage({
+          title: post.title,
+          slug: post.slug,
+          excerpt: post.excerpt,
+        })
+        if (imageUrl) {
+          await updatePost(postId, { image: imageUrl })
+        }
+      } catch (imgErr) {
+        console.error('Image generation failed (non-blocking):', imgErr)
+      }
+
+      // Update idea → written
+      await updateIdeaStatus(id, 'written', postId)
+
+      return NextResponse.json({
+        success: true,
+        action: 'idea_approved_and_scheduled',
+        postId,
+        scheduledFor,
+      })
     }
 
     if (putAction === 'reject_idea') {
@@ -130,6 +191,15 @@ export async function PUT(req: Request) {
       }
       await schedulePost(id, scheduled_for)
       return NextResponse.json({ success: true, action: 'scheduled' })
+    }
+
+    if (putAction === 'swap_dates') {
+      const { other_id } = body
+      if (!other_id) {
+        return NextResponse.json({ error: 'other_id is verplicht' }, { status: 400 })
+      }
+      await swapScheduleDates(id, other_id)
+      return NextResponse.json({ success: true, action: 'dates_swapped' })
     }
 
     // Gewone update
