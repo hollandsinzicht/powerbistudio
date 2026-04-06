@@ -1,31 +1,48 @@
-const RESEND_API_KEY = process.env.RESEND_API_KEY
-const FROM_EMAIL = 'PowerBIStudio <noreply@powerbistudio.nl>'
+// Brevo (formerly Sendinblue) — transactional email API
+// https://developers.brevo.com/reference/sendtransacemail
+const BREVO_API_KEY = process.env.BREVO_API_KEY
+const FROM_EMAIL = process.env.FROM_EMAIL || 'noreply@powerbistudio.nl'
+const FROM_NAME = process.env.FROM_NAME || 'PowerBIStudio'
+const REPLY_TO = process.env.REPLY_TO_EMAIL || 'info@powerbistudio.nl'
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://powerbistudio.nl'
 
-async function sendEmail(to: string, subject: string, html: string) {
-  if (!RESEND_API_KEY) {
-    console.log(`[EMAIL] To: ${to} | Subject: ${subject}`)
+interface SendEmailOptions {
+  replyTo?: string
+  cc?: string[]
+}
+
+export async function sendEmail(
+  to: string,
+  subject: string,
+  html: string,
+  opts: SendEmailOptions = {}
+) {
+  if (!BREVO_API_KEY) {
+    console.log(`[EMAIL — geen BREVO_API_KEY] To: ${to} | Subject: ${subject}`)
     console.log(html)
     return
   }
 
-  const res = await fetch('https://api.resend.com/emails', {
+  const res = await fetch('https://api.brevo.com/v3/smtp/email', {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${RESEND_API_KEY}`,
+      'accept': 'application/json',
+      'content-type': 'application/json',
+      'api-key': BREVO_API_KEY,
     },
     body: JSON.stringify({
-      from: FROM_EMAIL,
-      to: [to],
+      sender: { name: FROM_NAME, email: FROM_EMAIL },
+      to: [{ email: to }],
+      replyTo: { email: opts.replyTo || REPLY_TO },
       subject,
-      html,
+      htmlContent: html,
+      ...(opts.cc ? { cc: opts.cc.map((email) => ({ email })) } : {}),
     }),
   })
 
   if (!res.ok) {
-    const errorData = await res.json()
-    console.error('Resend error:', errorData)
+    const errorData = await res.json().catch(() => ({}))
+    console.error('Brevo error:', errorData)
     throw new Error(`Email failed: ${JSON.stringify(errorData)}`)
   }
 }
