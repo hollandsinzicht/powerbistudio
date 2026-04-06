@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { Sparkles, FileText, Plus, CheckCircle2, XCircle, PenLine, Eye, Send, Archive, Loader2, Clock, Link2, ArrowUp, ArrowDown } from "lucide-react";
+import { Sparkles, FileText, Plus, CheckCircle2, XCircle, PenLine, Eye, Send, Archive, Loader2, Clock, Link2, ArrowUp, ArrowDown, Image as ImageIcon } from "lucide-react";
 
 interface BlogPost {
   id: string; slug: string; title: string; excerpt: string; status: string;
@@ -112,6 +112,24 @@ export default function AdminDashboard() {
       if (res.ok) {
         const data = await res.json();
         alert(`Interne links bijgewerkt in ${data.updatedCount} bestaande artikelen.`);
+      }
+    } catch (e) { console.error(e); }
+    setGenerating(false);
+  };
+
+  const handleRegenerateImage = async (postId: string) => {
+    setGenerating(true);
+    try {
+      const res = await fetch("/api/admin/blog", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", "x-admin-token": getToken() },
+        body: JSON.stringify({ id: postId, action: "regenerate_image" }),
+      });
+      if (res.ok) {
+        await fetchData();
+      } else {
+        const data = await res.json();
+        alert(`Image generatie mislukt: ${data.error || "onbekende fout"}`);
       }
     } catch (e) { console.error(e); }
     setGenerating(false);
@@ -283,6 +301,9 @@ export default function AdminDashboard() {
                             <a href={`/blog/${post.slug}`} target="_blank" className="p-2 text-[var(--text-secondary)] hover:text-[var(--primary)]" title="Bekijk"><Eye size={15} /></a>
                             <button onClick={() => handleUpdateLinks(post.id)} disabled={generating} className="p-2 text-[var(--text-secondary)] hover:text-blue-500" title="Update interne links"><Link2 size={15} /></button>
                           </>
+                        )}
+                        {post.status !== "archived" && (
+                          <button onClick={() => handleRegenerateImage(post.id)} disabled={generating} className="p-2 text-[var(--text-secondary)] hover:text-purple-500" title={post.image ? "Image opnieuw genereren" : "Image genereren"}><ImageIcon size={15} /></button>
                         )}
                         <Link href={`/admin/edit/${post.id}`} className="p-2 text-[var(--text-secondary)] hover:text-[var(--primary)]" title="Bewerk"><PenLine size={15} /></Link>
                         {(post.status === "draft" || post.status === "scheduled") && (

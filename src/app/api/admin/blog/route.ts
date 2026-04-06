@@ -202,6 +202,26 @@ export async function PUT(req: Request) {
       return NextResponse.json({ success: true, action: 'dates_swapped' })
     }
 
+    if (putAction === 'regenerate_image') {
+      const post = await getPostById(id)
+      if (!post) {
+        return NextResponse.json({ error: 'Post niet gevonden' }, { status: 404 })
+      }
+
+      const imageUrl = await generateBlogImage({
+        title: post.title,
+        slug: post.slug,
+        excerpt: post.excerpt,
+      })
+
+      if (!imageUrl) {
+        return NextResponse.json({ error: 'Image generatie mislukt' }, { status: 500 })
+      }
+
+      await updatePost(id, { image: imageUrl })
+      return NextResponse.json({ success: true, action: 'image_regenerated', imageUrl })
+    }
+
     // Gewone update
     await updatePost(id, updates)
     return NextResponse.json({ success: true, action: 'updated' })
