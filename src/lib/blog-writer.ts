@@ -32,65 +32,80 @@ export async function generateBlogIdeas(
     return getMockIdeas()
   }
 
-  // Stap 1: Web search naar trending topics
-  let searchContext = ''
-  try {
-    const searchResponse = await client.messages.create({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 1500,
-      tools: [{ type: 'web_search_20250305' as never, name: 'web_search', max_uses: 3 } as never],
-      messages: [{
-        role: 'user',
-        content: `Zoek naar recente trends, populaire zoekwoorden en veelgestelde vragen rond Power BI, Microsoft Fabric, embedded analytics en data governance in Nederland (2025-2026). ${seedKeywords ? `Focus specifiek op: ${seedKeywords}.` : ''} Geef een samenvatting van de meest relevante onderwerpen en keywords die je vindt.`,
-      }],
-    })
+  const trimmedSeed = seedKeywords?.trim() || ''
+  const hasSeed = trimmedSeed.length > 0
 
-    for (const block of searchResponse.content) {
-      if (block.type === 'text') {
-        searchContext = block.text
-        break
-      }
-    }
-  } catch (err) {
-    console.log('Web search niet beschikbaar, ga verder zonder:', err)
-  }
+  // Random seed voor variatie (zelfde keyword → andere suggesties bij volgende call)
+  const variationSeed = Math.random().toString(36).slice(2, 10)
 
-  // Stap 2: Genereer ideeën op basis van search resultaten + seed keywords
-  const seedSection = seedKeywords
-    ? `\n\nDe gebruiker wil specifiek blogonderwerpen over deze thema's/keywords:\n${seedKeywords}\nVerwerk deze keywords in minstens 2 van de 5 suggesties.`
-    : ''
+  // Bouw user message
+  // Als er seed keywords zijn: maak die DOMINANT en eis dat ALLE 5 suggesties erover gaan
+  let userContent: string
 
-  const searchSection = searchContext
-    ? `\n\nRecente zoektrends en populaire onderwerpen (via web search):\n${searchContext}`
-    : ''
+  if (hasSeed) {
+    userContent = `BELANGRIJKSTE INSTRUCTIE: Ik wil 5 blogideeën die SPECIFIEK gaan over deze keywords/thema's:
 
-  const response = await client.messages.create({
-    model: 'claude-sonnet-4-20250514',
-    max_tokens: 2000,
-    system: `Je bent een SEO content strategist voor PowerBIStudio.nl. Je taak is om blogonderwerpen voor te stellen die:
-1. Relevant zijn voor de doelgroepen van de site
-2. Zoekverkeer aantrekken (denk aan long-tail keywords in het Nederlands)
-3. Niet overlappen met bestaande artikelen
-4. Leiden naar een van de diensten of producten van de site
-5. Passen bij de expertise van Jan Willem (Power BI, Lean Six Sigma, Fabric, embedded analytics)
-6. Inspelen op recente trends en veelgezochte onderwerpen
+"${trimmedSeed}"
 
-Antwoord ALTIJD in valid JSON. Geen markdown, geen uitleg buiten de JSON.`,
-    messages: [{
-      role: 'user',
-      content: `${SITE_CONTEXT}${searchSection}${seedSection}
+ALLE 5 voorgestelde blogonderwerpen MOETEN direct over deze keywords gaan. Geen algemene Power BI onderwerpen — alleen onderwerpen die deze specifieke keywords behandelen, uitleggen, of er omheen draaien.
+
+Variatie binnen het thema:
+- Verschillende invalshoeken (technisch, strategisch, praktisch, vergelijkend, hoe-werkt-het)
+- Verschillende formats (gids, vergelijking, case study, tutorial, FAQ)
+- Verschillende doelgroepen waar van toepassing
+
+Voorbeeld: als de keywords "fabric kosten" zijn, dan zou je suggesties kunnen geven zoals:
+- "Wat kost Microsoft Fabric écht? Een kostenoverzicht voor 2026"
+- "Fabric F2 vs F64: welke capaciteit past bij jouw budget"
+- "Van Power BI Premium naar Fabric: de kostenimpact in 5 scenario's"
+- "Hoe je Fabric capacity kosten verlaagt zonder performance te verliezen"
+- "Fabric pricing voor mid-market: het volledige plaatje"
+
+Context over de site (alleen voor stijl en doelgroep — NIET om af te wijken van de keywords):
+${SITE_CONTEXT}
+
+Bestaande artikelen die je niet mag dupliceren:
+${existingTitles.map((t) => `- ${t}`).join('\n')}
+
+Geef NU 5 blogonderwerpen die ALLEMAAL over "${trimmedSeed}" gaan. Variatie-seed: ${variationSeed}
+
+Antwoord als JSON array (geen markdown, geen uitleg, alleen JSON):
+[{
+  "title": "Artikel titel (Nederlands, max 70 tekens, MOET de keywords reflecteren)",
+  "keywords": ["specifieke keyword 1", "specifieke keyword 2", "specifieke keyword 3"],
+  "rationale": "Waarom dit onderwerp aansluit op de gevraagde keywords en welk zoekverkeer het aantrekt",
+  "target_audience": "De primaire doelgroep"
+}]`
+  } else {
+    userContent = `Stel 5 nieuwe blogonderwerpen voor die zoekverkeer aantrekken voor PowerBIStudio.nl.
+
+Context:
+${SITE_CONTEXT}
 
 Bestaande artikelen (voorkom overlap):
 ${existingTitles.map((t) => `- ${t}`).join('\n')}
 
-Stel 5 nieuwe blogonderwerpen voor. Antwoord als JSON array:
+Variatie-seed: ${variationSeed}
+
+Antwoord als JSON array (geen markdown, geen uitleg, alleen JSON):
 [{
   "title": "Artikel titel (Nederlands, max 70 tekens)",
   "keywords": ["keyword1", "keyword2", "keyword3"],
   "rationale": "Waarom dit onderwerp relevant is en welk zoekverkeer het aantrekt",
-  "target_audience": "De primaire doelgroep (bijv. 'CFO/COO', 'ISV CTO', 'Power BI consultant', 'gemeente/GGD')"
-}]`,
-    }],
+  "target_audience": "De primaire doelgroep"
+}]`
+  }
+
+  const response = await client.messages.create({
+    model: 'claude-sonnet-4-20250514',
+    max_tokens: 2000,
+    temperature: 1,
+    system: `Je bent een SEO content strategist voor PowerBIStudio.nl. Je belangrijkste taak: blogonderwerpen voorstellen die EXACT aansluiten op de instructies van de gebruiker.
+
+CRITICAL: Als de gebruiker specifieke keywords of thema's opgeeft, MOETEN ALLE voorgestelde onderwerpen daarover gaan. Wijk NOOIT af van de opgegeven keywords. Geen algemene Power BI suggesties als de gebruiker iets specifieks vraagt.
+
+Antwoord ALTIJD in valid JSON. Geen markdown fences, geen uitleg buiten de JSON.`,
+    messages: [{ role: 'user', content: userContent }],
   })
 
   const text = response.content[0]
