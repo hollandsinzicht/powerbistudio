@@ -1,10 +1,19 @@
-// Brevo (formerly Sendinblue) — transactional email API
+// Brevo (formerly Sendinblue) — transactional email + contacts API
 // https://developers.brevo.com/reference/sendtransacemail
+// https://developers.brevo.com/reference/createcontact
 const BREVO_API_KEY = process.env.BREVO_API_KEY
 const FROM_EMAIL = process.env.FROM_EMAIL || 'noreply@powerbistudio.nl'
 const FROM_NAME = process.env.FROM_NAME || 'PowerBIStudio'
 const REPLY_TO = process.env.REPLY_TO_EMAIL || 'info@powerbistudio.nl'
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://powerbistudio.nl'
+
+// Brevo contact list IDs per vertical
+const VERTICAL_LIST_IDS: Record<string, number | undefined> = {
+  beslissers: process.env.BREVO_LIST_BESLISSERS ? parseInt(process.env.BREVO_LIST_BESLISSERS, 10) : undefined,
+  isv: process.env.BREVO_LIST_ISV ? parseInt(process.env.BREVO_LIST_ISV, 10) : undefined,
+  'publieke-sector': process.env.BREVO_LIST_PUBLIEKE_SECTOR ? parseInt(process.env.BREVO_LIST_PUBLIEKE_SECTOR, 10) : undefined,
+  vakgenoot: process.env.BREVO_LIST_VAKGENOTEN ? parseInt(process.env.BREVO_LIST_VAKGENOTEN, 10) : undefined,
+}
 
 interface SendEmailOptions {
   replyTo?: string
@@ -44,6 +53,72 @@ export async function sendEmail(
     const errorData = await res.json().catch(() => ({}))
     console.error('Brevo error:', errorData)
     throw new Error(`Email failed: ${JSON.stringify(errorData)}`)
+  }
+}
+
+// ===== CONTACT SYNC =====
+
+export interface BrevoContactParams {
+  email: string
+  name?: string
+  company?: string
+  vertical?: string
+  source?: string
+  metadata?: Record<string, unknown>
+}
+
+/**
+ * Voegt een contact toe aan Brevo (of werkt bij als die al bestaat).
+ * Plaatst het contact in de juiste lijst op basis van vertical.
+ * Non-blocking: errors worden gelogd maar niet thrown.
+ */
+export async function upsertBrevoContact(params: BrevoContactParams): Promise<void> {
+  if (!BREVO_API_KEY) {
+    console.log(`[BREVO CONTACT — geen API key] ${params.email}`)
+    return
+  }
+
+  // Splits naam in voornaam + achternaam
+  const nameParts = (params.name || '').trim().split(/\s+/)
+  const firstName = nameParts[0] || ''
+  const lastName = nameParts.slice(1).join(' ') || ''
+
+  // Bepaal lijst-ID's
+  const listIds: number[] = []
+  if (params.vertical && VERTICAL_LIST_IDS[params.vertical]) {
+    listIds.push(VERTICAL_LIST_IDS[params.vertical] as number)
+  }
+
+  // Alleen FIRSTNAME en LASTNAME — custom attributes (COMPANY, VERTICAL, SOURCE)
+  // zijn een betaalde feature in Brevo en worden overgeslagen.
+  // Segmentatie gebeurt via listIds op basis van vertical.
+  const body = {
+    email: params.email,
+    attributes: {
+      ...(firstName && { FIRSTNAME: firstName }),
+      ...(lastName && { LASTNAME: lastName }),
+    },
+    ...(listIds.length > 0 && { listIds }),
+    updateEnabled: true, // bestaande contacten bijwerken in plaats van error
+  }
+
+  try {
+    const res = await fetch('https://api.brevo.com/v3/contacts', {
+      method: 'POST',
+      headers: {
+        'accept': 'application/json',
+        'content-type': 'application/json',
+        'api-key': BREVO_API_KEY,
+      },
+      body: JSON.stringify(body),
+    })
+
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}))
+      console.error('Brevo contact upsert error:', errorData)
+    }
+  } catch (err) {
+    console.error('Brevo contact upsert exception:', err)
   }
 }
 

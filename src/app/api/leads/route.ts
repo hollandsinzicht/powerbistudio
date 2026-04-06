@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createLead, getLeadByEmail } from '@/lib/lead-store';
-import { sendLeadConfirmationEmail, sendCalculatorResultEmail } from '@/lib/emails';
+import { sendLeadConfirmationEmail, sendCalculatorResultEmail, upsertBrevoContact } from '@/lib/emails';
 import type { LeadVertical, LeadSource } from '@/lib/lead-store';
 
 const VALID_VERTICALS: LeadVertical[] = ['beslissers', 'publieke-sector', 'isv', 'vakgenoot'];
@@ -28,6 +28,17 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Ongeldige source.' }, { status: 400 });
     }
 
+    // Sync naar Brevo contacten (non-blocking, parallel met de rest)
+    // Dit zorgt dat het contact in Brevo verschijnt en in de juiste lijst komt
+    const brevoSyncPromise = upsertBrevoContact({
+      email,
+      name,
+      company,
+      vertical,
+      source,
+      metadata,
+    });
+
     // Dedup — if lead exists, don't create a new one
     const existing = await getLeadByEmail(email);
     if (existing) {
@@ -40,6 +51,7 @@ export async function POST(req: Request) {
           resourceTitle: RESOURCE_TITLES[source] || source,
         });
       }
+      await brevoSyncPromise;
       return NextResponse.json({ success: true, leadId: existing.id, existing: true });
     }
 
@@ -69,6 +81,9 @@ export async function POST(req: Request) {
         resourceTitle: RESOURCE_TITLES[source] || source,
       });
     }
+
+    // Wacht op de Brevo sync (was parallel gestart, dus minimal latency)
+    await brevoSyncPromise;
 
     return NextResponse.json({ success: true, leadId });
   } catch (error) {
