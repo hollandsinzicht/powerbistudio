@@ -1,8 +1,19 @@
 import { NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { getAllPosts, getPostById, createPost, updatePost, publishPost, archivePost, schedulePost, getPublishedPosts, getNextAvailableScheduleDate, swapScheduleDates } from '@/lib/blog-store'
 import { getIdeas, updateIdeaStatus, getIdeaById } from '@/lib/blog-store'
 import { suggestInternalLinks, generateBlogPost } from '@/lib/blog-writer'
 import { generateBlogImage } from '@/lib/blog-image-generator'
+
+function revalidateBlog(slug?: string) {
+  revalidatePath('/blog')
+  revalidatePath('/sitemap.xml')
+  if (slug) revalidatePath(`/blog/${slug}`)
+  // Ook alle categoriepagina's
+  ;['power-bi', 'dax-datamodellering', 'data-platform', 'strategie', 'fabric-migratie', 'governance-avg', 'embedded-analytics', 'procesverbetering-bi'].forEach((cat) => {
+    revalidatePath(`/blog/categorie/${cat}`)
+  })
+}
 
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin'
 
@@ -76,6 +87,8 @@ export async function PUT(req: Request) {
 
     if (putAction === 'publish') {
       await publishPost(id)
+      const publishedPost = await getPostById(id)
+      revalidateBlog(publishedPost?.slug)
 
       // Automatisch interne links updaten in bestaande posts (non-blocking)
       const newPost = await getPostById(id)
@@ -111,6 +124,7 @@ export async function PUT(req: Request) {
 
     if (putAction === 'archive') {
       await archivePost(id)
+      revalidateBlog()
       return NextResponse.json({ success: true, action: 'archived' })
     }
 
@@ -171,6 +185,8 @@ export async function PUT(req: Request) {
       // Update idea → written
       await updateIdeaStatus(id, 'written', postId)
 
+      revalidateBlog(post.slug)
+
       return NextResponse.json({
         success: true,
         action: 'idea_approved_and_scheduled',
@@ -215,15 +231,18 @@ export async function PUT(req: Request) {
       })
 
       if (!imageUrl) {
-        return NextResponse.json({ error: 'Image generatie mislukt' }, { status: 500 })
+        return NextResponse.json({ error: 'Image generatie mislukt — check OPENAI_API_KEY' }, { status: 500 })
       }
 
       await updatePost(id, { image: imageUrl })
+      revalidateBlog(post.slug)
       return NextResponse.json({ success: true, action: 'image_regenerated', imageUrl })
     }
 
     // Gewone update
     await updatePost(id, updates)
+    const updatedPost = await getPostById(id)
+    revalidateBlog(updatedPost?.slug)
     return NextResponse.json({ success: true, action: 'updated' })
   } catch (error) {
     console.error('Admin blog PUT error:', error)
