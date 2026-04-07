@@ -2,7 +2,16 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { Sparkles, FileText, Plus, CheckCircle2, XCircle, PenLine, Eye, Send, Archive, Loader2, Clock, Link2, ArrowUp, ArrowDown, Image as ImageIcon } from "lucide-react";
+import { Sparkles, FileText, Plus, CheckCircle2, XCircle, PenLine, Eye, Send, Archive, Loader2, Clock, Link2, ArrowUp, ArrowDown, Image as ImageIcon, Linkedin, Copy, Check } from "lucide-react";
+
+type LinkedInStyle = "educatief" | "scherp" | "provocatief" | "storytelling";
+
+const LINKEDIN_STYLES: { value: LinkedInStyle; label: string; description: string }[] = [
+  { value: "educatief", label: "Educatief", description: "Leer de lezer iets concreets dat ze morgen kunnen toepassen." },
+  { value: "scherp", label: "Scherp & direct", description: "Korte zinnen, duidelijke mening, geen omhaal." },
+  { value: "provocatief", label: "Provocatief", description: "Een contrarian standpunt dat de mainstream uitdaagt." },
+  { value: "storytelling", label: "Storytelling", description: "Trek de lezer mee in een korte anekdote of situatie." },
+];
 
 interface BlogPost {
   id: string; slug: string; title: string; excerpt: string; status: string;
@@ -40,6 +49,14 @@ export default function AdminDashboard() {
   const [newTitle, setNewTitle] = useState("");
   const [newKeywords, setNewKeywords] = useState("");
   const [useAi, setUseAi] = useState(true);
+
+  // LinkedIn modal state
+  const [linkedinPost, setLinkedinPost] = useState<BlogPost | null>(null);
+  const [linkedinStyle, setLinkedinStyle] = useState<LinkedInStyle>("educatief");
+  const [linkedinExtraContext, setLinkedinExtraContext] = useState("");
+  const [linkedinResult, setLinkedinResult] = useState<{ postText: string; hashtags: string[] } | null>(null);
+  const [linkedinLoading, setLinkedinLoading] = useState(false);
+  const [linkedinCopied, setLinkedinCopied] = useState(false);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -180,6 +197,65 @@ export default function AdminDashboard() {
 
   const handleSwapDates = async (idA: string, idB: string) => {
     await handlePostAction(idA, "swap_dates", { other_id: idB });
+  };
+
+  // ===== LinkedIn post generator =====
+  const openLinkedinModal = (post: BlogPost) => {
+    setLinkedinPost(post);
+    setLinkedinResult(null);
+    setLinkedinExtraContext("");
+    setLinkedinStyle("educatief");
+    setLinkedinCopied(false);
+  };
+
+  const closeLinkedinModal = () => {
+    setLinkedinPost(null);
+    setLinkedinResult(null);
+    setLinkedinExtraContext("");
+    setLinkedinLoading(false);
+    setLinkedinCopied(false);
+  };
+
+  const handleGenerateLinkedin = async () => {
+    if (!linkedinPost) return;
+    setLinkedinLoading(true);
+    setLinkedinResult(null);
+    setLinkedinCopied(false);
+    try {
+      const res = await fetch("/api/admin/blog/linkedin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-admin-token": getToken() },
+        body: JSON.stringify({
+          postId: linkedinPost.id,
+          style: linkedinStyle,
+          extraContext: linkedinExtraContext.trim() || undefined,
+        }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setLinkedinResult({ postText: data.postText, hashtags: data.hashtags });
+      } else {
+        const data = await res.json().catch(() => ({}));
+        alert(`LinkedIn post genereren mislukt: ${data.error || res.statusText}`);
+      }
+    } catch (e) {
+      console.error(e);
+      alert("Netwerkfout bij genereren van LinkedIn post.");
+    } finally {
+      setLinkedinLoading(false);
+    }
+  };
+
+  const handleCopyLinkedin = async () => {
+    if (!linkedinResult) return;
+    const fullText = `${linkedinResult.postText}\n\n${linkedinResult.hashtags.join(" ")}`;
+    try {
+      await navigator.clipboard.writeText(fullText);
+      setLinkedinCopied(true);
+      setTimeout(() => setLinkedinCopied(false), 2500);
+    } catch {
+      alert("Kopiëren mislukt — selecteer en kopieer handmatig.");
+    }
   };
 
   // Sorteer posts: scheduled (op datum ASC) → drafts (op created_at DESC) → published (op published_at DESC) → archived
@@ -327,6 +403,7 @@ export default function AdminDashboard() {
                         {post.status === "published" && (
                           <>
                             <a href={`/blog/${post.slug}`} target="_blank" className="p-2 text-[var(--text-secondary)] hover:text-[var(--primary)]" title="Bekijk"><Eye size={15} /></a>
+                            <button onClick={() => openLinkedinModal(post)} className="p-2 text-[var(--text-secondary)] hover:text-[#0A66C2]" title="Genereer LinkedIn post"><Linkedin size={15} /></button>
                             <button onClick={() => handleUpdateLinks(post.id)} disabled={generating} className="p-2 text-[var(--text-secondary)] hover:text-blue-500" title="Update interne links"><Link2 size={15} /></button>
                           </>
                         )}
@@ -445,6 +522,117 @@ export default function AdminDashboard() {
             </div>
           )}
         </>
+      )}
+
+      {/* ===== LINKEDIN POST MODAL ===== */}
+      {linkedinPost && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={closeLinkedinModal}>
+          <div className="glass-card bg-[var(--background)] rounded-xl border border-[var(--border)] max-w-2xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+            {/* Header */}
+            <div className="flex items-center justify-between p-5 border-b border-[var(--border)] sticky top-0 bg-[var(--background)] z-10">
+              <div className="flex items-center gap-3">
+                <Linkedin size={20} className="text-[#0A66C2]" />
+                <div>
+                  <h2 className="font-display font-bold text-base">LinkedIn post genereren</h2>
+                  <p className="text-xs text-[var(--text-secondary)] truncate max-w-md">{linkedinPost.title}</p>
+                </div>
+              </div>
+              <button onClick={closeLinkedinModal} className="p-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)]" title="Sluiten">
+                <XCircle size={18} />
+              </button>
+            </div>
+
+            {/* Body */}
+            <div className="p-5 space-y-5">
+              {/* Stijl picker */}
+              <div>
+                <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">Stijl</label>
+                <div className="grid grid-cols-2 gap-2">
+                  {LINKEDIN_STYLES.map((s) => (
+                    <button
+                      key={s.value}
+                      onClick={() => setLinkedinStyle(s.value)}
+                      className={`text-left p-3 rounded-lg border transition-all ${
+                        linkedinStyle === s.value
+                          ? "border-[var(--accent)] bg-[rgba(245,158,11,0.05)]"
+                          : "border-[var(--border)] hover:border-[var(--text-secondary)]"
+                      }`}
+                    >
+                      <div className="font-semibold text-sm">{s.label}</div>
+                      <div className="text-[11px] text-[var(--text-secondary)] leading-snug mt-1">{s.description}</div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Extra context */}
+              <div>
+                <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
+                  Extra context <span className="text-[var(--text-secondary)] font-normal">(optioneel — eigen invalshoek of recente ervaring)</span>
+                </label>
+                <textarea
+                  value={linkedinExtraContext}
+                  onChange={(e) => setLinkedinExtraContext(e.target.value)}
+                  placeholder="Bv: Vorige week zat ik bij een gemeente die exact dit probleem had — ze hadden een DAX-formule die 4 minuten draaide..."
+                  rows={3}
+                  className="w-full bg-[var(--surface)] border border-[var(--border)] rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[var(--accent)]"
+                />
+              </div>
+
+              {/* Generate knop */}
+              <button
+                onClick={handleGenerateLinkedin}
+                disabled={linkedinLoading}
+                className="btn-primary w-full inline-flex items-center justify-center gap-2 disabled:opacity-50"
+              >
+                {linkedinLoading ? <><Loader2 size={16} className="animate-spin" /> Bezig...</> : <><Sparkles size={16} /> Genereer LinkedIn post</>}
+              </button>
+
+              {/* Resultaat */}
+              {linkedinResult && (
+                <div className="space-y-3 pt-3 border-t border-[var(--border)]">
+                  <div className="flex items-center justify-between">
+                    <label className="text-sm font-medium text-[var(--text-secondary)]">Resultaat</label>
+                    <span className="text-[10px] text-[var(--text-secondary)]">{linkedinResult.postText.length} tekens</span>
+                  </div>
+                  <div className="bg-[var(--surface)] border border-[var(--border)] rounded-lg p-4 whitespace-pre-wrap text-sm leading-relaxed text-[var(--text-primary)]">
+                    {linkedinResult.postText}
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {linkedinResult.hashtags.map((tag) => (
+                      <span key={tag} className="text-xs px-2 py-1 rounded-full bg-[rgba(10,102,194,0.1)] text-[#0A66C2] font-medium">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="flex flex-wrap gap-2 pt-2">
+                    <button
+                      onClick={handleCopyLinkedin}
+                      className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium bg-[#0A66C2] text-white rounded-lg hover:bg-[#084d92] transition-colors"
+                    >
+                      {linkedinCopied ? <><Check size={15} /> Gekopieerd!</> : <><Copy size={15} /> Kopieer naar klembord</>}
+                    </button>
+                    <a
+                      href="https://www.linkedin.com/feed/?shareActive=true"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium border border-[var(--border)] rounded-lg hover:border-[#0A66C2] hover:text-[#0A66C2] transition-colors"
+                    >
+                      <Linkedin size={15} /> Open LinkedIn
+                    </a>
+                    <button
+                      onClick={handleGenerateLinkedin}
+                      disabled={linkedinLoading}
+                      className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium border border-[var(--border)] rounded-lg hover:border-[var(--accent)] disabled:opacity-50"
+                    >
+                      <Sparkles size={15} /> Probeer opnieuw
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
       )}
     </>
   );
