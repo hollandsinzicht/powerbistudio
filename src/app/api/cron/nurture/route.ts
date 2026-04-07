@@ -4,6 +4,9 @@ import { sendNurtureEmail } from '@/lib/emails';
 import { NURTURE_SEQUENCES } from '@/lib/nurture-sequences';
 import { createHmac } from 'crypto';
 
+export const maxDuration = 60;
+export const dynamic = 'force-dynamic';
+
 const CRON_SECRET = process.env.CRON_SECRET;
 const UNSUBSCRIBE_SECRET = process.env.UNSUBSCRIBE_SECRET || 'default-secret';
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://powerbistudio.nl';
@@ -13,10 +16,21 @@ function generateUnsubscribeUrl(email: string): string {
   return `${BASE_URL}/api/unsubscribe?email=${encodeURIComponent(email)}&token=${token}`;
 }
 
-export async function GET(req: Request) {
-  // Verify cron secret
+function isAuthorizedCron(req: Request): boolean {
+  if (req.headers.get('x-vercel-cron')) return true;
   const authHeader = req.headers.get('authorization');
-  if (CRON_SECRET && authHeader !== `Bearer ${CRON_SECRET}`) {
+  if (CRON_SECRET && authHeader === `Bearer ${CRON_SECRET}`) return true;
+  if (!CRON_SECRET) return true;
+  return false;
+}
+
+export async function GET(req: Request) {
+  const hasVercelHeader = !!req.headers.get('x-vercel-cron');
+  const hasAuthHeader = !!req.headers.get('authorization');
+  console.log(`[NURTURE CRON] Triggered — vercel-cron:${hasVercelHeader} auth:${hasAuthHeader}`);
+
+  if (!isAuthorizedCron(req)) {
+    console.warn('[NURTURE CRON] Unauthorized — check CRON_SECRET env var');
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 

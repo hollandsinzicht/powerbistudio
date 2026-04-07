@@ -2,8 +2,12 @@ import { NextResponse } from 'next/server'
 import { revalidatePath } from 'next/cache'
 import { getAllPosts, getPostById, createPost, updatePost, publishPost, archivePost, schedulePost, getPublishedPosts, getNextAvailableScheduleDate, swapScheduleDates } from '@/lib/blog-store'
 import { getIdeas, updateIdeaStatus, getIdeaById, deleteIdea, deleteAllIdeas } from '@/lib/blog-store'
-import { suggestInternalLinks, generateBlogPost } from '@/lib/blog-writer'
+import { generateBlogPost } from '@/lib/blog-writer'
 import { generateBlogImage } from '@/lib/blog-image-generator'
+
+// Admin routes mogen langer duren (AI calls, image gen)
+export const maxDuration = 300
+export const dynamic = 'force-dynamic'
 
 function revalidateBlog(slug?: string) {
   revalidatePath('/blog')
@@ -97,40 +101,20 @@ export async function PUT(req: Request) {
     }
 
     if (putAction === 'publish') {
+      // 1. Publiceer direct — dit is de enige synchrone actie
       await publishPost(id)
       const publishedPost = await getPostById(id)
       revalidateBlog(publishedPost?.slug)
 
-      // Automatisch interne links updaten in bestaande posts (non-blocking)
-      const newPost = await getPostById(id)
-      if (newPost) {
-        const existingPosts = await getPublishedPosts()
-        let linkedCount = 0
-        for (const ep of existingPosts) {
-          if (ep.id === id) continue
-          try {
-            const suggestions = await suggestInternalLinks({
-              postTitle: ep.title, postContent: ep.content,
-              newPostSlug: newPost.slug, newPostTitle: newPost.title,
-            })
-            if (suggestions.length > 0) {
-              let updated = ep.content
-              for (const s of suggestions) {
-                if (updated.includes(s.elementToFind)) {
-                  updated = updated.replace(s.elementToFind, s.replacement)
-                }
-              }
-              if (updated !== ep.content) {
-                await updatePost(ep.id, { content: updated })
-                linkedCount++
-              }
-            }
-          } catch { /* non-blocking */ }
-        }
-        console.log(`[PUBLISH] Interne links bijgewerkt in ${linkedCount} bestaande artikelen`)
-      }
-
-      return NextResponse.json({ success: true, action: 'published' })
+      // 2. Interne links updaten gebeurt via een aparte endpoint die de user
+      //    handmatig kan triggeren (link2 knop in de admin tabel). De publish
+      //    actie zelf wacht NIET op 20+ Anthropic calls — die maakten de
+      //    serverless function timeout.
+      return NextResponse.json({
+        success: true,
+        action: 'published',
+        note: 'Gebruik de link-knop in de tabel om interne links bij te werken in bestaande artikelen.',
+      })
     }
 
     if (putAction === 'archive') {

@@ -33,6 +33,7 @@ export default function AdminDashboard() {
   const [ideas, setIdeas] = useState<BlogIdea[]>([]);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
+  const [actionId, setActionId] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState<string>("all");
 
   const [seedKeywords, setSeedKeywords] = useState("");
@@ -150,14 +151,25 @@ export default function AdminDashboard() {
   };
 
   const handlePostAction = async (id: string, action: string, extra?: Record<string, string>) => {
+    // Markeer deze specifieke rij als "bezig" zodat de gebruiker feedback ziet
+    setActionId(id);
     try {
-      await fetch("/api/admin/blog", {
+      const res = await fetch("/api/admin/blog", {
         method: "PUT",
         headers: { "Content-Type": "application/json", "x-admin-token": getToken() },
         body: JSON.stringify({ id, action, ...extra }),
       });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        alert(`Actie '${action}' mislukt: ${data.error || res.statusText}`);
+      }
       await fetchData();
-    } catch (e) { console.error(e); }
+    } catch (e) {
+      console.error(e);
+      alert(`Netwerkfout bij actie '${action}'. Check de console.`);
+    } finally {
+      setActionId(null);
+    }
   };
 
   const handleDateChange = async (id: string, dateStr: string) => {
@@ -241,7 +253,7 @@ export default function AdminDashboard() {
                   const canMoveDown = scheduledIndex >= 0 && scheduledIndex < scheduledPosts.length - 1;
 
                   return (
-                    <div key={post.id} className="glass-card rounded-lg p-3 border border-[var(--border)] flex items-center gap-3">
+                    <div key={post.id} className={`glass-card rounded-lg p-3 border border-[var(--border)] flex items-center gap-3 transition-opacity ${actionId === post.id ? "opacity-50 pointer-events-none" : ""}`}>
                       {/* Reorder arrows (alleen voor scheduled) */}
                       {post.status === "scheduled" && (
                         <div className="flex flex-col shrink-0">
@@ -311,6 +323,7 @@ export default function AdminDashboard() {
 
                       {/* Acties */}
                       <div className="flex items-center gap-0.5 shrink-0">
+                        {actionId === post.id && <Loader2 size={15} className="animate-spin text-[var(--accent)]" />}
                         {post.status === "published" && (
                           <>
                             <a href={`/blog/${post.slug}`} target="_blank" className="p-2 text-[var(--text-secondary)] hover:text-[var(--primary)]" title="Bekijk"><Eye size={15} /></a>
@@ -322,10 +335,10 @@ export default function AdminDashboard() {
                         )}
                         <Link href={`/admin/edit/${post.id}`} className="p-2 text-[var(--text-secondary)] hover:text-[var(--primary)]" title="Bewerk"><PenLine size={15} /></Link>
                         {(post.status === "draft" || post.status === "scheduled") && (
-                          <button onClick={() => handlePostAction(post.id, "publish")} className="p-2 text-green-500 hover:text-green-700" title="Nu publiceren"><Send size={15} /></button>
+                          <button onClick={() => handlePostAction(post.id, "publish")} disabled={actionId === post.id} className="p-2 text-green-500 hover:text-green-700 disabled:opacity-50" title="Nu publiceren"><Send size={15} /></button>
                         )}
                         {post.status !== "archived" && (
-                          <button onClick={() => handlePostAction(post.id, "archive")} className="p-2 text-[var(--text-secondary)] hover:text-red-500" title="Archiveer"><Archive size={15} /></button>
+                          <button onClick={() => handlePostAction(post.id, "archive")} disabled={actionId === post.id} className="p-2 text-[var(--text-secondary)] hover:text-red-500 disabled:opacity-50" title="Archiveer"><Archive size={15} /></button>
                         )}
                       </div>
                     </div>
