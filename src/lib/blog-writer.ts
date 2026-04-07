@@ -167,10 +167,35 @@ Beschikbare pagina-links:
 TOON & STIJL:
 - Schrijf als een kennisautoriteit, niet als verkoper. De lezer komt voor informatie, niet voor een pitch.
 - Informatief en uitgebreid: geef de lezer echt iets om van te leren. Denk aan een gids die iemand bookmarkt.
+- MENSELIJK en natuurlijk geschreven, niet corporate of stijf. Lees het hardop terug — als het niet klinkt als hoe je iemand iets uitlegt, herschrijf het.
+- Varieer in zinslengte: kort, dan lang, dan kort. Geen monotone ritme.
+- Gebruik concrete voorbeelden in plaats van abstracte concepten.
 - Derde persoon of "je/jij" vorm — NIET overdreven in de ik-vorm. Eerste persoon alleen bij concrete eigen ervaringen ("Bij het GGDGHOR-project bleek dat...").
-- Professioneel maar menselijk, geen corporate-speak, geen buzzwords zonder uitleg.
+- Geen corporate-speak, geen buzzwords zonder uitleg, geen "in deze blog gaan we het hebben over...".
 - Leg vakjargon uit bij eerste gebruik.
 - GEEN sales-taal, GEEN CTA's in de tekst, GEEN "neem contact op", GEEN "wij bieden". De lezer beslist zelf.
+
+NEDERLANDSE SPELLING & HOOFDLETTERS — STRIKTE REGELS:
+- Hoofdletters ALLEEN bij:
+  1. Het begin van een zin
+  2. Eigennamen van personen (Jan Willem den Hollander)
+  3. Productnamen en merken (Power BI, Microsoft Fabric, DAX, Excel, Azure, Copilot, DashPortal, Lyreco, GGDGHOR)
+  4. Plaatsnamen en organisatienamen
+- GEEN hoofdletters bij algemene begrippen midden in een zin:
+  - FOUT: "Een goed Datamodel is de basis"
+  - GOED: "Een goed datamodel is de basis"
+  - FOUT: "Tijdens de Fabric Migratie"
+  - GOED: "Tijdens de Fabric-migratie" (Fabric is merk, migratie niet)
+  - FOUT: "Een Power BI Dashboard met Visualisaties"
+  - GOED: "Een Power BI dashboard met visualisaties"
+  - FOUT: "Belangrijke Tips voor de Data Engineer"
+  - GOED: "Belangrijke tips voor de data engineer"
+- Titels en H2/H3 koppen: GEEN Title Case (Engelse stijl), maar Nederlandse zinhoofdlettering — alleen eerste woord en eigennamen:
+  - FOUT: "De Vijf Grootste Fouten Bij Power BI Implementaties"
+  - GOED: "De vijf grootste fouten bij Power BI-implementaties"
+  - FOUT: "Hoe Je Een Snel Datamodel Bouwt In Power BI"
+  - GOED: "Hoe je een snel datamodel bouwt in Power BI"
+- Samengestelde woorden met merknaam: koppelteken gebruiken (Power BI-rapport, Fabric-migratie, DAX-formule)
 
 STRUCTUUR:
 - Begin met een korte inleiding die de lezer direct vertelt wat ze gaan leren (2-3 zinnen).
@@ -178,7 +203,7 @@ STRUCTUUR:
 - Gebruik H3-koppen voor subsecties waar nodig.
 - Gebruik paragrafen van 3-5 zinnen. Niet langer.
 - Gebruik opsommingslijsten voor stappen, kenmerken of vergelijkingen.
-- Gebruik <strong> voor belangrijke begrippen bij eerste introductie.
+- Gebruik <strong> voor belangrijke begrippen bij eerste introductie (sparingly — niet alles vetgedrukt).
 - Voeg waar relevant een concreet voorbeeld, scenario of vergelijking toe.
 - Sluit af met een "Samenvatting" of "Conclusie" sectie (H2) met de belangrijkste takeaways.
 
@@ -196,6 +221,7 @@ GEEN:
 - Geen "Lees meer op..." of "Bekijk onze dienst..." CTA's in de tekst
 - Geen overdreven opsommingen van eigen producten
 - Geen "wij" of "ons team" taal
+- Geen hoofdletters midden in een zin (zie regels hierboven)
 
 Output formaat: valid JSON (geen markdown fences):
 {

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { revalidatePath } from 'next/cache'
 import { getAllPosts, getPostById, createPost, updatePost, publishPost, archivePost, schedulePost, getPublishedPosts, getNextAvailableScheduleDate, swapScheduleDates } from '@/lib/blog-store'
-import { getIdeas, updateIdeaStatus, getIdeaById } from '@/lib/blog-store'
+import { getIdeas, updateIdeaStatus, getIdeaById, deleteIdea, deleteAllIdeas } from '@/lib/blog-store'
 import { suggestInternalLinks, generateBlogPost } from '@/lib/blog-writer'
 import { generateBlogImage } from '@/lib/blog-image-generator'
 
@@ -81,8 +81,19 @@ export async function PUT(req: Request) {
     const body = await req.json()
     const { id, action: putAction, ...updates } = body
 
+    // Bulk acties (geen id nodig)
+    if (putAction === 'clear_all_ideas') {
+      const count = await deleteAllIdeas()
+      return NextResponse.json({ success: true, action: 'all_ideas_cleared', count })
+    }
+
     if (!id) {
       return NextResponse.json({ error: 'id is verplicht' }, { status: 400 })
+    }
+
+    if (putAction === 'delete_idea') {
+      await deleteIdea(id)
+      return NextResponse.json({ success: true, action: 'idea_deleted' })
     }
 
     if (putAction === 'publish') {

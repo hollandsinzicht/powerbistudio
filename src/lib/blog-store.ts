@@ -255,3 +255,31 @@ export async function getIdeaById(id: string): Promise<BlogIdea | null> {
   if (error) throw new Error(`Failed to get idea: ${error.message}`)
   return data
 }
+
+export async function deleteIdea(id: string): Promise<void> {
+  const { error } = await supabase
+    .from('blog_ideas')
+    .delete()
+    .eq('id', id)
+
+  if (error) throw new Error(`Failed to delete idea: ${error.message}`)
+}
+
+/**
+ * Verwijder alle ideeën uit de database. Gebruikt voor de "clean slate" knop
+ * zodat de gebruiker met nieuwe keywords kan starten.
+ */
+export async function deleteAllIdeas(): Promise<number> {
+  // Haal eerst count op voor feedback
+  const { count } = await supabase
+    .from('blog_ideas')
+    .select('*', { count: 'exact', head: true })
+
+  const { error } = await supabase
+    .from('blog_ideas')
+    .delete()
+    .not('id', 'is', null) // delete all rows (Supabase vereist een filter)
+
+  if (error) throw new Error(`Failed to delete all ideas: ${error.message}`)
+  return count || 0
+}

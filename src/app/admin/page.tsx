@@ -84,6 +84,20 @@ export default function AdminDashboard() {
     setGenerating(false);
   };
 
+  const handleClearAllIdeas = async () => {
+    if (!confirm("Weet je zeker dat je alle onderwerpen wilt verwijderen? Geschreven en afgewezen ideeën worden ook verwijderd.")) return;
+    try {
+      const res = await fetch("/api/admin/blog", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", "x-admin-token": getToken() },
+        body: JSON.stringify({ action: "clear_all_ideas" }),
+      });
+      if (res.ok) {
+        await fetchData();
+      }
+    } catch (e) { console.error(e); }
+  };
+
   const handleWriteNew = async () => {
     if (!newTitle.trim()) return;
     setGenerating(true);
@@ -174,6 +188,7 @@ export default function AdminDashboard() {
 
   const filteredPosts = statusFilter === "all" ? sortedPosts : sortedPosts.filter((p) => p.status === statusFilter);
   const scheduledPosts = sortedPosts.filter((p) => p.status === "scheduled");
+  const activeIdeasCount = ideas.filter((i) => i.status === "suggested" || i.status === "approved").length;
 
   const tabClass = (t: string) =>
     `px-4 py-2 text-sm font-medium rounded-lg transition-colors ${tab === t ? "bg-[var(--primary)] text-white" : "text-[var(--text-secondary)] hover:bg-gray-100"}`;
@@ -186,7 +201,7 @@ export default function AdminDashboard() {
           <span className="flex items-center gap-2"><FileText size={16} /> Artikelen ({posts.length})</span>
         </button>
         <button onClick={() => setTab("ideas")} className={tabClass("ideas")}>
-          <span className="flex items-center gap-2"><Sparkles size={16} /> Onderwerpen ({ideas.length})</span>
+          <span className="flex items-center gap-2"><Sparkles size={16} /> Onderwerpen ({activeIdeasCount})</span>
         </button>
         <button onClick={() => setTab("new")} className={tabClass("new")}>
           <span className="flex items-center gap-2"><Plus size={16} /> Nieuw artikel</span>
@@ -322,65 +337,72 @@ export default function AdminDashboard() {
           )}
 
           {/* ===== TAB: ONDERWERPEN ===== */}
-          {tab === "ideas" && (
-            <>
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
-                  Keywords of thema&apos;s (optioneel)
-                </label>
-                <textarea
-                  value={seedKeywords}
-                  onChange={(e) => setSeedKeywords(e.target.value)}
-                  placeholder="Bijv: fabric kosten, dax performance, gemeente bi aanbesteding, copilot semantic model"
-                  rows={2}
-                  className="w-full bg-[var(--surface)] border border-[var(--border)] rounded-lg px-4 py-3 text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)] transition-colors text-sm mb-3"
-                />
-                <button onClick={handleGenerateIdeas} disabled={generating} className="btn-primary inline-flex items-center gap-2 text-sm disabled:opacity-50">
-                  <Sparkles size={16} /> AI: Stel onderwerpen voor {seedKeywords ? "(met jouw keywords)" : "(via web search)"}
-                </button>
-              </div>
+          {tab === "ideas" && (() => {
+            // Filter: toon alleen actieve ideeën (suggested + approved).
+            // Written en rejected worden automatisch verborgen.
+            const activeIdeas = ideas.filter((i) => i.status === "suggested" || i.status === "approved");
 
-              <div className="space-y-3">
-                {ideas.map((idea) => (
-                  <div key={idea.id} className="glass-card rounded-lg p-4 border border-[var(--border)]">
-                    <div className="flex items-start justify-between gap-4">
-                      <div>
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
-                            idea.status === "suggested" ? "bg-blue-100 text-blue-700" :
-                            idea.status === "approved" ? "bg-green-100 text-green-700" :
-                            idea.status === "written" ? "bg-purple-100 text-purple-700" :
-                            "bg-gray-100 text-gray-500"
-                          }`}>{idea.status}</span>
-                          {idea.target_audience && <span className="text-[10px] text-[var(--text-secondary)]">{idea.target_audience}</span>}
+            return (
+              <>
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
+                    Keywords of thema&apos;s (optioneel)
+                  </label>
+                  <textarea
+                    value={seedKeywords}
+                    onChange={(e) => setSeedKeywords(e.target.value)}
+                    placeholder="Bijv: fabric kosten, dax performance, gemeente bi aanbesteding, copilot semantic model"
+                    rows={2}
+                    className="w-full bg-[var(--surface)] border border-[var(--border)] rounded-lg px-4 py-3 text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)] transition-colors text-sm mb-3"
+                  />
+                  <div className="flex flex-wrap gap-2">
+                    <button onClick={handleGenerateIdeas} disabled={generating} className="btn-primary inline-flex items-center gap-2 text-sm disabled:opacity-50">
+                      <Sparkles size={16} /> AI: Stel onderwerpen voor {seedKeywords ? "(met jouw keywords)" : "(via web search)"}
+                    </button>
+                    {ideas.length > 0 && (
+                      <button onClick={handleClearAllIdeas} disabled={generating} className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-red-500 border border-red-200 rounded hover:bg-red-50 disabled:opacity-50 transition-colors">
+                        <XCircle size={16} /> Verwijder alle onderwerpen
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  {activeIdeas.map((idea) => (
+                    <div key={idea.id} className="glass-card rounded-lg p-4 border border-[var(--border)]">
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex-grow min-w-0">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
+                              idea.status === "suggested" ? "bg-blue-100 text-blue-700" :
+                              "bg-green-100 text-green-700"
+                            }`}>{idea.status}</span>
+                            {idea.target_audience && <span className="text-[10px] text-[var(--text-secondary)]">{idea.target_audience}</span>}
+                          </div>
+                          <h3 className="font-medium text-sm">{idea.title}</h3>
+                          {idea.rationale && <p className="text-xs text-[var(--text-secondary)] mt-1">{idea.rationale}</p>}
+                          <div className="flex flex-wrap gap-1 mt-2">
+                            {idea.keywords.map((kw) => (
+                              <span key={kw} className="text-[10px] px-2 py-0.5 rounded-full bg-gray-100 text-[var(--text-secondary)]">{kw}</span>
+                            ))}
+                          </div>
                         </div>
-                        <h3 className="font-medium text-sm">{idea.title}</h3>
-                        {idea.rationale && <p className="text-xs text-[var(--text-secondary)] mt-1">{idea.rationale}</p>}
-                        <div className="flex flex-wrap gap-1 mt-2">
-                          {idea.keywords.map((kw) => (
-                            <span key={kw} className="text-[10px] px-2 py-0.5 rounded-full bg-gray-100 text-[var(--text-secondary)]">{kw}</span>
-                          ))}
+                        <div className="flex items-center gap-1 shrink-0">
+                          <button onClick={() => handleApproveIdea(idea.id)} disabled={generating} className="p-2 text-green-500 hover:text-green-700 disabled:opacity-50" title="Goedkeuren → schrijf artikel + plan in"><CheckCircle2 size={16} /></button>
+                          <button onClick={() => handlePostAction(idea.id, "delete_idea")} className="p-2 text-red-400 hover:text-red-600" title="Verwijderen"><XCircle size={16} /></button>
                         </div>
-                      </div>
-                      <div className="flex items-center gap-1 shrink-0">
-                        {idea.status === "suggested" && (
-                          <>
-                            <button onClick={() => handleApproveIdea(idea.id)} disabled={generating} className="p-2 text-green-500 hover:text-green-700 disabled:opacity-50" title="Goedkeuren → schrijf artikel + plan in"><CheckCircle2 size={16} /></button>
-                            <button onClick={() => handlePostAction(idea.id, "reject_idea")} className="p-2 text-red-400 hover:text-red-600" title="Afwijzen"><XCircle size={16} /></button>
-                          </>
-                        )}
                       </div>
                     </div>
-                  </div>
-                ))}
-                {ideas.length === 0 && (
-                  <p className="text-center py-12 text-[var(--text-secondary)] text-sm">
-                    Geen onderwerpen. Klik op &ldquo;Stel onderwerpen voor&rdquo; om te beginnen.
-                  </p>
-                )}
-              </div>
-            </>
-          )}
+                  ))}
+                  {activeIdeas.length === 0 && (
+                    <p className="text-center py-12 text-[var(--text-secondary)] text-sm">
+                      Geen actieve onderwerpen. Vul eventueel keywords in en klik op &ldquo;Stel onderwerpen voor&rdquo;.
+                    </p>
+                  )}
+                </div>
+              </>
+            );
+          })()}
 
           {/* ===== TAB: NIEUW ARTIKEL ===== */}
           {tab === "new" && (
