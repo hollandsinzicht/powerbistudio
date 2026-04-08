@@ -139,8 +139,14 @@ export async function schedulePost(id: string, scheduledFor: string) {
 
 /**
  * Bepaal de volgende vrije publicatiedatum.
- * = dag na de laatst geplande post + 07:00 UTC
- * Als er geen geplande posts zijn → morgen 07:00 UTC
+ * = dag na de laatst geplande post + 05:00 UTC
+ * Als er geen geplande posts zijn → morgen 05:00 UTC
+ *
+ * BELANGRIJK: tijd staat bewust op 05:00 UTC, vóór de cron op 06:00 UTC.
+ * Vercel Hobby cron heeft een flexibel 1-uur venster (06:00-07:00 UTC),
+ * dus posts MOETEN al in het verleden liggen op het moment dat de cron
+ * voor het eerst kijkt. Anders krijg je 1 dag delay.
+ * 05:00 UTC = 06:00 NL wintertijd, 07:00 NL zomertijd.
  */
 export async function getNextAvailableScheduleDate(): Promise<string> {
   const { data, error } = await supabase
@@ -160,10 +166,10 @@ export async function getNextAvailableScheduleDate(): Promise<string> {
     baseDate = new Date()
   }
 
-  // Volgende dag, 07:00 UTC
+  // Volgende dag, 05:00 UTC (bewust vóór de cron)
   const nextDate = new Date(baseDate)
   nextDate.setUTCDate(nextDate.getUTCDate() + 1)
-  nextDate.setUTCHours(7, 0, 0, 0)
+  nextDate.setUTCHours(5, 0, 0, 0)
 
   return nextDate.toISOString()
 }

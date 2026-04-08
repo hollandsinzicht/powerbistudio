@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { revalidatePath } from 'next/cache'
-import { getAllPosts, getPostById, createPost, updatePost, publishPost, archivePost, schedulePost, getPublishedPosts, getNextAvailableScheduleDate, swapScheduleDates } from '@/lib/blog-store'
+import { getAllPosts, getPostById, createPost, updatePost, publishPost, archivePost, schedulePost, getPublishedPosts, getNextAvailableScheduleDate, swapScheduleDates, getScheduledPostsDue } from '@/lib/blog-store'
 import { getIdeas, updateIdeaStatus, getIdeaById, deleteIdea, deleteAllIdeas } from '@/lib/blog-store'
 import { generateBlogPost } from '@/lib/blog-writer'
 import { generateBlogImage } from '@/lib/blog-image-generator'
@@ -89,6 +89,31 @@ export async function PUT(req: Request) {
     if (putAction === 'clear_all_ideas') {
       const count = await deleteAllIdeas()
       return NextResponse.json({ success: true, action: 'all_ideas_cleared', count })
+    }
+
+    // Publiceer alle achterstallige scheduled posts (vangnet voor cron timing issues)
+    if (putAction === 'publish_due') {
+      const duePosts = await getScheduledPostsDue()
+      let published = 0
+      const titles: string[] = []
+      for (const post of duePosts) {
+        try {
+          await publishPost(post.id)
+          published++
+          titles.push(post.title)
+        } catch (err) {
+          console.error(`[publish_due] Failed to publish ${post.id}:`, err)
+        }
+      }
+      // Revalidate alles na bulk publish
+      revalidateBlog()
+      return NextResponse.json({
+        success: true,
+        action: 'due_published',
+        checked: duePosts.length,
+        published,
+        titles,
+      })
     }
 
     if (!id) {

@@ -191,7 +191,9 @@ export default function AdminDashboard() {
 
   const handleDateChange = async (id: string, dateStr: string) => {
     if (!dateStr) return;
-    const isoDate = new Date(dateStr + "T07:00:00Z").toISOString();
+    // 05:00 UTC: bewust vóór het cron-venster (06:00-07:00 UTC op Hobby)
+    // zodat de eerstvolgende cron-run de post oppakt zonder 1 dag delay.
+    const isoDate = new Date(dateStr + "T05:00:00Z").toISOString();
     await handlePostAction(id, "schedule", { scheduled_for: isoDate });
   };
 
@@ -243,6 +245,35 @@ export default function AdminDashboard() {
       alert("Netwerkfout bij genereren van LinkedIn post.");
     } finally {
       setLinkedinLoading(false);
+    }
+  };
+
+  const handlePublishDue = async () => {
+    if (!confirm("Publiceer alle achterstallige geplande artikelen nu?")) return;
+    setGenerating(true);
+    try {
+      const res = await fetch("/api/admin/blog", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", "x-admin-token": getToken() },
+        body: JSON.stringify({ action: "publish_due" }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.published > 0) {
+          alert(`${data.published} artikel(en) gepubliceerd:\n${data.titles.join("\n")}`);
+        } else {
+          alert("Geen achterstallige artikelen gevonden — alles staat klaar.");
+        }
+        await fetchData();
+      } else {
+        const data = await res.json().catch(() => ({}));
+        alert(`Mislukt: ${data.error || res.statusText}`);
+      }
+    } catch (e) {
+      console.error(e);
+      alert("Netwerkfout bij publiceren van achterstallige posts.");
+    } finally {
+      setGenerating(false);
     }
   };
 
@@ -310,13 +341,23 @@ export default function AdminDashboard() {
           {/* ===== TAB: ARTIKELEN — UNIFIED TABEL ===== */}
           {tab === "posts" && (
             <>
-              <div className="flex gap-2 mb-6">
-                {["all", "draft", "scheduled", "published", "archived"].map((s) => (
-                  <button key={s} onClick={() => setStatusFilter(s)}
-                    className={`px-3 py-1.5 text-xs font-medium rounded-full border transition-colors ${statusFilter === s ? "bg-[var(--primary)] text-white border-[var(--primary)]" : "bg-[var(--surface)] text-[var(--text-secondary)] border-[var(--border)]"}`}>
-                    {s === "all" ? "Alle" : s}
-                  </button>
-                ))}
+              <div className="flex flex-wrap items-center justify-between gap-2 mb-6">
+                <div className="flex gap-2">
+                  {["all", "draft", "scheduled", "published", "archived"].map((s) => (
+                    <button key={s} onClick={() => setStatusFilter(s)}
+                      className={`px-3 py-1.5 text-xs font-medium rounded-full border transition-colors ${statusFilter === s ? "bg-[var(--primary)] text-white border-[var(--primary)]" : "bg-[var(--surface)] text-[var(--text-secondary)] border-[var(--border)]"}`}>
+                      {s === "all" ? "Alle" : s}
+                    </button>
+                  ))}
+                </div>
+                <button
+                  onClick={handlePublishDue}
+                  disabled={generating}
+                  className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-[var(--text-secondary)] border border-[var(--border)] rounded-full hover:border-[var(--accent)] hover:text-[var(--accent)] disabled:opacity-50 transition-colors"
+                  title="Publiceer alle scheduled posts waarvan de datum al verlopen is"
+                >
+                  <Send size={13} /> Publiceer achterstallige
+                </button>
               </div>
 
               <div className="space-y-2">
