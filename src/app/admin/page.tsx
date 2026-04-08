@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { Sparkles, FileText, Plus, CheckCircle2, XCircle, PenLine, Eye, Send, Archive, Loader2, Clock, Link2, ArrowUp, ArrowDown, Image as ImageIcon, Linkedin, Copy, Check } from "lucide-react";
+import { Sparkles, FileText, Plus, CheckCircle2, XCircle, PenLine, Eye, Send, Archive, Loader2, Clock, Link2, ArrowUp, ArrowDown, Image as ImageIcon, Linkedin, Copy, Check, Images, Download } from "lucide-react";
 
 type LinkedInStyle = "educatief" | "scherp" | "provocatief" | "storytelling";
 
@@ -57,6 +57,11 @@ export default function AdminDashboard() {
   const [linkedinResult, setLinkedinResult] = useState<{ postText: string; hashtags: string[] } | null>(null);
   const [linkedinLoading, setLinkedinLoading] = useState(false);
   const [linkedinCopied, setLinkedinCopied] = useState(false);
+
+  // Quote images modal state
+  const [quoteImagesPost, setQuoteImagesPost] = useState<BlogPost | null>(null);
+  const [quoteImages, setQuoteImages] = useState<{ index: number; text: string; emphasis: string; url: string }[] | null>(null);
+  const [quoteImagesLoading, setQuoteImagesLoading] = useState(false);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -289,6 +294,91 @@ export default function AdminDashboard() {
     }
   };
 
+  // ===== Quote images (LinkedIn shareable PNGs) =====
+  const openQuoteImagesModal = async (post: BlogPost) => {
+    setQuoteImagesPost(post);
+    setQuoteImages(null);
+    setQuoteImagesLoading(true);
+    try {
+      const res = await fetch("/api/admin/blog/quote-images", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-admin-token": getToken() },
+        body: JSON.stringify({ postId: post.id }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setQuoteImages(data.images || []);
+      } else {
+        const data = await res.json().catch(() => ({}));
+        alert(`Quote images genereren mislukt: ${data.error || res.statusText}`);
+      }
+    } catch (e) {
+      console.error(e);
+      alert("Netwerkfout bij genereren van quote images.");
+    } finally {
+      setQuoteImagesLoading(false);
+    }
+  };
+
+  const closeQuoteImagesModal = () => {
+    setQuoteImagesPost(null);
+    setQuoteImages(null);
+    setQuoteImagesLoading(false);
+  };
+
+  const handleRegenerateQuoteImages = async () => {
+    if (!quoteImagesPost) return;
+    setQuoteImages(null);
+    setQuoteImagesLoading(true);
+    try {
+      const res = await fetch("/api/admin/blog/quote-images", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-admin-token": getToken() },
+        body: JSON.stringify({ postId: quoteImagesPost.id }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setQuoteImages(data.images || []);
+      } else {
+        alert("Opnieuw genereren mislukt.");
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setQuoteImagesLoading(false);
+    }
+  };
+
+  const handleDownloadQuoteImage = async (url: string, index: number) => {
+    if (!quoteImagesPost) return;
+    try {
+      // Fetch als blob zodat de download echt triggert (en niet alleen navigeert)
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`Fetch failed: ${res.status}`);
+      const blob = await res.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = blobUrl;
+      a.download = `${quoteImagesPost.slug}-quote-${index}.png`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(blobUrl);
+    } catch (e) {
+      console.error(e);
+      alert("Download mislukt. Probeer met rechtsklik → Afbeelding opslaan.");
+    }
+  };
+
+  const handleDownloadAllQuoteImages = async () => {
+    if (!quoteImages || !quoteImagesPost) return;
+    for (const img of quoteImages) {
+      await handleDownloadQuoteImage(img.url, img.index);
+      // kleine pauze zodat browsers de downloads niet blokkeren
+      await new Promise((r) => setTimeout(r, 350));
+    }
+  };
+
   // Sorteer posts: scheduled (op datum ASC) → drafts (op created_at DESC) → published (op published_at DESC) → archived
   const sortedPosts = [...posts].sort((a, b) => {
     const order = { scheduled: 0, draft: 1, published: 2, archived: 3 };
@@ -445,6 +535,7 @@ export default function AdminDashboard() {
                           <>
                             <a href={`/blog/${post.slug}`} target="_blank" className="p-2 text-[var(--text-secondary)] hover:text-[var(--primary)]" title="Bekijk"><Eye size={15} /></a>
                             <button onClick={() => openLinkedinModal(post)} className="p-2 text-[var(--text-secondary)] hover:text-[#0A66C2]" title="Genereer LinkedIn post"><Linkedin size={15} /></button>
+                            <button onClick={() => openQuoteImagesModal(post)} className="p-2 text-[var(--text-secondary)] hover:text-[#0A66C2]" title="Genereer 4 quote images voor LinkedIn"><Images size={15} /></button>
                             <button onClick={() => handleUpdateLinks(post.id)} disabled={generating} className="p-2 text-[var(--text-secondary)] hover:text-blue-500" title="Update interne links"><Link2 size={15} /></button>
                           </>
                         )}
@@ -670,6 +761,99 @@ export default function AdminDashboard() {
                     </button>
                   </div>
                 </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ===== QUOTE IMAGES MODAL ===== */}
+      {quoteImagesPost && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={closeQuoteImagesModal}>
+          <div className="glass-card bg-[var(--background)] rounded-xl border border-[var(--border)] max-w-4xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+            {/* Header */}
+            <div className="flex items-center justify-between p-5 border-b border-[var(--border)] sticky top-0 bg-[var(--background)] z-10">
+              <div className="flex items-center gap-3">
+                <Images size={20} className="text-[#0A66C2]" />
+                <div>
+                  <h2 className="font-display font-bold text-base">Quote images voor LinkedIn</h2>
+                  <p className="text-xs text-[var(--text-secondary)] truncate max-w-md">{quoteImagesPost.title}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                {quoteImages && quoteImages.length > 0 && (
+                  <>
+                    <button
+                      onClick={handleDownloadAllQuoteImages}
+                      className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium bg-[#0A66C2] text-white rounded-lg hover:bg-[#084d92]"
+                      title="Download alle 4 images"
+                    >
+                      <Download size={14} /> Download alle
+                    </button>
+                    <button
+                      onClick={handleRegenerateQuoteImages}
+                      disabled={quoteImagesLoading}
+                      className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium border border-[var(--border)] rounded-lg hover:border-[var(--accent)] disabled:opacity-50"
+                      title="Andere quotes genereren"
+                    >
+                      <Sparkles size={14} /> Opnieuw
+                    </button>
+                  </>
+                )}
+                <button onClick={closeQuoteImagesModal} className="p-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)]" title="Sluiten">
+                  <XCircle size={18} />
+                </button>
+              </div>
+            </div>
+
+            {/* Body */}
+            <div className="p-5">
+              {quoteImagesLoading && (
+                <div className="flex flex-col items-center justify-center py-16 gap-3">
+                  <Loader2 size={28} className="animate-spin text-[var(--accent)]" />
+                  <p className="text-sm text-[var(--text-secondary)]">Quotes extraheren en images renderen...</p>
+                </div>
+              )}
+
+              {!quoteImagesLoading && quoteImages && quoteImages.length > 0 && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {quoteImages.map((img) => (
+                    <div key={img.index} className="flex flex-col gap-2 border border-[var(--border)] rounded-lg overflow-hidden bg-[var(--surface)]">
+                      {/* Preview */}
+                      <div className="bg-[#F3F6FA] flex items-center justify-center" style={{ aspectRatio: "1080/1350" }}>
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={img.url}
+                          alt={`Quote ${img.index}`}
+                          className="w-full h-full object-contain"
+                          loading="lazy"
+                        />
+                      </div>
+                      {/* Footer */}
+                      <div className="p-3 flex items-start justify-between gap-3">
+                        <div className="flex-grow min-w-0">
+                          <p className="text-xs text-[var(--text-secondary)] line-clamp-2">{img.text}</p>
+                          {img.emphasis && (
+                            <p className="text-[10px] text-[var(--accent)] mt-1">nadruk: <strong>{img.emphasis}</strong></p>
+                          )}
+                        </div>
+                        <button
+                          onClick={() => handleDownloadQuoteImage(img.url, img.index)}
+                          className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium bg-[#0A66C2] text-white rounded hover:bg-[#084d92] shrink-0"
+                          title="Download PNG"
+                        >
+                          <Download size={13} /> PNG
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {!quoteImagesLoading && quoteImages && quoteImages.length === 0 && (
+                <p className="text-center py-12 text-sm text-[var(--text-secondary)]">
+                  Geen quotes gegenereerd. Probeer opnieuw.
+                </p>
               )}
             </div>
           </div>
