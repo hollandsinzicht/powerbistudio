@@ -92,9 +92,9 @@ export async function GET(req: Request) {
             <div style={{ display: 'flex', alignItems: 'center' }}>
               {/* Bar chart icon */}
               <svg width={72} height={72} viewBox="0 0 80 80" style={{ marginRight: 20 }}>
-                <rect x={8} y={46} width={16} height={26} rx={3} fill="#60A5FA" />
-                <rect x={32} y={30} width={16} height={42} rx={3} fill="#3B82F6" />
-                <rect x={56} y={12} width={16} height={60} rx={3} fill="#1D4ED8" />
+                <rect x={8} y={46} width={16} height={26} rx={3} fill="#6B8AAC" />
+                <rect x={32} y={30} width={16} height={42} rx={3} fill="#1E3A5F" />
+                <rect x={56} y={12} width={16} height={60} rx={3} fill="#1E3A5F" />
               </svg>
               <div
                 style={{
@@ -104,16 +104,16 @@ export async function GET(req: Request) {
                   letterSpacing: -1.5,
                 }}
               >
-                <div style={{ color: '#1E293B' }}>Power</div>
-                <div style={{ color: '#2563EB', marginLeft: 14 }}>BI</div>
-                <div style={{ color: '#64748B', marginLeft: 14, fontWeight: 400 }}>Studio</div>
+                <div style={{ color: '#1E3A5F' }}>Power</div>
+                <div style={{ color: '#1E3A5F', marginLeft: 14 }}>BI</div>
+                <div style={{ color: '#374151', marginLeft: 14, fontWeight: 400 }}>Studio</div>
               </div>
             </div>
             <div
               style={{
                 width: 520,
                 height: 3,
-                backgroundColor: '#3B82F6',
+                backgroundColor: '#1E3A5F',
                 marginTop: 22,
                 borderRadius: 2,
               }}
@@ -132,11 +132,11 @@ export async function GET(req: Request) {
               {/* Twee curly opening quote shapes */}
               <path
                 d="M10 70 C10 35 35 10 70 10 L70 38 C48 38 38 52 38 70 L70 70 L70 130 L10 130 Z"
-                fill="#C7DAF0"
+                fill="#C5D2E0"
               />
               <path
                 d="M100 70 C100 35 125 10 160 10 L160 38 C138 38 128 52 128 70 L160 70 L160 130 L100 130 Z"
-                fill="#C7DAF0"
+                fill="#C5D2E0"
               />
             </svg>
           </div>
@@ -160,7 +160,7 @@ export async function GET(req: Request) {
                   marginRight: Math.round(fontSize * 0.26),
                   marginBottom: Math.round(fontSize * 0.1),
                   fontWeight: w.bold ? 700 : 400,
-                  color: w.bold ? '#1E40AF' : '#334155',
+                  color: w.bold ? '#1E3A5F' : '#374151',
                   letterSpacing: -0.5,
                 }}
               >
