@@ -194,7 +194,11 @@ export async function GET(req: Request) {
       }
     )
   } catch (err) {
-    console.error('OG quote image error:', err)
-    return new Response('Failed to generate image', { status: 500 })
+    const msg = err instanceof Error ? `${err.name}: ${err.message}\n${err.stack}` : String(err)
+    console.error('OG quote image error:', msg)
+    return new Response(`Failed to generate image\n\n${msg}`, {
+      status: 500,
+      headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+    })
   }
 }

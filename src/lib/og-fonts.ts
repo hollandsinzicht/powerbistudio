@@ -1,22 +1,24 @@
+import fs from 'fs/promises'
+import path from 'path'
+
 /**
  * Inter font loader voor next/og (satori).
  *
- * Fetcht Inter Regular en Bold van de auteur's CDN (rsms.me/inter).
- * Cached op module-niveau zodat elke serverless function instance de fonts
- * maar 1x hoeft te laden (niet per request).
+ * Leest Inter Regular en Bold WOFF bestanden van disk (public/fonts/).
+ * Bundling via @fontsource/inter en gekopieerd tijdens setup.
  *
- * OTF formaat wordt ondersteund door satori; WOFF2 niet.
+ * Cached op module-niveau zodat elke serverless function instance de fonts
+ * maar 1x inleest (niet per request).
+ *
+ * WOFF wordt door satori ondersteund; WOFF2 niet.
  */
 
-let cachedRegular: ArrayBuffer | null = null
-let cachedBold: ArrayBuffer | null = null
-
-const INTER_REGULAR_URL = 'https://rsms.me/inter/font-files/Inter-Regular.otf?v=4.0'
-const INTER_BOLD_URL = 'https://rsms.me/inter/font-files/Inter-Bold.otf?v=4.0'
+let cachedRegular: Buffer | null = null
+let cachedBold: Buffer | null = null
 
 export interface LoadedFonts {
-  regular: ArrayBuffer
-  bold: ArrayBuffer
+  regular: Buffer
+  bold: Buffer
 }
 
 export async function loadInterFonts(): Promise<LoadedFonts> {
@@ -24,15 +26,11 @@ export async function loadInterFonts(): Promise<LoadedFonts> {
     return { regular: cachedRegular, bold: cachedBold }
   }
 
+  const fontsDir = path.join(process.cwd(), 'public', 'fonts')
+
   const [regular, bold] = await Promise.all([
-    fetch(INTER_REGULAR_URL).then((r) => {
-      if (!r.ok) throw new Error(`Inter Regular fetch failed: ${r.status}`)
-      return r.arrayBuffer()
-    }),
-    fetch(INTER_BOLD_URL).then((r) => {
-      if (!r.ok) throw new Error(`Inter Bold fetch failed: ${r.status}`)
-      return r.arrayBuffer()
-    }),
+    fs.readFile(path.join(fontsDir, 'Inter-Regular.woff')),
+    fs.readFile(path.join(fontsDir, 'Inter-Bold.woff')),
   ])
 
   cachedRegular = regular
