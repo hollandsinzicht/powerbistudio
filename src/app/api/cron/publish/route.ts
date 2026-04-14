@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
-import { getScheduledPostsDue, publishPost } from '@/lib/blog-store'
+import { revalidatePath } from 'next/cache'
+import { getScheduledPostsDue, publishPost, getPostById } from '@/lib/blog-store'
 
 // Vercel serverless max
 export const maxDuration = 60
@@ -48,6 +49,15 @@ export async function GET(req: Request) {
         await publishPost(post.id)
         published++
         console.log(`[PUBLISH CRON] Published: ${post.title}`)
+
+        // Invalideer Next.js cache zodat /blog en de slug-pagina meteen bijwerken
+        const freshPost = await getPostById(post.id)
+        revalidatePath('/blog')
+        revalidatePath('/sitemap.xml')
+        if (freshPost?.slug) revalidatePath(`/blog/${freshPost.slug}`)
+        ;['power-bi', 'dax-datamodellering', 'data-platform', 'strategie', 'fabric-migratie', 'governance-avg', 'embedded-analytics', 'procesverbetering-bi'].forEach((cat) => {
+          revalidatePath(`/blog/categorie/${cat}`)
+        })
       } catch (err) {
         console.error(`[PUBLISH CRON] Failed to publish ${post.id}:`, err)
       }
