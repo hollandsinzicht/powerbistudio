@@ -106,13 +106,16 @@ export interface TeamAvatarPromptParams {
 }
 
 function buildTeamAvatarPrompt(p: TeamAvatarPromptParams): string {
-  return `A symmetrical abstract glyph representing ${p.subject}, rendered in a soft geometric vector style. Background: a radial gradient from ${p.gradient} on a soft cream surface. Thin circuit-lines at 10% opacity weaving behind the glyph. Modern flat-vector style similar to Stripe / Figma illustrations. Centered, high-quality, square format.
+  return `A friendly cute mascot AI robot character: ${p.subject}. The robot has a rounded, approachable design with a simple LED-style face (two glowing dots or a small screen for eyes, no human features) and a small body. Rendered in a modern flat vector illustration style, similar to Notion, Stripe, Slack, or Duolingo marketing mascots.
+
+Background: a smooth radial gradient from ${p.gradient} on a soft cream surface. A subtle halo or glow around the robot. Thin circuit-line texture at 10% opacity faintly visible behind the robot. Composition: robot centered, shown from chest-up or full body, with breathing room around it. Square format, centered, high-quality vector art.
 
 Hard rules:
-- NO text, NO letters, NO words
-- NO human figures, NO faces, NO hands, NO bodies
-- Clear "AI/generated" aesthetic — must not look like a photo or a portrait of a person
-- Single central glyph, no overflow beyond the frame`;
+- NO text, NO letters, NO words anywhere in the image
+- NO human faces, NO human skin, NO realistic eyes, NO human hands — this is a ROBOT, not a person
+- Robot face must be stylized (simple geometric eyes, no mouth or tiny smile line), friendly and non-threatening
+- Cute, warm, approachable — mascot-style, not sci-fi/industrial
+- Single centered robot character, nothing cut off at the edges`;
 }
 
 // ─── Storage ────────────────────────────────────────────────────────
