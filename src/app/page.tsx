@@ -205,12 +205,13 @@ export default function HomePage() {
                         Mensen + AI. Altijd transparant.
                     </h2>
                     <p className="text-[var(--text-secondary)] mb-12 max-w-2xl leading-relaxed">
-                        Power BI Studio is een collectief: onze oprichter Jan Willem en twee
-                        AI-agents (ADA voor DAX, LEX voor model-audits) die we zelf hebben
-                        gebouwd. We maken altijd expliciet welke output van een mens komt en
-                        welke van een AI — zonder marketing-fog.
+                        Power BI Studio is een collectief: onze oprichter Jan Willem en vier
+                        AI-agents (ATLAS voor architectuur, NOVA voor readiness, ADA voor DAX,
+                        LEX voor model-audits) die we zelf hebben gebouwd. We maken altijd
+                        expliciet welke output van een mens komt en welke van een AI — zonder
+                        marketing-fog.
                     </p>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {team.map((m) => (
                             <TeamMemberCard key={m.id} {...m} />
                         ))}

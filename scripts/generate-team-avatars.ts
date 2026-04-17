@@ -21,6 +21,18 @@ const OUT_DIR = join(process.cwd(), 'public', 'team');
 
 const agents = [
   {
+    agentId: 'atlas',
+    subject:
+      'ATLAS, a friendly Power BI architect robot with a rounded slate/graphite body and warm bronze/gold accents on its chest panel and antenna. It holds up a small floating 3D blueprint model — abstract geometric shapes like stacked layers, columns, or a mini building (NO actual text). One arm gestures thoughtfully towards the blueprint. Its expression is focused and wise',
+    gradient: 'deep slate-navy (#1E3A5F) in the upper-left to warm bronze-gold (#B8963E) in the lower-right',
+  },
+  {
+    agentId: 'nova',
+    subject:
+      'NOVA, a friendly readiness-scanner robot with a rounded teal-green body and warm gold accents on its chest panel. It is holding a compass or radar-style scanner device, with small floating rings or arcs radiating outward from the device. A tiny floating bar-chart or upward arrow hovers near its shoulder (NO actual text or numbers). Its expression is thoughtful and measuring',
+    gradient: 'deep teal (#0F6E56) in the upper-left to warm gold (#B8963E) in the lower-right',
+  },
+  {
     agentId: 'ada',
     subject:
       'ADA, a friendly DAX-formula assistant robot. The robot has a rounded blue-navy body with warm amber/gold accents on its chest panel or antennas. It is holding or projecting a small floating holographic screen that shows abstract colored blocks and geometric shapes representing a formula (NO actual text or letters on the screen). Its expression is curious and helpful',

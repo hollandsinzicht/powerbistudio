@@ -19,6 +19,7 @@ import {
 } from "lucide-react"
 import UploadZone from "@/components/report-auditor/UploadZone"
 import VerificationInput from "@/components/report-auditor/VerificationInput"
+import AgentSignature from "@/components/team/AgentSignature"
 
 export const metadata: Metadata = {
   title: "Power BI Report Auditor — AI-audit van je datamodel in 24 uur | PowerBIStudio.nl",
@@ -123,6 +124,15 @@ export default function ReportAuditorPage() {
                 <FileText size={20} /> Bekijk voorbeeldrapport
               </a>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Agent signature */}
+      <section className="py-10 border-b border-[var(--border)]">
+        <div className="container mx-auto px-6 md:px-12">
+          <div className="max-w-4xl">
+            <AgentSignature agentId="lex" intro="De Report Auditor wordt aangedreven door" />
           </div>
         </div>
       </section>

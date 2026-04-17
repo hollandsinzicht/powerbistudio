@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ArrowRight, ArrowLeft, CheckCircle2, RotateCcw } from "lucide-react";
+import AgentSignature from "@/components/team/AgentSignature";
 
 type Question = {
     id: number;
@@ -184,6 +185,13 @@ export default function ReadinessScan() {
                         <p className="text-[var(--text-secondary)]">Beantwoord 10 vragen om te zien hoe volwassen jouw datafundament is.</p>
                     )}
                 </div>
+
+                {/* Agent signature */}
+                {!result && (
+                    <div className="mb-10">
+                        <AgentSignature agentId="nova" intro="De Readiness Scan wordt aangedreven door" />
+                    </div>
+                )}
 
                 {/* Form Container */}
                 <div className="glass-card rounded-2xl overflow-hidden relative">

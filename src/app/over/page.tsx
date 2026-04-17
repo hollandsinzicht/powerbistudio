@@ -60,7 +60,7 @@ export default function OverPage() {
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(59,130,246,0.1),transparent_50%)] pointer-events-none" />
                 <div className="container mx-auto px-6 md:px-12 relative z-10 max-w-3xl">
                     <h1 className="text-3xl md:text-5xl font-display font-bold mb-6">
-                        Een studio, geen eenmanszaak.<br />
+                        Een Power BI Studio.<br />
                         Mensen én AI, altijd <span className="text-[var(--accent)]">transparant</span>.
                     </h1>
                     <p className="text-lg text-[var(--text-secondary)] leading-relaxed">
@@ -84,16 +84,16 @@ export default function OverPage() {
                 </div>
             </section>
 
-            {/* Ons team — founder + 2 AI-agents */}
+            {/* Ons team — founder + 4 AI-agents */}
             <section className="py-24">
                 <div className="container mx-auto px-6 md:px-12">
                     <span className="text-[0.7rem] font-semibold tracking-widest uppercase text-[var(--text-secondary)] mb-4 block">
                         Ons team
                     </span>
                     <h2 className="text-3xl md:text-4xl font-display font-bold mb-12 max-w-2xl">
-                        Eén mens, twee AI-agents. Altijd met naam.
+                        Eén mens, vier AI-agents. Altijd met naam.
                     </h2>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {team.map((m) => (
                             <TeamMemberCard key={m.id} {...m} />
                         ))}
@@ -101,7 +101,7 @@ export default function OverPage() {
                     <div className="mt-10 max-w-3xl">
                         <p className="text-sm text-[var(--text-secondary)] leading-relaxed bg-gray-50 border border-[var(--border)] rounded-lg p-5">
                             <strong className="text-[var(--text-primary)]">Transparantie.</strong> Power BI Studio is een collectief
-                            van Jan Willem den Hollander (oprichter, mens) en twee AI-agents die hij zelf bouwde (ADA, LEX).
+                            van Jan Willem den Hollander (oprichter, mens) en vier AI-agents die hij zelf bouwde (ATLAS, NOVA, ADA, LEX).
                             We maken altijd expliciet of output uit menselijk werk of AI-werk komt.
                             Klantinteractie loopt altijd via Jan Willem — de agents werken onder de motorkap.
                         </p>

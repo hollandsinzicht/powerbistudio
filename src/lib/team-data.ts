@@ -1,9 +1,10 @@
-import type { TeamMember } from './types/team';
+import type { TeamMember, TeamMemberId } from './types/team';
 
 /**
  * Single source of truth voor het team.
  * Power BI Studio is een collectief: Jan Willem (oprichter, mens) +
- * twee transparant gelabelde AI-agents (ADA & LEX) gekoppeld aan eigen tools.
+ * vier transparant gelabelde AI-agents, elk gekoppeld aan een service
+ * of tool van de studio.
  */
 export const team: TeamMember[] = [
   {
@@ -24,6 +25,41 @@ export const team: TeamMember[] = [
     accent: 'navy-amber',
     linkHref: '/contact',
     linkText: 'Plan een kennismaking →',
+  },
+  {
+    id: 'atlas',
+    name: 'ATLAS',
+    role: 'AI Power BI Architect',
+    type: 'ai-agent',
+    image: '/team/atlas.png',
+    bio: 'ATLAS is onze AI-assistent voor Power BI-architectuur en development. Van datamodel-opzet tot workspace-strategie en deployment pipelines — ATLAS versnelt het dagelijkse architectuurwerk.',
+    specialties: [
+      'Architectuur',
+      'Datamodellering',
+      'Workspaces',
+      'Deployment pipelines',
+    ],
+    accent: 'lean-gold',
+    linkHref: '/contact',
+    linkText: 'Plan een architectuurreview →',
+  },
+  {
+    id: 'nova',
+    name: 'NOVA',
+    role: 'AI Readiness Scanner',
+    type: 'ai-agent',
+    image: '/team/nova.png',
+    bio: 'NOVA is onze AI voor data-readiness. Beantwoord een aantal vragen en NOVA brengt de volwassenheid van jouw data-organisatie in kaart — governance, modellen, skills, infrastructuur.',
+    specialties: [
+      'Readiness',
+      'Maturity scan',
+      'Governance',
+      'Benchmark',
+    ],
+    tiedToProduct: { name: 'Readiness Scan', href: '/tools/readiness-scan' },
+    accent: 'zorg',
+    linkHref: '/tools/readiness-scan',
+    linkText: 'Start een Readiness Scan →',
   },
   {
     id: 'ada',
@@ -65,3 +101,7 @@ export const team: TeamMember[] = [
 
 export const founders = team.filter((m) => m.type === 'founder');
 export const aiAgents = team.filter((m) => m.type === 'ai-agent');
+
+export function getTeamMember(id: TeamMemberId): TeamMember | undefined {
+  return team.find((m) => m.id === id);
+}
