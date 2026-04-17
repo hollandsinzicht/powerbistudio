@@ -20,29 +20,34 @@ config({ path: '.env' });
 const OUT_DIR = join(process.cwd(), 'public', 'team');
 
 // Elke agent deelt dezelfde claymorphic body-anatomy (kleine chubby robot,
-// TV-screen hoofdje met 2 dot-eyes). Variatie zit in body-kleur + prop dat
-// de specialisatie uitbeeldt. Stijl: zie buildTeamAvatarPrompt in
-// src/lib/image-generator.ts — TrySoro / Icons8 3D / Linear.
+// TV-screen hoofdje met 2 dot-eyes, witte achtergrond). Variatie zit in
+// body-kleur + prop dat de specialisatie uitbeeldt.
+// Stijl: zie buildTeamAvatarPrompt in src/lib/image-generator.ts
+// (TrySoro / Icons8 3D / Linear).
 const agents = [
   {
+    // Paars robotje met bar-chart → architectuur / stacked blocks
     agentId: 'atlas',
     subject:
-      'a chubby matte claymorphic robot with a slate-navy body (deep blue #1E3A5F) and subtle warm bronze/gold (#B8963E) accent panel on its chest. It is holding up a small floating 3D blueprint model — abstract stacked geometric blocks or mini-building shapes glowing softly in warm amber/gold. The other arm rests relaxed along the body. Pose suggests an architect presenting a design',
+      'a chubby matte claymorphic robot with a soft light-purple body (#A78BFA / lavender) and a white TV-screen face with two black dot eyes. It holds up one hand with a floating glowing 3D bar chart with 4 ascending golden/amber bars and small sparkle particles around it. The other arm rests along the body. Pose suggests an architect presenting stacked data building-blocks',
   },
   {
+    // Blauw robotje met laptop → readiness scanner / inspecting code
     agentId: 'nova',
     subject:
-      'a chubby matte claymorphic robot with a teal-green body (#0F6E56) and subtle warm gold (#B8963E) accent panel on its chest. It is holding a small 3D compass or radar-scanner device with soft glowing rings radiating outward in gold. The other arm points gently at the device. Pose suggests a friendly scout measuring readiness',
+      'a chubby matte claymorphic robot with a soft light-blue body (#93C5FD / sky blue) and a white TV-screen face with two black dot eyes. It is holding a small 3D laptop in front of it with both small arms, the laptop screen showing colorful horizontal code-stripe lines in magenta, yellow, and green (NO readable text). Pose suggests a friendly scout inspecting and measuring a system',
   },
   {
+    // Groen robotje met gloeilamp → formula assistant / idea generator
     agentId: 'ada',
     subject:
-      'a chubby matte claymorphic robot with a deep navy-blue body (#1E3A5F) and a warm amber/gold (#F59E0B) accent panel on its chest. It is holding up a small floating holographic card or tablet showing abstract colorful geometric blocks (representing a formula, NO text or numbers visible). The other arm rests relaxed. Pose suggests a helpful formula-assistant',
+      'a chubby matte claymorphic robot with a soft mint-green body (#A7F3D0 / light mint) and a white TV-screen face with two black dot eyes. It raises one small hand holding a glowing 3D lightbulb with warm amber light and small sparkle particles around it. The other arm rests along the body. Pose suggests a helpful assistant offering a bright idea',
   },
   {
+    // Oranje robotje met checklist → auditor
     agentId: 'lex',
     subject:
-      'a chubby matte claymorphic robot with a purple body (#534AB7) and a warm orange (#D85A30) accent panel on its chest. It is holding a large rounded magnifying glass in one arm, inspecting something invisible in front of it. A small floating 3D checklist card hovers near its other shoulder (abstract colored lines and dots, NO text). Pose suggests a careful auditor at work',
+      'a chubby matte claymorphic robot with a soft warm-orange body (#FDBA74) and a white TV-screen face with two black dot eyes. It is holding a small 3D clipboard with a checklist in one arm — the clipboard shows 3 horizontal gray lines next to green checkmarks (NO readable text). The other arm rests along the body. Pose suggests a careful auditor completing a review',
   },
 ];
 
