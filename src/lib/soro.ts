@@ -111,6 +111,8 @@ export interface SoroArticle {
     excerpt: string;
     date: string;
     isoDate: string;
+    /** ISO timestamp van laatste wijziging — voor Article Rich Results (dateModified) */
+    isoModified: string;
     image: string | null;
     categories: Category[];
     /** @deprecated Gebruik `categories` — backward-compat alias voor `categories[0]` */
@@ -122,6 +124,7 @@ export interface SoroArticle {
 function toSoroArticle(post: BlogPost): SoroArticle {
     const categories = getCategoriesForArticle(post.title, post.slug, post.excerpt);
     const publishedDate = post.published_at ? new Date(post.published_at) : new Date(post.created_at);
+    const modifiedDate = post.updated_at ? new Date(post.updated_at) : publishedDate;
 
     return {
         id: post.id,
@@ -130,6 +133,7 @@ function toSoroArticle(post: BlogPost): SoroArticle {
         excerpt: post.excerpt,
         date: publishedDate.toLocaleDateString('nl-NL', { day: 'numeric', month: 'short', year: 'numeric' }),
         isoDate: publishedDate.toISOString(),
+        isoModified: modifiedDate.toISOString(),
         image: post.image,
         categories,
         category: categories[0] ?? null,

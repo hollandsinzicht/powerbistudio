@@ -55,14 +55,28 @@ export default async function BlogPostPage({ params }: Props) {
 
     const content = await getArticleContent(article.id);
 
-    const jsonLd = {
+    const canonicalUrl = `${BASE_URL}/blog/${slug}`;
+    const articleImage = article.image || `${BASE_URL}/og-default.png`;
+
+    const blogPostingLd = {
         '@context': 'https://schema.org',
         '@type': 'BlogPosting',
+        mainEntityOfPage: {
+            '@type': 'WebPage',
+            '@id': canonicalUrl,
+        },
         headline: article.title,
         description: article.excerpt,
-        image: article.image,
+        image: {
+            '@type': 'ImageObject',
+            url: articleImage,
+            width: 1200,
+            height: 630,
+        },
         datePublished: article.isoDate,
-        url: `${BASE_URL}/blog/${slug}`,
+        dateModified: article.isoModified,
+        url: canonicalUrl,
+        inLanguage: 'nl-NL',
         author: {
             '@type': 'Person',
             name: 'Jan Willem den Hollander',
@@ -71,16 +85,37 @@ export default async function BlogPostPage({ params }: Props) {
         },
         publisher: {
             '@type': 'Organization',
+            '@id': `${BASE_URL}/#organization`,
             name: 'Power BI Studio',
             url: BASE_URL,
+            logo: {
+                '@type': 'ImageObject',
+                url: `${BASE_URL}/logo.png`,
+                width: 600,
+                height: 60,
+            },
         },
+    };
+
+    const breadcrumbLd = {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'Home', item: BASE_URL },
+            { '@type': 'ListItem', position: 2, name: 'Blog', item: `${BASE_URL}/blog` },
+            { '@type': 'ListItem', position: 3, name: article.title, item: canonicalUrl },
+        ],
     };
 
     return (
         <>
             <script
                 type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(blogPostingLd) }}
+            />
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
             />
 
             <article className="pt-32 pb-24">

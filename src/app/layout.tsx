@@ -72,13 +72,30 @@ export default function RootLayout({
               '@id': 'https://www.powerbistudio.nl/#organization',
               name: 'Power BI Studio',
               url: 'https://www.powerbistudio.nl',
-              logo: 'https://www.powerbistudio.nl/logo.png',
+              logo: {
+                '@type': 'ImageObject',
+                url: 'https://www.powerbistudio.nl/logo.png',
+                width: 600,
+                height: 60,
+              },
+              image: 'https://www.powerbistudio.nl/logo.png',
               description: 'Nederlandse studio voor Power BI architectuur, procesverbetering en eigen AI-tools (ADA, LEX). 15 jaar ervaring, LSS Black Belt-methodiek, bewezen in publieke sector, energie en finance.',
               founder: {
                 '@type': 'Person',
+                '@id': 'https://www.powerbistudio.nl/over#jan-willem',
                 name: 'Jan Willem den Hollander',
                 jobTitle: 'Oprichter & Power BI architect',
                 url: 'https://www.powerbistudio.nl/over',
+              },
+              sameAs: [
+                'https://www.linkedin.com/in/jan-willem-den-hollander/',
+              ],
+              contactPoint: {
+                '@type': 'ContactPoint',
+                contactType: 'customer service',
+                email: 'info@powerbistudio.nl',
+                url: 'https://www.powerbistudio.nl/contact',
+                availableLanguage: ['Dutch', 'English'],
               },
               knowsAbout: ['Power BI', 'DAX', 'Microsoft Fabric', 'Azure', 'SQL', 'Data Engineering', 'ETL', 'Business Intelligence', 'Lean Six Sigma', 'Power BI Embedded', 'Copilot'],
               hasOfferCatalog: {

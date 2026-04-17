@@ -11,6 +11,31 @@ export const metadata: Metadata = {
     alternates: { canonical: 'https://www.powerbistudio.nl/over' },
 };
 
+const BASE_URL = 'https://www.powerbistudio.nl';
+
+const personLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    '@id': `${BASE_URL}/over#jan-willem`,
+    name: 'Jan Willem den Hollander',
+    jobTitle: 'Oprichter & Power BI architect',
+    description: '15 jaar Power BI. LSS Black Belt. Oprichter van Power BI Studio.',
+    url: `${BASE_URL}/over`,
+    image: `${BASE_URL}/team/jan-willem.jpg`,
+    worksFor: { '@id': `${BASE_URL}/#organization` },
+    knowsAbout: ['Power BI', 'DAX', 'Microsoft Fabric', 'Lean Six Sigma', 'Power BI Embedded'],
+    sameAs: ['https://www.linkedin.com/in/jan-willem-den-hollander/'],
+};
+
+const breadcrumbLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: BASE_URL },
+        { '@type': 'ListItem', position: 2, name: 'Over', item: `${BASE_URL}/over` },
+    ],
+};
+
 export default function OverPage() {
     const skills = [
         "Power BI", "DAX", "SQL", "Python",
@@ -22,6 +47,14 @@ export default function OverPage() {
 
     return (
         <>
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(personLd) }}
+            />
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
+            />
             {/* Hero — tekst-only studio intro */}
             <section className="pt-32 pb-16 border-b border-[var(--border)] relative overflow-hidden">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(59,130,246,0.1),transparent_50%)] pointer-events-none" />
