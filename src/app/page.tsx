@@ -2,12 +2,10 @@ import Link from "next/link";
 import { ArrowRight, BrainCircuit, FileSearch, Sparkles, Globe, ShieldCheck, Zap } from "lucide-react";
 import type { Metadata } from 'next';
 import { DoelgroepBlok, SectorBadge, PriorityBadge } from '@/components/ui';
-import TeamMemberCard from '@/components/team/TeamMemberCard';
-import { team } from '@/lib/team-data';
 
 export const metadata: Metadata = {
     title: 'Power BI Studio — Power BI die écht werkt',
-    description: 'Power BI Studio: een Nederlandse studio met 15 jaar ervaring, LSS-methodiek en twee transparant gelabelde AI-agents (ADA & LEX). Voor SaaS-bedrijven, data teams en de publieke sector.',
+    description: 'Power BI Studio: een Nederlandse studio met 15 jaar ervaring, LSS-methodiek en eigen AI-tools. Voor SaaS-bedrijven, data teams en de publieke sector.',
     openGraph: {
         title: 'Power BI Studio — architectuur, AI-tools, procesverbetering',
         description: 'Van Fabric-migratie tot embedded analytics voor SaaS. Mensen + AI, altijd transparant. Bewezen aanpak, eigen producten, publieke sector-referenties.',
@@ -191,35 +189,6 @@ export default function HomePage() {
                                 Vraag een audit aan <ArrowRight size={16} />
                             </Link>
                         </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* ═══ HET TEAM — teaser ═══ */}
-            <section className="py-24 border-t border-[var(--border)]">
-                <div className="container mx-auto px-6 md:px-12">
-                    <span className="text-[0.7rem] font-semibold tracking-widest uppercase text-[var(--text-secondary)] mb-4 block">
-                        Het team
-                    </span>
-                    <h2 className="text-3xl md:text-4xl font-display font-bold mb-4 max-w-2xl">
-                        Mensen + AI. Altijd transparant.
-                    </h2>
-                    <p className="text-[var(--text-secondary)] mb-12 max-w-2xl leading-relaxed">
-                        Power BI Studio is een collectief: onze oprichter Jan Willem en vier
-                        AI-agents (ATLAS voor architectuur, NOVA voor readiness, ADA voor DAX,
-                        LEX voor model-audits) die we zelf hebben gebouwd. We maken altijd
-                        expliciet welke output van een mens komt en welke van een AI — zonder
-                        marketing-fog.
-                    </p>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {team.map((m) => (
-                            <TeamMemberCard key={m.id} {...m} />
-                        ))}
-                    </div>
-                    <div className="mt-10">
-                        <Link href="/over" className="btn-secondary inline-flex items-center gap-2 px-6 py-3">
-                            Lees meer over het team <ArrowRight size={18} />
-                        </Link>
                     </div>
                 </div>
             </section>

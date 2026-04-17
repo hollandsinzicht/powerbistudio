@@ -1,13 +1,12 @@
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Code2, Users, Lightbulb } from "lucide-react";
 import type { Metadata } from 'next';
 import { StatBlok } from '@/components/ui';
-import TeamMemberCard from '@/components/team/TeamMemberCard';
-import { team } from '@/lib/team-data';
 
 export const metadata: Metadata = {
-    title: 'Over Power BI Studio — team, aanpak en AI-agents',
-    description: 'Power BI Studio is een Nederlands collectief: oprichter Jan Willem den Hollander (15 jaar Power BI, LSS Black Belt) en twee transparant gelabelde AI-agents — ADA (DAX) en LEX (model-audit).',
+    title: 'Over Power BI Studio — aanpak, ervaring en tools',
+    description: 'Power BI Studio is een Nederlandse studio voor Power BI architectuur, Fabric-migratie en procesverbetering. Opgericht door Jan Willem den Hollander — 15 jaar Power BI, LSS Black Belt.',
     alternates: { canonical: 'https://www.powerbistudio.nl/over' },
 };
 
@@ -55,20 +54,43 @@ export default function OverPage() {
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
             />
-            {/* Hero — tekst-only studio intro */}
+
+            {/* Hero — foto oprichter + studio intro */}
             <section className="pt-32 pb-16 border-b border-[var(--border)] relative overflow-hidden">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(59,130,246,0.1),transparent_50%)] pointer-events-none" />
-                <div className="container mx-auto px-6 md:px-12 relative z-10 max-w-3xl">
-                    <h1 className="text-3xl md:text-5xl font-display font-bold mb-6">
-                        Een Power BI Studio.<br />
-                        Mensen én AI, altijd <span className="text-[var(--accent)]">transparant</span>.
-                    </h1>
-                    <p className="text-lg text-[var(--text-secondary)] leading-relaxed">
-                        Power BI Studio is een Nederlands collectief voor Power BI architectuur,
-                        procesverbetering en eigen AI-tools. Oprichter Jan Willem werkt samen
-                        met twee AI-agents — ADA en LEX — die we zelf bouwden en open benoemen.
-                        Geen verborgen AI in &ldquo;een team van seniors&rdquo;. Gewoon: mens + AI, met namen.
-                    </p>
+                <div className="container mx-auto px-6 md:px-12 relative z-10">
+                    <div className="flex flex-col md:flex-row items-center gap-12 md:gap-24">
+                        <div className="w-full md:w-1/2 flex justify-center md:justify-end order-2 md:order-1 relative">
+                            <div className="w-64 h-64 md:w-80 md:h-80 relative rounded-2xl overflow-hidden border border-[var(--border)] shadow-[0_0_40px_rgba(59,130,246,0.15)] group">
+                                <div className="absolute inset-0 bg-gradient-to-t from-[var(--background)] to-transparent z-10 opacity-60" />
+                                <Image
+                                    src="/team/jan-willem.jpg"
+                                    alt="Jan Willem den Hollander — oprichter Power BI Studio"
+                                    fill
+                                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                                    priority
+                                />
+                                <div className="absolute bottom-4 left-4 z-20 flex items-center gap-2 bg-[rgba(255,255,255,0.9)] backdrop-blur px-3 py-1.5 rounded-full border border-[var(--border)]">
+                                    <span className="w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.6)]" />
+                                    <span className="text-xs font-medium text-[var(--text-primary)]">Beschikbaar voor interim</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="w-full md:w-1/2 order-1 md:order-2">
+                            <span className="text-[0.7rem] font-semibold tracking-widest uppercase text-[var(--text-secondary)] mb-3 block">
+                                De studio
+                            </span>
+                            <h1 className="text-3xl md:text-5xl font-display font-bold mb-6">
+                                De Power BI studio die procesverbetering als <span className="text-[var(--accent)]">uitkomst</span> levert
+                            </h1>
+                            <p className="text-lg text-[var(--text-secondary)] leading-relaxed">
+                                Power BI Studio is opgericht door Jan Willem den Hollander.
+                                We combineren publieke sector-bewijs, Lean Six Sigma-methodiek,
+                                eigen productstack en hands-on senioriteit als developer, interim
+                                lead én product owner.
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -84,33 +106,8 @@ export default function OverPage() {
                 </div>
             </section>
 
-            {/* Ons team — founder + 4 AI-agents */}
-            <section className="py-24">
-                <div className="container mx-auto px-6 md:px-12">
-                    <span className="text-[0.7rem] font-semibold tracking-widest uppercase text-[var(--text-secondary)] mb-4 block">
-                        Ons team
-                    </span>
-                    <h2 className="text-3xl md:text-4xl font-display font-bold mb-12 max-w-2xl">
-                        Eén mens, vier AI-agents. Altijd met naam.
-                    </h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {team.map((m) => (
-                            <TeamMemberCard key={m.id} {...m} />
-                        ))}
-                    </div>
-                    <div className="mt-10 max-w-3xl">
-                        <p className="text-sm text-[var(--text-secondary)] leading-relaxed bg-gray-50 border border-[var(--border)] rounded-lg p-5">
-                            <strong className="text-[var(--text-primary)]">Transparantie.</strong> Power BI Studio is een collectief
-                            van Jan Willem den Hollander (oprichter, mens) en vier AI-agents die hij zelf bouwde (ATLAS, NOVA, ADA, LEX).
-                            We maken altijd expliciet of output uit menselijk werk of AI-werk komt.
-                            Klantinteractie loopt altijd via Jan Willem — de agents werken onder de motorkap.
-                        </p>
-                    </div>
-                </div>
-            </section>
-
             {/* Drie leveringsmodi — één studio */}
-            <section className="py-24 bg-gray-50 border-y border-[var(--border)]">
+            <section className="py-24">
                 <div className="container mx-auto px-6 md:px-12">
                     <span className="text-[0.7rem] font-semibold tracking-widest uppercase text-[var(--text-secondary)] mb-4 block">
                         Drie leveringsmodi — één studio
@@ -121,8 +118,8 @@ export default function OverPage() {
                             <h3 className="text-lg font-display font-bold mb-3">Als development-partner</h3>
                             <p className="text-[var(--text-secondary)] text-sm leading-relaxed mb-4">
                                 We bouwen het zelf. DAX, Power Query, semantische modellen,
-                                RLS-architectuur, deployment pipelines. Jan Willem leidt de
-                                architectuur; ADA en LEX versnellen routine-audits en formule-werk.
+                                RLS-architectuur, deployment pipelines. Geen interpretatie
+                                verloren in een overdracht.
                             </p>
                             <p className="text-xs text-[var(--text-secondary)]">
                                 Referentie: <Link href="/cases/ggdghor" className="text-[var(--primary)] hover:underline">GGDGHOR — nationaal dataportaal</Link>
@@ -157,7 +154,7 @@ export default function OverPage() {
             </section>
 
             {/* Het verhaal van de studio */}
-            <section className="py-24">
+            <section className="py-24 bg-gray-50 border-y border-[var(--border)]">
                 <div className="container mx-auto px-6 md:px-12">
                     <div className="flex flex-col lg:flex-row gap-16 lg:gap-24 max-w-6xl mx-auto">
                         <div className="w-full lg:w-3/5">
@@ -166,8 +163,8 @@ export default function OverPage() {
                                 <p>
                                     Power BI Studio begon als de solo-praktijk van Jan Willem den Hollander —
                                     15 jaar diep in Power BI, de Microsoft Data stack, en de bedrijfsprocessen
-                                    die eromheen draaien. Vandaag is het een collectief waar mens en AI samen
-                                    werken, met heldere rolverdeling.
+                                    die eromheen draaien. Vandaag is het een studio waar menselijke expertise
+                                    gecombineerd wordt met zelfgebouwde AI-tools voor specifieke vragen.
                                 </p>
                                 <p>
                                     Wat de studio onderscheidt van de meeste BI-consultancies is de Lean Six Sigma-
@@ -184,11 +181,10 @@ export default function OverPage() {
                                 </p>
                                 <p>
                                     Naast interim- en advieswerk bouwt de studio eigen producten. DashPortal is
-                                    een white-label Power BI portal. De Report Auditor (aangedreven door onze
-                                    AI-agent LEX) analyseert Power BI datamodellen op kwaliteit. De DAX Formula
-                                    Assistant (aangedreven door ADA) schrijft DAX op basis van natuurlijke taal.
-                                    Dat zijn geen bijzaken — ze zijn het bewijs dat de kennis dieper gaat dan
-                                    een projectklus.
+                                    een white-label Power BI portal. De Report Auditor analyseert Power BI
+                                    datamodellen op kwaliteit. De DAX Formula Assistant schrijft DAX op basis van
+                                    natuurlijke taal. Die AI-tools ondersteunen ons werk — bekijk ze op de
+                                    <Link href="/tools" className="text-[var(--primary)] hover:underline"> tools-pagina</Link>.
                                 </p>
                             </div>
                             <div className="mt-8">
@@ -224,7 +220,7 @@ export default function OverPage() {
             </section>
 
             {/* CTA */}
-            <section className="py-24 bg-gray-50 border-t border-[var(--border)]">
+            <section className="py-24">
                 <div className="container mx-auto px-6 md:px-12 text-center max-w-2xl">
                     <h2 className="text-2xl md:text-3xl font-display font-bold mb-6">
                         Laten we kennismaken

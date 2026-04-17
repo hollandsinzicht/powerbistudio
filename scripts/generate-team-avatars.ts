@@ -26,12 +26,6 @@ const OUT_DIR = join(process.cwd(), 'public', 'team');
 // (TrySoro / Icons8 3D / Linear).
 const agents = [
   {
-    // Paars robotje met bar-chart → architectuur / stacked blocks
-    agentId: 'atlas',
-    subject:
-      'a chubby matte claymorphic robot with a soft light-purple body (#A78BFA / lavender) and a white TV-screen face with two black dot eyes. It holds up one hand with a floating glowing 3D bar chart with 4 ascending golden/amber bars and small sparkle particles around it. The other arm rests along the body. Pose suggests an architect presenting stacked data building-blocks',
-  },
-  {
     // Blauw robotje met laptop → readiness scanner / inspecting code
     agentId: 'nova',
     subject:

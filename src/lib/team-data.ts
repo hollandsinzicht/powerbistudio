@@ -27,23 +27,6 @@ export const team: TeamMember[] = [
     linkText: 'Plan een kennismaking →',
   },
   {
-    id: 'atlas',
-    name: 'ATLAS',
-    role: 'AI Power BI Architect',
-    type: 'ai-agent',
-    image: '/team/atlas.png',
-    bio: 'ATLAS is onze AI-assistent voor Power BI-architectuur en development. Van datamodel-opzet tot workspace-strategie en deployment pipelines — ATLAS versnelt het dagelijkse architectuurwerk.',
-    specialties: [
-      'Architectuur',
-      'Datamodellering',
-      'Workspaces',
-      'Deployment pipelines',
-    ],
-    accent: 'purple',
-    linkHref: '/contact',
-    linkText: 'Plan een architectuurreview →',
-  },
-  {
     id: 'nova',
     name: 'NOVA',
     role: 'AI Readiness Scanner',
