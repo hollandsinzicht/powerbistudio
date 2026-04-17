@@ -101,21 +101,33 @@ Visual style requirements (apply consistently):
 }
 
 export interface TeamAvatarPromptParams {
-  subject: string; // e.g. "AI DAX-formula assistant with sigma-sum symbol and square brackets glyph"
-  gradient: string; // e.g. "deep navy (#1E3A5F) to warm amber (#F59E0B)"
+  /** Volledige character-omschrijving incl. kleur en prop (e.g. "a purple chubby robot holding a magnifying glass") */
+  subject: string;
+  /** Legacy — wordt niet meer gebruikt (achtergrond is nu altijd wit) */
+  gradient?: string;
 }
 
 function buildTeamAvatarPrompt(p: TeamAvatarPromptParams): string {
-  return `A friendly cute mascot AI robot character: ${p.subject}. The robot has a rounded, approachable design with a simple LED-style face (two glowing dots or a small screen for eyes, no human features) and a small body. Rendered in a modern flat vector illustration style, similar to Notion, Stripe, Slack, or Duolingo marketing mascots.
+  return `A 3D rendered claymorphic mascot robot character: ${p.subject}.
 
-Background: a smooth radial gradient from ${p.gradient} on a soft cream surface. A subtle halo or glow around the robot. Thin circuit-line texture at 10% opacity faintly visible behind the robot. Composition: robot centered, shown from chest-up or full body, with breathing room around it. Square format, centered, high-quality vector art.
+Style reference: the cute 3D "icon style" popularized by TrySoro, Icons8 3D, Linear.app, Coinbase 3D illustrations, Framer, and Spline. Soft, rounded, chubby claymorphic forms with a matte plastic/clay material finish. Soft studio lighting creates gentle highlights and a subtle soft drop shadow beneath the character to ground it.
+
+Character anatomy:
+- Head: a simple rounded cube or small TV-screen-shape, with a screen face showing only two small dot or pill-shaped eyes (light / glowing). NO mouth, NO nose, NO human features.
+- Body: soft rounded chubby shape with small simple arms. The character is cute and approachable, slightly toy-like.
+- Material: matte plastic / clay, NOT metallic, NOT shiny sci-fi.
+
+Background: clean pure white or very light cream (#FFFFFF to #F8F9FC) — NO gradient, NO texture, NO circuit lines. Just the character with a subtle soft shadow underneath.
+
+Composition: character centered, three-quarter front-facing view, full body visible (with the key prop clearly shown). Square format. High-quality 3D render.
 
 Hard rules:
-- NO text, NO letters, NO words anywhere in the image
-- NO human faces, NO human skin, NO realistic eyes, NO human hands — this is a ROBOT, not a person
-- Robot face must be stylized (simple geometric eyes, no mouth or tiny smile line), friendly and non-threatening
-- Cute, warm, approachable — mascot-style, not sci-fi/industrial
-- Single centered robot character, nothing cut off at the edges`;
+- NO text, NO letters, NO words, NO numbers anywhere in the image
+- NO human faces, NO human skin, NO human hands — ROBOT character only
+- Only 2 simple dot eyes on the face, no other facial features
+- Cute, rounded, claymorphic — NEVER sci-fi/industrial/dark
+- White/neutral background, NO gradient background, NO circuit textures
+- Single centered character, nothing cut off at the edges`;
 }
 
 // ─── Storage ────────────────────────────────────────────────────────

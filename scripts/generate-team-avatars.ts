@@ -19,30 +19,30 @@ config({ path: '.env' });
 
 const OUT_DIR = join(process.cwd(), 'public', 'team');
 
+// Elke agent deelt dezelfde claymorphic body-anatomy (kleine chubby robot,
+// TV-screen hoofdje met 2 dot-eyes). Variatie zit in body-kleur + prop dat
+// de specialisatie uitbeeldt. Stijl: zie buildTeamAvatarPrompt in
+// src/lib/image-generator.ts — TrySoro / Icons8 3D / Linear.
 const agents = [
   {
     agentId: 'atlas',
     subject:
-      'ATLAS, a friendly Power BI architect robot with a rounded slate/graphite body and warm bronze/gold accents on its chest panel and antenna. It holds up a small floating 3D blueprint model — abstract geometric shapes like stacked layers, columns, or a mini building (NO actual text). One arm gestures thoughtfully towards the blueprint. Its expression is focused and wise',
-    gradient: 'deep slate-navy (#1E3A5F) in the upper-left to warm bronze-gold (#B8963E) in the lower-right',
+      'a chubby matte claymorphic robot with a slate-navy body (deep blue #1E3A5F) and subtle warm bronze/gold (#B8963E) accent panel on its chest. It is holding up a small floating 3D blueprint model — abstract stacked geometric blocks or mini-building shapes glowing softly in warm amber/gold. The other arm rests relaxed along the body. Pose suggests an architect presenting a design',
   },
   {
     agentId: 'nova',
     subject:
-      'NOVA, a friendly readiness-scanner robot with a rounded teal-green body and warm gold accents on its chest panel. It is holding a compass or radar-style scanner device, with small floating rings or arcs radiating outward from the device. A tiny floating bar-chart or upward arrow hovers near its shoulder (NO actual text or numbers). Its expression is thoughtful and measuring',
-    gradient: 'deep teal (#0F6E56) in the upper-left to warm gold (#B8963E) in the lower-right',
+      'a chubby matte claymorphic robot with a teal-green body (#0F6E56) and subtle warm gold (#B8963E) accent panel on its chest. It is holding a small 3D compass or radar-scanner device with soft glowing rings radiating outward in gold. The other arm points gently at the device. Pose suggests a friendly scout measuring readiness',
   },
   {
     agentId: 'ada',
     subject:
-      'ADA, a friendly DAX-formula assistant robot. The robot has a rounded blue-navy body with warm amber/gold accents on its chest panel or antennas. It is holding or projecting a small floating holographic screen that shows abstract colored blocks and geometric shapes representing a formula (NO actual text or letters on the screen). Its expression is curious and helpful',
-    gradient: 'deep navy (#1E3A5F) in the upper-left to warm amber (#F59E0B) in the lower-right',
+      'a chubby matte claymorphic robot with a deep navy-blue body (#1E3A5F) and a warm amber/gold (#F59E0B) accent panel on its chest. It is holding up a small floating holographic card or tablet showing abstract colorful geometric blocks (representing a formula, NO text or numbers visible). The other arm rests relaxed. Pose suggests a helpful formula-assistant',
   },
   {
     agentId: 'lex',
     subject:
-      'LEX, a friendly model-auditor robot with a rounded purple body and warm orange accents on its chest panel or antennas. It is holding a large magnifying glass in one of its arms, carefully inspecting something. A tiny checklist-looking tablet floats near its other arm (NO actual text on the tablet). Its expression is attentive and thorough',
-    gradient: 'deep purple (#534AB7) in the upper-left to warm orange (#D85A30) in the lower-right',
+      'a chubby matte claymorphic robot with a purple body (#534AB7) and a warm orange (#D85A30) accent panel on its chest. It is holding a large rounded magnifying glass in one arm, inspecting something invisible in front of it. A small floating 3D checklist card hovers near its other shoulder (abstract colored lines and dots, NO text). Pose suggests a careful auditor at work',
   },
 ];
 
