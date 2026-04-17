@@ -5,7 +5,7 @@ import { ProbleemIntro } from '@/components/ui';
 
 export const metadata: Metadata = {
     title: 'Is jouw Power BI model klaar voor Copilot? Copilot Readiness Audit | PowerBIStudio.nl',
-    description: 'Copilot is beschikbaar in alle betaalde Fabric SKUs — maar de meeste datamodellen zijn er niet op gebouwd. Ik check je semantic model en geef je een concreet actieplan.',
+    description: 'Copilot is beschikbaar in alle betaalde Fabric SKUs — maar de meeste datamodellen zijn er niet op gebouwd. Wij checken je semantic model en geven je een concreet actieplan.',
     alternates: { canonical: 'https://www.powerbistudio.nl/copilot-readiness' },
 };
 
@@ -53,7 +53,7 @@ export default function CopilotReadinessPage() {
                             <h3 className="text-lg font-display font-bold mb-3">Descriptions & context</h3>
                             <p className="text-[var(--text-secondary)] text-sm leading-relaxed">
                                 Copilot leest de descriptions van je tabellen, kolommen en measures.
-                                Ontbreken die, dan gokt Copilot. Ik check of je model beschrijvend
+                                Ontbreken die, dan gokt Copilot. We checken of je model beschrijvend
                                 genoeg is voor betrouwbare AI-antwoorden.
                             </p>
                         </div>
@@ -63,7 +63,7 @@ export default function CopilotReadinessPage() {
                             <p className="text-[var(--text-secondary)] text-sm leading-relaxed">
                                 Microsoft biedt de mogelijkheid om antwoorden op veelgestelde vragen
                                 te verifiëren en te verankeren in je model. Bijna niemand heeft dit
-                                ingericht. Ik doe dat voor je.
+                                ingericht. Wij doen dat voor je.
                             </p>
                         </div>
                         <div className="glass-card rounded-xl p-6 md:p-8 border border-[var(--border)]">
@@ -71,7 +71,7 @@ export default function CopilotReadinessPage() {
                             <h3 className="text-lg font-display font-bold mb-3">Hidden columns & grounding</h3>
                             <p className="text-[var(--text-secondary)] text-sm leading-relaxed">
                                 Niet alle kolommen zijn relevant voor Copilot. Verkeerde kolommen
-                                in Copilot&apos;s zichtlijn leiden tot ruis. Ik filter en structureer
+                                in Copilot&apos;s zichtlijn leiden tot ruis. We filteren en structureren
                                 je model voor maximale Copilot-betrouwbaarheid.
                             </p>
                         </div>

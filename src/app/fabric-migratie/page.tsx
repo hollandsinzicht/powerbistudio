@@ -24,7 +24,7 @@ export default function FabricMigratiePage() {
                     </h1>
                     <p className="text-[var(--text-secondary)] text-lg max-w-2xl leading-relaxed">
                         De overgang naar Fabric is geen optie — het is een planning.
-                        Ik help je die planning maken voordat Microsoft hem voor je maakt.
+                        Wij helpen je die planning maken voordat Microsoft hem voor je maakt.
                     </p>
                 </div>
             </section>
@@ -51,7 +51,7 @@ export default function FabricMigratiePage() {
                             {
                                 icon: Users,
                                 title: 'Klein (< 50 gebruikers)',
-                                desc: 'Waarschijnlijk goedkoper en eenvoudiger dan je denkt. Fabric F2 of F4 capacity is voldoende. Ik help je in één dag een migratiescope te definiëren.',
+                                desc: 'Waarschijnlijk goedkoper en eenvoudiger dan je denkt. Fabric F2 of F4 capacity is voldoende. We helpen je in één dag een migratiescope te definiëren.',
                             },
                             {
                                 icon: Building2,
@@ -61,7 +61,7 @@ export default function FabricMigratiePage() {
                             {
                                 icon: Landmark,
                                 title: 'Enterprise (500+ gebruikers)',
-                                desc: 'Waarschijnlijk al in gesprek met Microsoft. Ik adviseer als onafhankelijke architectuurpartij — niet gebonden aan een Microsoft-partnercommissie.',
+                                desc: 'Waarschijnlijk al in gesprek met Microsoft. Wij adviseren als onafhankelijke architectuurpartij — niet gebonden aan een Microsoft-partnercommissie.',
                             },
                         ].map((s) => (
                             <div key={s.title} className="glass-card rounded-xl p-6 md:p-8 border border-[var(--border)]">

@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
     title: 'Power BI en procesverbetering — de Lean Six Sigma-aanpak | PowerBIStudio.nl',
-    description: 'Dashboards zijn het middel. Procesverbetering is het doel. Als LSS Black Belt verbind ik Power BI aan bedrijfsprocessen — de taal die CFO\'s en COO\'s spreken.',
+    description: 'Dashboards zijn het middel, procesverbetering is het doel. Onze oprichter is LSS Black Belt, en het team van Power BI Studio toetst elk BI-vraagstuk aan die lens — de taal die CFO\'s en COO\'s spreken.',
     alternates: { canonical: 'https://www.powerbistudio.nl/procesverbetering' },
 };
 
@@ -22,8 +22,9 @@ export default function ProcesverbeteringPage() {
                         Dashboards zijn het middel. Procesverbetering is het doel.
                     </h1>
                     <p className="text-[var(--text-secondary)] text-lg max-w-2xl leading-relaxed">
-                        Als Lean Six Sigma Black Belt kijk ik anders naar data dan de meeste
-                        Power BI-consultants. Ik verbind BI aan bedrijfsprocessen.
+                        Binnen Power BI Studio kijken we vanuit een Lean Six Sigma Black Belt-lens
+                        naar data — een methodische achtergrond die onze oprichter inbrengt en die
+                        het hele team gebruikt. We verbinden BI aan bedrijfsprocessen.
                     </p>
                 </div>
             </section>
@@ -34,13 +35,13 @@ export default function ProcesverbeteringPage() {
                     <div className="text-[var(--text-secondary)] leading-relaxed space-y-4 text-lg">
                         <p>
                             Alle andere Power BI-consultants verkopen dashboards en rapporten
-                            als eindproduct. Ik verkoop uitkomsten: kortere DSO, lagere
+                            als eindproduct. Wij verkopen uitkomsten: kortere DSO, lagere
                             voorraadkosten, snellere rapportagecycli. Dat is het verschil tussen
                             een dashboard-klus en een procesverbeteringsproject.
                         </p>
                         <p>
                             Dit is de taal die CFO&apos;s en COO&apos;s spreken. En het is de reden dat
-                            ik ingezet word op vraagstukken die verder gaan dan een rapport.
+                            we ingezet worden op vraagstukken die verder gaan dan een rapport.
                         </p>
                     </div>
                 </div>
@@ -97,10 +98,11 @@ export default function ProcesverbeteringPage() {
                 <div className="container mx-auto px-6 md:px-12 max-w-3xl">
                     <h2 className="text-2xl md:text-3xl font-display font-bold mb-6">In de praktijk: Lyreco</h2>
                     <p className="text-[var(--text-secondary)] leading-relaxed mb-6">
-                        Bij Lyreco heb ik als interim data team lead niet alleen BI-oplossingen
-                        gebouwd — ik heb de DMAIC-methodiek toegepast op het BI-team zelf.
-                        Processen geoptimaliseerd, backlog geprioriteerd op businessimpact,
-                        en governance ingericht die na mijn vertrek standhoudt.
+                        Bij Lyreco leverde Power BI Studio interim data team lead-capaciteit
+                        (Jan Willem, oprichter). We bouwden niet alleen BI-oplossingen — we
+                        pasten de DMAIC-methodiek toe op het BI-team zelf. Processen
+                        geoptimaliseerd, backlog geprioriteerd op businessimpact, en governance
+                        ingericht die na onze overdracht standhoudt.
                     </p>
                     <Link href="/cases/lyreco" className="inline-flex items-center gap-2 font-medium hover:gap-3 transition-all" style={{ color: '#B8963E' }}>
                         Lees de volledige Lyreco case <ArrowRight size={16} />

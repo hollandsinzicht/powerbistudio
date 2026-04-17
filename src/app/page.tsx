@@ -2,13 +2,15 @@ import Link from "next/link";
 import { ArrowRight, BrainCircuit, FileSearch, Sparkles, Globe, ShieldCheck, Zap } from "lucide-react";
 import type { Metadata } from 'next';
 import { DoelgroepBlok, SectorBadge, PriorityBadge } from '@/components/ui';
+import TeamMemberCard from '@/components/team/TeamMemberCard';
+import { team } from '@/lib/team-data';
 
 export const metadata: Metadata = {
-    title: 'Power BI architect & AI specialist | Jan Willem den Hollander — PowerBIStudio.nl',
-    description: 'Power BI die écht werkt. Jan Willem den Hollander — 15 jaar specialist, LSS Black Belt, maker van DashPortal. Voor SaaS-bedrijven, data teams en de publieke sector.',
+    title: 'Power BI Studio — Power BI die écht werkt',
+    description: 'Power BI Studio: een Nederlandse studio met 15 jaar ervaring, LSS-methodiek en twee transparant gelabelde AI-agents (ADA & LEX). Voor SaaS-bedrijven, data teams en de publieke sector.',
     openGraph: {
-        title: 'Power BI architect & AI specialist | PowerBIStudio.nl',
-        description: 'Van Fabric-migratie tot embedded analytics voor SaaS. Bewezen aanpak, eigen producten, publieke sector-referenties.',
+        title: 'Power BI Studio — architectuur, AI-tools, procesverbetering',
+        description: 'Van Fabric-migratie tot embedded analytics voor SaaS. Mensen + AI, altijd transparant. Bewezen aanpak, eigen producten, publieke sector-referenties.',
     },
     alternates: { canonical: 'https://www.powerbistudio.nl/' },
 };
@@ -29,13 +31,14 @@ export default function HomePage() {
                             Resultaten die <span className="text-[var(--accent)]">blijven</span>.
                         </h1>
                         <p className="text-[var(--text-secondary)] text-lg md:text-xl leading-relaxed mb-8 max-w-xl">
-                            Jan Willem den Hollander — Power BI architect met 15 jaar ervaring,
-                            LSS Black Belt-achtergrond en eigen productstack. Voor organisaties
-                            die meer willen dan mooie dashboards.
+                            Power BI Studio combineert 15 jaar hands-on architectuur-ervaring
+                            met eigen AI-tools. Voor organisaties die meer willen dan mooie
+                            dashboards — en transparantie willen over wát door een mens en wát
+                            door AI gedaan wordt.
                         </p>
                         <div className="flex flex-wrap gap-4">
                             <Link href="/over" className="btn-primary inline-flex items-center gap-2 text-lg px-6 py-3">
-                                Bekijk mijn aanpak <ArrowRight size={18} />
+                                Leer het team kennen <ArrowRight size={18} />
                             </Link>
                             <Link href="/tools" className="btn-secondary inline-flex items-center gap-2 text-lg px-6 py-3">
                                 Probeer de tools
@@ -62,30 +65,30 @@ export default function HomePage() {
             <section className="py-24">
                 <div className="container mx-auto px-6 md:px-12">
                     <span className="text-[0.7rem] font-semibold tracking-widest uppercase text-[var(--text-secondary)] mb-4 block">
-                        Voor wie werk ik
+                        Voor wie werken wij
                     </span>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-2">
                         <DoelgroepBlok
                             sector="saas"
-                            label="Ik bouw software"
+                            label="Voor softwareteams"
                             title="Analytics embedded in jouw product"
-                            description="Jouw klanten willen dashboards in jouw app — niet in een apart Microsoft-portaal. Ik ontwerp de architectuur die dat mogelijk maakt, veilig en schaalbaar."
+                            description="Jouw klanten willen dashboards in jouw app — niet in een apart Microsoft-portaal. We ontwerpen de architectuur die dat mogelijk maakt, veilig en schaalbaar."
                             linkText="Meer over embedded analytics →"
                             href="/saas"
                         />
                         <DoelgroepBlok
                             sector="data"
-                            label="Ik heb een data team"
+                            label="Voor data teams"
                             title="Audit, Fabric-migratie of interim begeleiding"
-                            description="Van slecht presterend datamodel tot Fabric-transitie. Ik kom erin als developer, lead of product owner — afhankelijk van wat jouw team nodig heeft."
-                            linkText="Bekijk mijn aanpak →"
+                            description="Van slecht presterend datamodel tot Fabric-transitie. We komen binnen als developer, lead of product owner — afhankelijk van wat jouw team nodig heeft."
+                            linkText="Bekijk onze aanpak →"
                             href="/over"
                         />
                         <DoelgroepBlok
                             sector="zorg"
-                            label="Ik werk in zorg of overheid"
+                            label="Voor zorg & overheid"
                             title="Rapportages voor meerdere locaties of regio's"
-                            description="Van 25 GGD-regio's naar één gedeeld datamodel. Ik ken de eisen van de publieke sector: AVG, multi-tenant RLS, en governance die gecontroleerd wordt."
+                            description="Van 25 GGD-regio's naar één gedeeld datamodel. We kennen de eisen van de publieke sector: AVG, multi-tenant RLS, en governance die gecontroleerd wordt."
                             linkText="Bekijk de publieke sector aanpak →"
                             href="/publieke-sector"
                         />
@@ -98,22 +101,22 @@ export default function HomePage() {
                 <div className="container mx-auto px-6 md:px-12">
                     <div className="max-w-3xl mx-auto">
                         <span className="text-[0.7rem] font-semibold tracking-widest uppercase mb-4 block" style={{ color: 'var(--color-accent-lean)' }}>
-                            Wat mij onderscheidt
+                            Wat ons onderscheidt
                         </span>
                         <h2 className="text-3xl md:text-4xl font-display font-bold mb-6">
                             Dashboards zijn het middel. Procesverbetering is het doel.
                         </h2>
                         <div className="text-[var(--text-secondary)] leading-relaxed space-y-4">
                             <p>
-                                Met een achtergrond als Lean Six Sigma Black Belt kijk ik naar data
-                                anders dan de meeste Power BI-consultants. Ik verbind BI aan
+                                Onze oprichter is gecertificeerd Lean Six Sigma Black Belt, en het
+                                team toetst elk BI-vraagstuk aan die lens. We verbinden BI aan
                                 bedrijfsprocessen — niet alleen aan rapportage. De vraag is niet
                                 &ldquo;hoe ziet het dashboard eruit?&rdquo;, maar &ldquo;welk besluit moet sneller
                                 worden genomen, en wat kost het als dat nu misgaat?&rdquo;
                             </p>
                             <p>
                                 Dat is de taal die CFO&apos;s en COO&apos;s spreken. En het is de reden dat
-                                organisaties als Lyreco mij inzetten op BI-vraagstukken die verder
+                                organisaties als Lyreco ons inzetten op BI-vraagstukken die verder
                                 gaan dan een dashboard-klus.
                             </p>
                         </div>
@@ -181,13 +184,41 @@ export default function HomePage() {
                             <h3 className="text-lg font-display font-bold mb-3">Copilot-klaar maken</h3>
                             <p className="text-[var(--text-secondary)] text-sm leading-relaxed mb-4">
                                 Copilot in Power BI is beschikbaar — maar de meeste modellen zijn
-                                er niet op gebouwd. Ik check je semantic model en geef je een
+                                er niet op gebouwd. We checken je semantic model en geven je een
                                 concreet actieplan.
                             </p>
                             <Link href="/copilot-readiness" className="inline-flex items-center gap-2 text-sm font-medium text-[var(--primary)] hover:gap-3 transition-all">
                                 Vraag een audit aan <ArrowRight size={16} />
                             </Link>
                         </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* ═══ HET TEAM — teaser ═══ */}
+            <section className="py-24 border-t border-[var(--border)]">
+                <div className="container mx-auto px-6 md:px-12">
+                    <span className="text-[0.7rem] font-semibold tracking-widest uppercase text-[var(--text-secondary)] mb-4 block">
+                        Het team
+                    </span>
+                    <h2 className="text-3xl md:text-4xl font-display font-bold mb-4 max-w-2xl">
+                        Mensen + AI. Altijd transparant.
+                    </h2>
+                    <p className="text-[var(--text-secondary)] mb-12 max-w-2xl leading-relaxed">
+                        Power BI Studio is een collectief: onze oprichter Jan Willem en twee
+                        AI-agents (ADA voor DAX, LEX voor model-audits) die we zelf hebben
+                        gebouwd. We maken altijd expliciet welke output van een mens komt en
+                        welke van een AI — zonder marketing-fog.
+                    </p>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        {team.map((m) => (
+                            <TeamMemberCard key={m.id} {...m} />
+                        ))}
+                    </div>
+                    <div className="mt-10">
+                        <Link href="/over" className="btn-secondary inline-flex items-center gap-2 px-6 py-3">
+                            Lees meer over het team <ArrowRight size={18} />
+                        </Link>
                     </div>
                 </div>
             </section>
@@ -199,13 +230,13 @@ export default function HomePage() {
                         Eigen producten
                     </span>
                     <h2 className="text-3xl md:text-4xl font-display font-bold mb-4 max-w-2xl">
-                        De enige Power BI specialist in Nederland met een eigen productstack
+                        De enige Power BI studio in Nederland met een eigen productstack
                     </h2>
                     <p className="text-[var(--text-secondary)] mb-12 max-w-2xl leading-relaxed">
-                        Alle andere consultants verkopen uren. Ik bouw ook producten — omdat
-                        het bouwen van producten een ander niveau van architectuurkennis
-                        vereist. DashPortal, de Report Auditor en de DAX Assistant zijn niet
-                        bijzaken. Ze zijn het bewijs dat de kennis dieper gaat.
+                        Alle andere consultants verkopen uren. Wij bouwen ook producten —
+                        DashPortal, de Report Auditor (aangedreven door onze AI-agent LEX)
+                        en de DAX Assistant (aangedreven door ADA). Dat is geen bijzaak;
+                        het is het bewijs dat we de architectuur echt doorgronden.
                     </p>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <Link href="/dashportal" className="glass-card rounded-xl p-6 border border-[var(--border)] hover:border-emerald-400 transition-all group">

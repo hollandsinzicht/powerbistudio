@@ -251,7 +251,7 @@ export async function PUT(req: Request) {
       })
 
       if (!imageUrl) {
-        return NextResponse.json({ error: 'Image generatie mislukt — check OPENAI_API_KEY' }, { status: 500 })
+        return NextResponse.json({ error: 'Image generatie mislukt — check FREEPIK_API_KEY (AI + stock fallback)' }, { status: 500 })
       }
 
       await updatePost(id, { image: imageUrl })

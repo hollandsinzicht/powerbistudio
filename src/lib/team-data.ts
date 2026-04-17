@@ -1,0 +1,67 @@
+import type { TeamMember } from './types/team';
+
+/**
+ * Single source of truth voor het team.
+ * Power BI Studio is een collectief: Jan Willem (oprichter, mens) +
+ * twee transparant gelabelde AI-agents (ADA & LEX) gekoppeld aan eigen tools.
+ */
+export const team: TeamMember[] = [
+  {
+    id: 'jan-willem',
+    name: 'Jan Willem den Hollander',
+    role: 'Oprichter & Power BI architect',
+    type: 'founder',
+    image: '/team/jan-willem.jpg',
+    bio: '15 jaar Power BI. LSS Black Belt. Oprichter van Power BI Studio. Bouwt de architectuur, stuurt interim data teams aan, en reviewt elke AI-output voordat die bij klanten landt.',
+    specialties: [
+      'Power BI architectuur',
+      'Fabric-migratie',
+      'LSS Black Belt',
+      'Interim data lead',
+      'Publieke sector',
+    ],
+    available: true,
+    accent: 'navy-amber',
+    linkHref: '/contact',
+    linkText: 'Plan een kennismaking →',
+  },
+  {
+    id: 'ada',
+    name: 'ADA',
+    role: 'AI DAX-specialist',
+    type: 'ai-agent',
+    image: '/team/ada.png',
+    bio: 'ADA is onze AI DAX-specialist. Beschrijf in gewone taal wat je wilt berekenen — ADA schrijft de formule, legt het patroon uit, en toont varianten.',
+    specialties: [
+      'DAX',
+      'Measure-patronen',
+      'Natural-language → formule',
+      'Context-aware',
+    ],
+    tiedToProduct: { name: 'DAX Formula Assistant', href: '/tools/dax-assistant' },
+    accent: 'navy-amber',
+    linkHref: '/tools/dax-assistant',
+    linkText: 'Probeer ADA (gratis) →',
+  },
+  {
+    id: 'lex',
+    name: 'LEX',
+    role: 'AI Model Auditor',
+    type: 'ai-agent',
+    image: '/team/lex.png',
+    bio: 'LEX is onze AI-kwaliteitsauditor. Upload een .pbix en LEX scant het datamodel op vijf kwaliteitscategorieën — van DAX-prestaties tot RLS-integriteit.',
+    specialties: [
+      'Datamodel-audit',
+      'RLS-integriteit',
+      'Performance-diagnostiek',
+      'Privacy-first',
+    ],
+    tiedToProduct: { name: 'Report Auditor', href: '/tools/report-auditor' },
+    accent: 'purple-orange',
+    linkHref: '/tools/report-auditor',
+    linkText: 'Laat LEX je model auditen (€49) →',
+  },
+];
+
+export const founders = team.filter((m) => m.type === 'founder');
+export const aiAgents = team.filter((m) => m.type === 'ai-agent');

@@ -76,7 +76,7 @@ export const cases: CaseStudy[] = [
     seoTitle: 'Lyreco — real-time finance dashboards voor Benelux management | PowerBIStudio.nl',
     seoDescription: 'Hoe wij voor Lyreco de wekelijkse rapportagecyclus automatiseerden en real-time finance dashboards bouwden voor het Benelux management team.',
     heroTitle: 'Real-time finance dashboards voor Benelux management',
-    heroSubtitle: 'Als interim data team lead heb ik bij Lyreco niet alleen BI-oplossingen gebouwd — ik heb het team en de processen eromheen geoptimaliseerd.',
+    heroSubtitle: 'Power BI Studio leverde bij Lyreco interim data team lead-capaciteit (Jan Willem, oprichter). We bouwden niet alleen BI-oplossingen — we optimaliseerden het team en de processen eromheen.',
     stats: [
       { value: 'Benelux', label: 'Scope' },
       { value: 'Realtime', label: 'Finance inzicht' },

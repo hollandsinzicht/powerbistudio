@@ -6,7 +6,7 @@ import LeadCaptureForm from '@/components/lead/LeadCaptureForm';
 
 export const metadata: Metadata = {
     title: 'Power BI analytics in jouw SaaS-product — embedded architectuur | PowerBIStudio.nl',
-    description: 'Jouw klanten willen dashboards in jouw app, niet in app.powerbi.com. Ik ontwerp de multi-tenant RLS-architectuur die dat mogelijk maakt — veilig, branded, schaalbaar.',
+    description: 'Jouw klanten willen dashboards in jouw app, niet in app.powerbi.com. Power BI Studio ontwerpt de multi-tenant RLS-architectuur die dat mogelijk maakt — veilig, branded, schaalbaar.',
     alternates: { canonical: 'https://www.powerbistudio.nl/saas' },
 };
 
@@ -22,7 +22,7 @@ export default function SaaSPage() {
                         Jouw klanten willen analytics in jouw product. Niet ernaast.
                     </h1>
                     <p className="text-[var(--text-secondary)] text-lg max-w-2xl leading-relaxed">
-                        Ik ontwerp de Power BI Embedded architectuur die dat mogelijk maakt — voordat de eerste klant live gaat.
+                        We ontwerpen de Power BI Embedded architectuur die dat mogelijk maakt — voordat jouw eerste klant live gaat.
                     </p>
                 </div>
             </section>
@@ -101,7 +101,7 @@ export default function SaaSPage() {
                             <h3 className="text-xl font-display font-bold mb-3">Route 2 — Maatwerk</h3>
                             <p className="text-[var(--text-secondary)] leading-relaxed mb-4">
                                 Voor complexere multi-tenant eisen of diepere integratie in jouw eigen platform.
-                                Ik ontwerp de architectuur en begeleid de implementatie.
+                                We ontwerpen de architectuur en begeleiden de implementatie.
                             </p>
                             <Link href="/contact?type=saas" className="inline-flex items-center gap-2 text-sm font-medium hover:gap-3 transition-all" style={{ color: 'var(--color-sector-saas)' }}>
                                 Plan een architectuurreview <ArrowRight size={16} />

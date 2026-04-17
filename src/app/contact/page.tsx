@@ -81,7 +81,7 @@ function ContactContent() {
                     </h1>
                     <p className="text-xl text-[var(--text-secondary)] leading-relaxed">
                         Interim opdracht, architectuurreview, DashPortal of adviesgesprek?
-                        Neem contact op. Ik reageer binnen één werkdag.
+                        Neem contact op. Jan Willem leest elk bericht zelf en reageert binnen één werkdag.
                     </p>
                 </div>
 
@@ -100,7 +100,7 @@ function ContactContent() {
                                     </div>
                                     <h3 className="text-2xl font-display font-bold text-[var(--text-primary)] mb-2">Bericht verzonden</h3>
                                     <p className="text-[var(--text-secondary)] max-w-md mx-auto">
-                                        Bedankt! Ik lees alle berichten zelf en reageer binnen één werkdag.
+                                        Bedankt! Jan Willem leest elk bericht zelf en reageert binnen één werkdag.
                                         Geen automatische opvolging, geen sales-funnel.
                                     </p>
                                     <button onClick={() => setIsSubmitted(false)} className="mt-8 text-[var(--accent)] hover:text-[var(--text-primary)] transition-colors">
@@ -160,7 +160,7 @@ function ContactContent() {
                                 <div>
                                     <h3 className="text-xl font-display font-medium text-[var(--text-primary)] mb-2">Liever direct plannen?</h3>
                                     <p className="text-[var(--text-secondary)] text-sm mb-3">
-                                        Kies zelf een moment — ik reageer anders binnen één werkdag.
+                                        Kies zelf een moment — anders krijg je binnen één werkdag een reactie van Jan Willem.
                                     </p>
                                     <a href="https://calendly.com/powerbistudio-info/30min" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-sm font-medium text-[var(--accent)] hover:gap-3 transition-all">
                                         Plan een gesprek via Calendly <ArrowRight size={16} />
@@ -211,7 +211,7 @@ function ContactContent() {
 
                         {/* Reactietijd */}
                         <p className="text-xs text-[var(--text-secondary)] text-center">
-                            Ik lees alle berichten zelf en reageer binnen één werkdag.
+                            Jan Willem leest alle berichten zelf en reageert binnen één werkdag.
                             Geen automatische opvolging, geen sales-funnel.
                         </p>
                     </div>

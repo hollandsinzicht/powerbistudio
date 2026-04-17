@@ -21,8 +21,8 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Power BI architect & AI specialist | Jan Willem den Hollander — PowerBIStudio.nl",
-  description: "Power BI die écht werkt. Jan Willem den Hollander — 15 jaar specialist, LSS Black Belt, maker van DashPortal. Voor SaaS-bedrijven, data teams en de publieke sector.",
+  title: "Power BI Studio — Power BI architectuur, AI-tools en procesverbetering",
+  description: "Power BI Studio: een Nederlands collectief voor Power BI architectuur, Fabric-migratie en transparante AI-tools. 15 jaar ervaring, LSS-methodiek, eigen productstack (ADA & LEX).",
   metadataBase: new URL('https://www.powerbistudio.nl'),
 };
 
@@ -69,9 +69,17 @@ export default function RootLayout({
             __html: JSON.stringify({
               '@context': 'https://schema.org',
               '@type': 'Organization',
+              '@id': 'https://www.powerbistudio.nl/#organization',
               name: 'Power BI Studio',
               url: 'https://www.powerbistudio.nl',
-              description: 'Power BI architect met 15 jaar ervaring. LSS Black Belt. Maker van DashPortal. Embedded analytics, Fabric migratie, Copilot readiness en procesverbetering.',
+              logo: 'https://www.powerbistudio.nl/logo.png',
+              description: 'Nederlandse studio voor Power BI architectuur, procesverbetering en eigen AI-tools (ADA, LEX). 15 jaar ervaring, LSS Black Belt-methodiek, bewezen in publieke sector, energie en finance.',
+              founder: {
+                '@type': 'Person',
+                name: 'Jan Willem den Hollander',
+                jobTitle: 'Oprichter & Power BI architect',
+                url: 'https://www.powerbistudio.nl/over',
+              },
               knowsAbout: ['Power BI', 'DAX', 'Microsoft Fabric', 'Azure', 'SQL', 'Data Engineering', 'ETL', 'Business Intelligence', 'Lean Six Sigma', 'Power BI Embedded', 'Copilot'],
               hasOfferCatalog: {
                 '@type': 'OfferCatalog',

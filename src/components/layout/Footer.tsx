@@ -40,7 +40,7 @@ export default function Footer() {
                     <div>
                         <h4 className="text-[var(--text-primary)] font-medium mb-4 font-display">Over & Cases</h4>
                         <ul className="flex flex-col gap-3">
-                            <li><Link href="/over" className={linkClass}>Over Jan Willem</Link></li>
+                            <li><Link href="/over" className={linkClass}>Over het team</Link></li>
                             <li><Link href="/cases" className={linkClass}>Cases</Link></li>
                             <li><Link href="/blog" className={linkClass}>Blog</Link></li>
                             <li><Link href="/contact" className={linkClass}>Contact</Link></li>
@@ -104,7 +104,7 @@ export default function Footer() {
                         />
                     </Link>
                     <p className="text-[var(--text-secondary)] text-sm">
-                        &copy; {currentYear} PowerBIStudio.nl — Jan Willem den Hollander
+                        &copy; {currentYear} Power BI Studio — opgericht door Jan Willem den Hollander
                     </p>
                 </div>
             </div>

@@ -20,7 +20,7 @@ export default function ToolsPage() {
                             Tools voor <span className="text-[var(--accent)]">betere inzichten</span>
                         </h1>
                         <p className="text-xl text-[var(--text-secondary)] leading-relaxed">
-                            Ik heb deze tools ontwikkeld om je direct op weg te helpen.
+                            Wij hebben deze tools ontwikkeld om je direct op weg te helpen.
                             Ontdek de volwassenheid van jouw data-organisatie, of laat AI je helpen met complexe DAX formules.
                         </p>
                     </div>

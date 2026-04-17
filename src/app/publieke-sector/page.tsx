@@ -72,7 +72,7 @@ export default function PubliekeSectorPage() {
                             <h3 className="text-lg font-display font-bold mb-2">AVG & datasoevereiniteit</h3>
                             <p className="text-[var(--text-secondary)] leading-relaxed">
                                 Data van burgers en patiënten heeft andere vereisten dan commerciële data.
-                                Ik bouw modellen waar privacy by design geen optie is, maar een architectuurvereiste.
+                                Wij bouwen modellen waar privacy by design geen optie is, maar een architectuurvereiste.
                             </p>
                         </div>
                         <div>
@@ -86,7 +86,7 @@ export default function PubliekeSectorPage() {
                             <h3 className="text-lg font-display font-bold mb-2">Aanbesteding & documentatie</h3>
                             <p className="text-[var(--text-secondary)] leading-relaxed">
                                 Publieke sector vraagt om documentatie, architectuuroverzichten en overdrachtsprotocollen.
-                                Die lever ik standaard op.
+                                Die leveren we standaard op.
                             </p>
                         </div>
                     </div>
@@ -98,9 +98,9 @@ export default function PubliekeSectorPage() {
                 <div className="container mx-auto px-6 md:px-12 max-w-3xl">
                     <blockquote className="border-l-4 pl-6 py-2" style={{ borderColor: 'var(--color-sector-zorg)' }}>
                         <p className="text-[var(--text-secondary)] leading-relaxed italic">
-                            Naast mijn BI-ervaring heb ik een achtergrond bij het Ministerie van Defensie,
-                            inclusief een internationale uitzending. Ik ken de cultuur en eisen van
-                            overheidsorganisaties van binnenuit.
+                            Onze oprichter Jan Willem heeft een achtergrond bij het Ministerie van Defensie,
+                            inclusief een internationale uitzending. Die ervaring nemen we mee: we kennen
+                            de cultuur en eisen van overheidsorganisaties van binnenuit.
                         </p>
                     </blockquote>
                 </div>
