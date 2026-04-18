@@ -19,6 +19,20 @@ export async function POST(req: Request) {
     const body = await req.json()
     const { action } = body
 
+    if (action === 'add-idea') {
+      const { title, keywords, rationale, target_audience } = body
+      if (!title) {
+        return NextResponse.json({ error: 'title is verplicht' }, { status: 400 })
+      }
+      const id = await createIdea({
+        title,
+        keywords: Array.isArray(keywords) ? keywords : [],
+        rationale: rationale || undefined,
+        target_audience: target_audience || undefined,
+      })
+      return NextResponse.json({ success: true, id })
+    }
+
     if (action === 'ideas') {
       const { seedKeywords } = body
       const existingPosts = await getPublishedPosts()
