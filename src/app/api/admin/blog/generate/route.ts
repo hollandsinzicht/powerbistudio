@@ -2,6 +2,13 @@ import { NextResponse } from 'next/server'
 import { generateBlogIdeas, generateBlogPost, suggestInternalLinks } from '@/lib/blog-writer'
 import { generateBlogImage } from '@/lib/blog-image-generator'
 import { createIdea, getIdeaById, updateIdeaStatus, createPost, updatePost, getPublishedPosts, getPostById } from '@/lib/blog-store'
+import { isValidArchetype, type BlogArchetype } from '@/lib/blog-archetypes'
+
+// AI-acties (write, update-links, ideas) kunnen lang duren.
+// update-links doet een Claude-call per bestaand artikel — bij 25+ artikelen
+// tikt dat tegen de default Vercel-timeout aan.
+export const maxDuration = 300
+export const dynamic = 'force-dynamic'
 
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin'
 
@@ -20,7 +27,7 @@ export async function POST(req: Request) {
     const { action } = body
 
     if (action === 'add-idea') {
-      const { title, keywords, rationale, target_audience } = body
+      const { title, keywords, rationale, target_audience, archetype } = body
       if (!title) {
         return NextResponse.json({ error: 'title is verplicht' }, { status: 400 })
       }
@@ -29,6 +36,7 @@ export async function POST(req: Request) {
         keywords: Array.isArray(keywords) ? keywords : [],
         rationale: rationale || undefined,
         target_audience: target_audience || undefined,
+        archetype: isValidArchetype(archetype) ? archetype : null,
       })
       return NextResponse.json({ success: true, id })
     }
@@ -47,6 +55,7 @@ export async function POST(req: Request) {
           keywords: idea.keywords,
           rationale: idea.rationale,
           target_audience: idea.target_audience,
+          archetype: idea.archetype,
         })
         savedIds.push(id)
       }
@@ -55,11 +64,14 @@ export async function POST(req: Request) {
     }
 
     if (action === 'write') {
-      const { ideaId, title, keywords, targetAudience } = body
+      const { ideaId, title, keywords, targetAudience, archetype: bodyArchetype } = body
 
       let writeTitle = title
       let writeKeywords = keywords || []
       let writeAudience = targetAudience
+      let writeArchetype: BlogArchetype = isValidArchetype(bodyArchetype)
+        ? bodyArchetype
+        : 'technical-deep-dive'
 
       if (ideaId) {
         const idea = await getIdeaById(ideaId)
@@ -67,6 +79,12 @@ export async function POST(req: Request) {
         writeTitle = idea.title
         writeKeywords = idea.keywords
         writeAudience = idea.target_audience || undefined
+        // Body archetype overrides idea archetype if explicitly provided
+        if (isValidArchetype(bodyArchetype)) {
+          writeArchetype = bodyArchetype
+        } else if (isValidArchetype(idea.archetype)) {
+          writeArchetype = idea.archetype
+        }
       }
 
       if (!writeTitle) {
@@ -81,6 +99,7 @@ export async function POST(req: Request) {
       const post = await generateBlogPost({
         title: writeTitle,
         keywords: writeKeywords,
+        archetype: writeArchetype,
         targetAudience: writeAudience,
         existingPostSlugs,
       })
@@ -96,6 +115,7 @@ export async function POST(req: Request) {
         target_keywords: writeKeywords,
         ai_generated: true,
         status: 'draft',
+        archetype: post.archetype,
       })
 
       // Genereer header image

@@ -3,6 +3,12 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { Sparkles, FileText, Plus, CheckCircle2, XCircle, PenLine, Eye, Send, Archive, Loader2, Clock, Link2, ArrowUp, ArrowDown, Image as ImageIcon, Linkedin, Copy, Check, Images, Download, Target } from "lucide-react";
+import {
+  ALL_ARCHETYPES,
+  ARCHETYPE_LABELS,
+  ARCHETYPE_DESCRIPTIONS,
+  type BlogArchetype,
+} from "@/lib/blog-archetypes";
 
 type LinkedInStyle = "educatief" | "scherp" | "provocatief" | "storytelling";
 
@@ -16,12 +22,13 @@ const LINKEDIN_STYLES: { value: LinkedInStyle; label: string; description: strin
 interface BlogPost {
   id: string; slug: string; title: string; excerpt: string; status: string;
   published_at: string | null; scheduled_for: string | null; ai_generated: boolean;
-  image: string | null; created_at: string;
+  image: string | null; created_at: string; archetype: BlogArchetype | null;
 }
 
 interface BlogIdea {
   id: string; title: string; keywords: string[]; rationale: string | null;
   target_audience: string | null; status: string; created_at: string;
+  archetype: BlogArchetype | null;
 }
 
 function getToken() { return localStorage.getItem("admin_token") || ""; }
@@ -49,6 +56,9 @@ export default function AdminDashboard() {
   const [newTitle, setNewTitle] = useState("");
   const [newKeywords, setNewKeywords] = useState("");
   const [useAi, setUseAi] = useState(true);
+  const [newArchetype, setNewArchetype] = useState<BlogArchetype>("technical-deep-dive");
+  // Per-idea archetype override before approve
+  const [ideaArchetypeOverride, setIdeaArchetypeOverride] = useState<Record<string, BlogArchetype>>({});
 
   // LinkedIn modal state
   const [linkedinPost, setLinkedinPost] = useState<BlogPost | null>(null);
@@ -90,10 +100,15 @@ export default function AdminDashboard() {
   const handleApproveIdea = async (ideaId: string) => {
     setGenerating(true);
     try {
+      const override = ideaArchetypeOverride[ideaId];
       const res = await fetch("/api/admin/blog", {
         method: "PUT",
         headers: { "Content-Type": "application/json", "x-admin-token": getToken() },
-        body: JSON.stringify({ id: ideaId, action: "approve_idea" }),
+        body: JSON.stringify({
+          id: ideaId,
+          action: "approve_idea",
+          ...(override ? { archetype: override } : {}),
+        }),
       });
       if (res.ok) {
         const data = await res.json();
@@ -131,6 +146,7 @@ export default function AdminDashboard() {
         body: JSON.stringify({
           action: "write", title: newTitle,
           keywords: newKeywords.split(",").map((k) => k.trim()).filter(Boolean),
+          archetype: newArchetype,
         }),
       });
       if (res.ok) { setNewTitle(""); setNewKeywords(""); await fetchData(); setTab("posts"); }
@@ -146,11 +162,17 @@ export default function AdminDashboard() {
         headers: { "Content-Type": "application/json", "x-admin-token": getToken() },
         body: JSON.stringify({ action: "update-links", postId }),
       });
+      const data = await res.json().catch(() => ({}));
       if (res.ok) {
-        const data = await res.json();
-        alert(`Interne links bijgewerkt in ${data.updatedCount} bestaande artikelen.`);
+        alert(`Interne links bijgewerkt in ${data.updatedCount ?? 0} bestaande artikelen.`);
+        await fetchData();
+      } else {
+        alert(`Links updaten mislukt (${res.status}): ${data.error || res.statusText}`);
       }
-    } catch (e) { console.error(e); }
+    } catch (e) {
+      console.error(e);
+      alert(`Netwerkfout bij links updaten: ${e instanceof Error ? e.message : "onbekend"}`);
+    }
     setGenerating(false);
   };
 
@@ -500,7 +522,7 @@ export default function AdminDashboard() {
 
                       {/* Content */}
                       <div className="flex-grow min-w-0">
-                        <div className="flex items-center gap-2 mb-0.5">
+                        <div className="flex items-center gap-2 mb-0.5 flex-wrap">
                           <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
                             post.status === "published" ? "bg-green-100 text-green-700" :
                             post.status === "draft" ? "bg-yellow-100 text-yellow-700" :
@@ -508,6 +530,11 @@ export default function AdminDashboard() {
                             "bg-gray-100 text-gray-500"
                           }`}>{post.status}</span>
                           {post.ai_generated && <span className="text-[10px] text-[var(--accent)]">AI</span>}
+                          {post.archetype && (
+                            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-purple-100 text-purple-700" title={ARCHETYPE_DESCRIPTIONS[post.archetype]}>
+                              {ARCHETYPE_LABELS[post.archetype]}
+                            </span>
+                          )}
                         </div>
                         <h3 className="font-medium text-sm truncate">{post.title}</h3>
                       </div>
@@ -593,15 +620,23 @@ export default function AdminDashboard() {
                 </div>
 
                 <div className="space-y-3">
-                  {activeIdeas.map((idea) => (
+                  {activeIdeas.map((idea) => {
+                    const currentArchetype: BlogArchetype | undefined =
+                      ideaArchetypeOverride[idea.id] || idea.archetype || undefined;
+                    return (
                     <div key={idea.id} className="glass-card rounded-lg p-4 border border-[var(--border)]">
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex-grow min-w-0">
-                          <div className="flex items-center gap-2 mb-1">
+                          <div className="flex items-center gap-2 mb-1 flex-wrap">
                             <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
                               idea.status === "suggested" ? "bg-blue-100 text-blue-700" :
                               "bg-green-100 text-green-700"
                             }`}>{idea.status}</span>
+                            {currentArchetype && (
+                              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-purple-100 text-purple-700" title={ARCHETYPE_DESCRIPTIONS[currentArchetype]}>
+                                {ARCHETYPE_LABELS[currentArchetype]}
+                              </span>
+                            )}
                             {idea.target_audience && <span className="text-[10px] text-[var(--text-secondary)]">{idea.target_audience}</span>}
                           </div>
                           <h3 className="font-medium text-sm">{idea.title}</h3>
@@ -611,6 +646,26 @@ export default function AdminDashboard() {
                               <span key={kw} className="text-[10px] px-2 py-0.5 rounded-full bg-gray-100 text-[var(--text-secondary)]">{kw}</span>
                             ))}
                           </div>
+                          <div className="mt-2 flex items-center gap-2">
+                            <label className="text-[10px] text-[var(--text-secondary)]">Archetype overschrijven:</label>
+                            <select
+                              value={ideaArchetypeOverride[idea.id] || idea.archetype || ""}
+                              onChange={(e) => {
+                                const v = e.target.value as BlogArchetype | "";
+                                setIdeaArchetypeOverride((prev) => {
+                                  const next = { ...prev };
+                                  if (v) next[idea.id] = v; else delete next[idea.id];
+                                  return next;
+                                });
+                              }}
+                              className="text-[11px] px-2 py-1 rounded border border-[var(--border)] bg-[var(--surface)]"
+                            >
+                              <option value="">— gebruik suggestie —</option>
+                              {ALL_ARCHETYPES.map((a) => (
+                                <option key={a} value={a}>{ARCHETYPE_LABELS[a]}</option>
+                              ))}
+                            </select>
+                          </div>
                         </div>
                         <div className="flex items-center gap-1 shrink-0">
                           <button onClick={() => handleApproveIdea(idea.id)} disabled={generating} className="p-2 text-green-500 hover:text-green-700 disabled:opacity-50" title="Goedkeuren → schrijf artikel + plan in"><CheckCircle2 size={16} /></button>
@@ -618,7 +673,8 @@ export default function AdminDashboard() {
                         </div>
                       </div>
                     </div>
-                  ))}
+                    );
+                  })}
                   {activeIdeas.length === 0 && (
                     <p className="text-center py-12 text-[var(--text-secondary)] text-sm">
                       Geen actieve onderwerpen. Vul eventueel keywords in en klik op &ldquo;Stel onderwerpen voor&rdquo;.
@@ -645,6 +701,19 @@ export default function AdminDashboard() {
                   <input type="text" value={newKeywords} onChange={(e) => setNewKeywords(e.target.value)}
                     placeholder="fabric, migratie, fouten, premium"
                     className="w-full bg-[var(--surface)] border border-[var(--border)] rounded-lg px-4 py-3 text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)] transition-colors" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">Archetype</label>
+                  <select
+                    value={newArchetype}
+                    onChange={(e) => setNewArchetype(e.target.value as BlogArchetype)}
+                    className="w-full bg-[var(--surface)] border border-[var(--border)] rounded-lg px-4 py-3 text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)] transition-colors"
+                  >
+                    {ALL_ARCHETYPES.map((a) => (
+                      <option key={a} value={a}>{ARCHETYPE_LABELS[a]}</option>
+                    ))}
+                  </select>
+                  <p className="text-xs text-[var(--text-secondary)] mt-1">{ARCHETYPE_DESCRIPTIONS[newArchetype]}</p>
                 </div>
                 <div className="flex items-center gap-3">
                   <input type="checkbox" id="useAi" checked={useAi} onChange={(e) => setUseAi(e.target.checked)} className="rounded" />

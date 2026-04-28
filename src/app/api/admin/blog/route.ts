@@ -4,6 +4,7 @@ import { getAllPosts, getPostById, createPost, updatePost, publishPost, archiveP
 import { getIdeas, updateIdeaStatus, getIdeaById, deleteIdea, deleteAllIdeas } from '@/lib/blog-store'
 import { generateBlogPost } from '@/lib/blog-writer'
 import { generateBlogImage } from '@/lib/blog-image-generator'
+import { isValidArchetype, type BlogArchetype } from '@/lib/blog-archetypes'
 
 // Admin routes mogen langer duren (AI calls, image gen)
 export const maxDuration = 300
@@ -50,7 +51,7 @@ export async function POST(req: Request) {
 
   try {
     const body = await req.json()
-    const { slug, title, excerpt, content, image, status, target_keywords, seo_title, seo_description } = body
+    const { slug, title, excerpt, content, image, status, target_keywords, seo_title, seo_description, archetype } = body
 
     if (!slug || !title || !excerpt || !content) {
       return NextResponse.json({ error: 'slug, title, excerpt en content zijn verplicht' }, { status: 400 })
@@ -66,6 +67,7 @@ export async function POST(req: Request) {
       target_keywords: target_keywords || [],
       seo_title,
       seo_description,
+      archetype: isValidArchetype(archetype) ? archetype : null,
     })
 
     return NextResponse.json({ success: true, postId })
@@ -158,6 +160,15 @@ export async function PUT(req: Request) {
       // Markeer als approved
       await updateIdeaStatus(id, 'approved')
 
+      // Bepaal archetype: optionele override uit body, anders van het idea, anders default
+      const { archetype: bodyArchetype } = body
+      let approveArchetype: BlogArchetype = 'technical-deep-dive'
+      if (isValidArchetype(bodyArchetype)) {
+        approveArchetype = bodyArchetype
+      } else if (isValidArchetype(idea.archetype)) {
+        approveArchetype = idea.archetype
+      }
+
       // Schrijf artikel
       const existingPosts = await getPublishedPosts()
       const existingPostSlugs = existingPosts.map((p) => ({ slug: p.slug, title: p.title }))
@@ -165,6 +176,7 @@ export async function PUT(req: Request) {
       const post = await generateBlogPost({
         title: idea.title,
         keywords: idea.keywords,
+        archetype: approveArchetype,
         targetAudience: idea.target_audience || undefined,
         existingPostSlugs,
       })
@@ -183,6 +195,7 @@ export async function PUT(req: Request) {
         target_keywords: idea.keywords,
         ai_generated: true,
         status: 'draft', // Eerst draft, dan schedulen
+        archetype: post.archetype,
       })
 
       // Schedule op de berekende datum

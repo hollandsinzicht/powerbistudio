@@ -1,4 +1,14 @@
 import Anthropic from '@anthropic-ai/sdk'
+import {
+  ALL_ARCHETYPES,
+  ARCHETYPE_DESCRIPTIONS,
+  ARCHETYPE_LABELS,
+  buildArchetypePrompt,
+  formatCaseContext,
+  isValidArchetype,
+  pickRelevantCase,
+  type BlogArchetype,
+} from './blog-archetypes'
 
 const client = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY || '',
@@ -10,7 +20,6 @@ PowerBIStudio.nl is de website van Jan Willem den Hollander — Power BI archite
 Diensten: Power BI voor SaaS/ISV, Publieke sector BI, Fabric migratie, Copilot readiness, Procesverbetering.
 Producten: DashPortal (white-label Power BI portaal), Report Auditor (AI-audit €49), DAX Formula Assistant (gratis).
 Doelgroepen: ISV/SaaS CTOs, CFO/COO/operations, publieke sector (gemeenten, GGDs), Power BI consultants.
-Cases: GGDGHOR (25 GGD-regio's + RIVM), Lyreco (finance dashboards Benelux), Technische Unie (groothandel), Vattenfall (energie).
 
 Bestaande blogcategorieën: Power BI, DAX & Datamodellering, Data Platform, Strategie, Fabric & migratie, Governance & AVG, Embedded analytics, Procesverbetering & BI.
 `.trim()
@@ -22,6 +31,7 @@ export interface BlogIdeaResult {
   keywords: string[]
   rationale: string
   target_audience: string
+  archetype: BlogArchetype
 }
 
 export async function generateBlogIdeas(
@@ -38,6 +48,10 @@ export async function generateBlogIdeas(
   // Random seed voor variatie (zelfde keyword → andere suggesties bij volgende call)
   const variationSeed = Math.random().toString(36).slice(2, 10)
 
+  const archetypeMenu = ALL_ARCHETYPES.map(
+    (a) => `- "${a}" (${ARCHETYPE_LABELS[a]}): ${ARCHETYPE_DESCRIPTIONS[a]}`
+  ).join('\n')
+
   // Bouw user message
   // Als er seed keywords zijn: maak die DOMINANT en eis dat ALLE 5 suggesties erover gaan
   let userContent: string
@@ -51,15 +65,18 @@ ALLE 5 voorgestelde blogonderwerpen MOETEN direct over deze keywords gaan. Geen 
 
 Variatie binnen het thema:
 - Verschillende invalshoeken (technisch, strategisch, praktisch, vergelijkend, hoe-werkt-het)
-- Verschillende formats (gids, vergelijking, case study, tutorial, FAQ)
 - Verschillende doelgroepen waar van toepassing
+- VARIATIE IN ARCHETYPE: kies voor ELKE suggestie een passend, ander archetype uit de lijst hieronder. Probeer minstens 4 verschillende archetypes over de 5 suggesties te gebruiken.
+
+Beschikbare archetypes:
+${archetypeMenu}
 
 Voorbeeld: als de keywords "fabric kosten" zijn, dan zou je suggesties kunnen geven zoals:
-- "Wat kost Microsoft Fabric écht? Een kostenoverzicht voor 2026"
-- "Fabric F2 vs F64: welke capaciteit past bij jouw budget"
-- "Van Power BI Premium naar Fabric: de kostenimpact in 5 scenario's"
-- "Hoe je Fabric capacity kosten verlaagt zonder performance te verliezen"
-- "Fabric pricing voor mid-market: het volledige plaatje"
+- "Wat kost Microsoft Fabric écht? Een kostenoverzicht voor 2026" (faq)
+- "Fabric F2 vs F64: welke capaciteit past bij jouw budget" (decision-framework)
+- "Fabric vs Power BI Premium: de kostenimpact in 5 scenario's" (comparison)
+- "Stop met te grote Fabric-capacities boeken" (anti-pattern-essay)
+- "Fabric capacity scaling: hoe pause/resume écht werkt" (technical-deep-dive)
 
 Context over de site (alleen voor stijl en doelgroep — NIET om af te wijken van de keywords):
 ${SITE_CONTEXT}
@@ -74,10 +91,16 @@ Antwoord als JSON array (geen markdown, geen uitleg, alleen JSON):
   "title": "Artikel titel (Nederlands, max 70 tekens, MOET de keywords reflecteren)",
   "keywords": ["specifieke keyword 1", "specifieke keyword 2", "specifieke keyword 3"],
   "rationale": "Waarom dit onderwerp aansluit op de gevraagde keywords en welk zoekverkeer het aantrekt",
-  "target_audience": "De primaire doelgroep"
+  "target_audience": "De primaire doelgroep",
+  "archetype": "een van de 7 archetype-codes hierboven"
 }]`
   } else {
     userContent = `Stel 5 nieuwe blogonderwerpen voor die zoekverkeer aantrekken voor PowerBIStudio.nl.
+
+Variatie in archetype is essentieel: kies voor elke suggestie een passend, ander archetype uit de lijst hieronder. Minstens 4 verschillende archetypes over de 5 suggesties.
+
+Beschikbare archetypes:
+${archetypeMenu}
 
 Context:
 ${SITE_CONTEXT}
@@ -92,7 +115,8 @@ Antwoord als JSON array (geen markdown, geen uitleg, alleen JSON):
   "title": "Artikel titel (Nederlands, max 70 tekens)",
   "keywords": ["keyword1", "keyword2", "keyword3"],
   "rationale": "Waarom dit onderwerp relevant is en welk zoekverkeer het aantrekt",
-  "target_audience": "De primaire doelgroep"
+  "target_audience": "De primaire doelgroep",
+  "archetype": "een van de 7 archetype-codes hierboven"
 }]`
   }
 
@@ -104,6 +128,8 @@ Antwoord als JSON array (geen markdown, geen uitleg, alleen JSON):
 
 CRITICAL: Als de gebruiker specifieke keywords of thema's opgeeft, MOETEN ALLE voorgestelde onderwerpen daarover gaan. Wijk NOOIT af van de opgegeven keywords. Geen algemene Power BI suggesties als de gebruiker iets specifieks vraagt.
 
+Voor ELKE suggestie kies je het archetype dat het best bij het onderwerp past. Een DAX-onderwerp wordt zelden een case-driven verhaal; een kostenvraag zelden een tutorial. Wees daar streng in.
+
 Antwoord ALTIJD in valid JSON. Geen markdown fences, geen uitleg buiten de JSON.`,
     messages: [{ role: 'user', content: userContent }],
   })
@@ -113,7 +139,12 @@ Antwoord ALTIJD in valid JSON. Geen markdown fences, geen uitleg buiten de JSON.
 
   try {
     const cleaned = text.text.replace(/```json?\n?/g, '').replace(/```/g, '').trim()
-    return JSON.parse(cleaned)
+    const parsed = JSON.parse(cleaned) as BlogIdeaResult[]
+    // Defensieve normalisatie: ongeldig archetype → fallback
+    return parsed.map((idea) => ({
+      ...idea,
+      archetype: isValidArchetype(idea.archetype) ? idea.archetype : 'technical-deep-dive',
+    }))
   } catch {
     console.error('Failed to parse blog ideas response:', text.text)
     return getMockIdeas()
@@ -129,16 +160,20 @@ export interface GeneratedPost {
   content: string
   seoTitle: string
   seoDescription: string
+  archetype: BlogArchetype
 }
 
 export async function generateBlogPost(params: {
   title: string
   keywords: string[]
+  archetype: BlogArchetype
   targetAudience?: string
   existingPostSlugs?: { slug: string; title: string }[]
 }): Promise<GeneratedPost> {
+  const archetype = isValidArchetype(params.archetype) ? params.archetype : 'technical-deep-dive'
+
   if (!process.env.ANTHROPIC_API_KEY) {
-    return getMockPost(params.title)
+    return getMockPost(params.title, archetype)
   }
 
   // Bouw interne link-context op
@@ -159,6 +194,28 @@ Beschikbare pagina-links:
 - <a href="/copilot-readiness">Copilot readiness</a> (semantic model audit)`
     : ''
 
+  // Case-context alleen voor case-driven archetype
+  let caseContext = ''
+  let effectiveArchetype: BlogArchetype = archetype
+  if (archetype === 'case-driven') {
+    const matched = pickRelevantCase(params.title, params.keywords)
+    if (matched) {
+      caseContext = `\n\n${formatCaseContext(matched)}`
+    } else {
+      // Fallback: geen relevante case → switch naar decision-framework
+      effectiveArchetype = 'decision-framework'
+    }
+  }
+
+  // Anti-case-instructie voor alle non-case-driven archetypes
+  const antiCaseInstruction =
+    effectiveArchetype === 'case-driven'
+      ? ''
+      : `\n\nKLANTEN EN CASES:
+Noem GEEN klantnamen of cases (geen GGDGHOR, Lyreco, Technische Unie, Vattenfall of andere klantnamen). Diepte komt uit de archetype-specifieke diepte-signalen, niet uit name-drops. Als je per ongeluk een case zou willen aanhalen, stop en vervang door een concreet feit, getal, anti-pattern of code-voorbeeld.`
+
+  const archetypePrompt = buildArchetypePrompt(effectiveArchetype)
+
   const response = await client.messages.create({
     model: 'claude-sonnet-4-20250514',
     max_tokens: 8000,
@@ -170,7 +227,7 @@ TOON & STIJL:
 - MENSELIJK en natuurlijk geschreven, niet corporate of stijf. Lees het hardop terug — als het niet klinkt als hoe je iemand iets uitlegt, herschrijf het.
 - Varieer in zinslengte: kort, dan lang, dan kort. Geen monotone ritme.
 - Gebruik concrete voorbeelden in plaats van abstracte concepten.
-- Derde persoon of "je/jij" vorm — NIET overdreven in de ik-vorm. Eerste persoon alleen bij concrete eigen ervaringen ("Bij het GGDGHOR-project bleek dat...").
+- Derde persoon of "je/jij" vorm — NIET overdreven in de ik-vorm. Eerste persoon alleen bij concrete eigen ervaringen en alleen als die ervaringen expliciet in de context zijn meegegeven.
 - Geen corporate-speak, geen buzzwords zonder uitleg, geen "in deze blog gaan we het hebben over...".
 - Leg vakjargon uit bij eerste gebruik.
 - GEEN sales-taal, GEEN CTA's in de tekst, GEEN "neem contact op", GEEN "wij bieden". De lezer beslist zelf.
@@ -179,7 +236,7 @@ NEDERLANDSE SPELLING & HOOFDLETTERS — STRIKTE REGELS:
 - Hoofdletters ALLEEN bij:
   1. Het begin van een zin
   2. Eigennamen van personen (Jan Willem den Hollander)
-  3. Productnamen en merken (Power BI, Microsoft Fabric, DAX, Excel, Azure, Copilot, DashPortal, Lyreco, GGDGHOR)
+  3. Productnamen en merken (Power BI, Microsoft Fabric, DAX, Excel, Azure, Copilot, DashPortal)
   4. Plaatsnamen en organisatienamen
 - GEEN hoofdletters bij algemene begrippen midden in een zin:
   - FOUT: "Een goed Datamodel is de basis"
@@ -197,18 +254,18 @@ NEDERLANDSE SPELLING & HOOFDLETTERS — STRIKTE REGELS:
   - GOED: "Hoe je een snel datamodel bouwt in Power BI"
 - Samengestelde woorden met merknaam: koppelteken gebruiken (Power BI-rapport, Fabric-migratie, DAX-formule)
 
-STRUCTUUR:
-- Begin met een korte inleiding die de lezer direct vertelt wat ze gaan leren (2-3 zinnen).
-- Gebruik duidelijke H2-koppen voor hoofdsecties (minimaal 4-5 secties).
+ALGEMENE STRUCTUUR (geldt voor elk archetype):
+- Begin met een korte inleiding van 2-3 zinnen — de specifieke stijl van die inleiding bepaalt het archetype.
+- Gebruik duidelijke H2-koppen voor hoofdsecties.
 - Gebruik H3-koppen voor subsecties waar nodig.
 - Gebruik paragrafen van 3-5 zinnen. Niet langer.
 - Gebruik opsommingslijsten voor stappen, kenmerken of vergelijkingen.
 - Gebruik <strong> voor belangrijke begrippen bij eerste introductie (sparingly — niet alles vetgedrukt).
-- Voeg waar relevant een concreet voorbeeld, scenario of vergelijking toe.
-- Sluit af met een "Samenvatting" of "Conclusie" sectie (H2) met de belangrijkste takeaways.
+- Code-snippets in <pre><code>...</code></pre>. Vergelijkingstabellen in <table><thead><tr><th>...</th></tr></thead><tbody>...</tbody></table>.
 
 LENGTE:
-- Minimaal 1500 woorden, liefst 2000-2500. Dit zijn uitgebreide gidsen, geen korte blogjes.
+- Minimaal 1500 woorden, liefst 2000-2500 voor uitgebreide gidsen.
+- Voor FAQ archetype: lengte volgt uit het aantal vragen × 4-6 zinnen per antwoord, minimaal 1500 woorden.
 
 INTERNE LINKS:
 - Plaats 2-4 relevante interne links in de tekst als gewone <a href="...">anchor tekst</a> tags.
@@ -223,6 +280,8 @@ GEEN:
 - Geen "wij" of "ons team" taal
 - Geen hoofdletters midden in een zin (zie regels hierboven)
 
+${archetypePrompt}
+
 Output formaat: valid JSON (geen markdown fences):
 {
   "title": "De definitieve titel",
@@ -233,28 +292,29 @@ Output formaat: valid JSON (geen markdown fences):
   "seoDescription": "Meta description (max 155 tekens)"
 }
 
-De content moet valide HTML zijn met <h2>, <h3>, <p>, <ul>, <li>, <strong>, <em>, <a> tags.`,
+De content moet valide HTML zijn met <h2>, <h3>, <p>, <ul>, <li>, <strong>, <em>, <a>, <table>, <pre>, <code> tags.`,
     messages: [{
       role: 'user',
       content: `Schrijf een uitgebreide informatieve gids over: "${params.title}"
 
 Keywords om te verwerken: ${params.keywords.join(', ')}
 ${params.targetAudience ? `Primaire doelgroep: ${params.targetAudience}` : ''}
-${internalLinksContext}
+${internalLinksContext}${caseContext}${antiCaseInstruction}
 
 Context over de site: ${SITE_CONTEXT}`,
     }],
   })
 
   const text = response.content[0]
-  if (text.type !== 'text') return getMockPost(params.title)
+  if (text.type !== 'text') return getMockPost(params.title, effectiveArchetype)
 
   try {
     const cleaned = text.text.replace(/```json?\n?/g, '').replace(/```/g, '').trim()
-    return JSON.parse(cleaned)
+    const parsed = JSON.parse(cleaned) as Omit<GeneratedPost, 'archetype'>
+    return { ...parsed, archetype: effectiveArchetype }
   } catch {
     console.error('Failed to parse blog post response:', text.text)
-    return getMockPost(params.title)
+    return getMockPost(params.title, effectiveArchetype)
   }
 }
 
@@ -330,13 +390,13 @@ Zoek woorden in het bestaande artikel die je kunt linken naar dit nieuwe artikel
 
 function getMockIdeas(): BlogIdeaResult[] {
   return [
-    { title: 'Fabric migratie: de 5 grootste fouten die organisaties maken', keywords: ['fabric', 'migratie', 'fouten'], rationale: 'Hoog zoekvolume, directe link naar Fabric QuickScan dienst', target_audience: 'Data team lead' },
-    { title: 'DAX performance: waarom je CALCULATE verkeerd gebruikt', keywords: ['dax', 'performance', 'calculate'], rationale: 'Technisch artikel dat DAX Assistant en Report Auditor promoot', target_audience: 'Power BI consultant' },
-    { title: 'Power BI governance voor gemeenten: een praktische gids', keywords: ['governance', 'gemeente', 'power bi'], rationale: 'Publieke sector keyword, linkt naar BI-checklist lead magnet', target_audience: 'gemeente/GGD' },
+    { title: 'Fabric migratie: de 5 grootste fouten die organisaties maken', keywords: ['fabric', 'migratie', 'fouten'], rationale: 'Hoog zoekvolume, directe link naar Fabric QuickScan dienst', target_audience: 'Data team lead', archetype: 'anti-pattern-essay' },
+    { title: 'DAX performance: waarom je CALCULATE verkeerd gebruikt', keywords: ['dax', 'performance', 'calculate'], rationale: 'Technisch artikel dat DAX Assistant en Report Auditor promoot', target_audience: 'Power BI consultant', archetype: 'technical-deep-dive' },
+    { title: 'Power BI governance voor gemeenten: een praktische gids', keywords: ['governance', 'gemeente', 'power bi'], rationale: 'Publieke sector keyword, linkt naar BI-checklist lead magnet', target_audience: 'gemeente/GGD', archetype: 'decision-framework' },
   ]
 }
 
-function getMockPost(title: string): GeneratedPost {
+function getMockPost(title: string, archetype: BlogArchetype): GeneratedPost {
   const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
   return {
     title,
@@ -345,5 +405,6 @@ function getMockPost(title: string): GeneratedPost {
     content: `<h2>Over dit onderwerp</h2><p>Dit is een automatisch gegenereerd concept. Bewerk het in de admin voordat je publiceert.</p>`,
     seoTitle: `${title} | PowerBIStudio.nl`,
     seoDescription: `Lees meer over ${title} op PowerBIStudio.nl.`,
+    archetype,
   }
 }

@@ -1,4 +1,5 @@
 import { supabase } from './supabase'
+import type { BlogArchetype } from './blog-archetypes'
 
 export interface BlogPost {
   id: string
@@ -14,6 +15,7 @@ export interface BlogPost {
   seo_description: string | null
   target_keywords: string[]
   ai_generated: boolean
+  archetype: BlogArchetype | null
   created_at: string
   updated_at: string
 }
@@ -26,6 +28,7 @@ export interface BlogIdea {
   target_audience: string | null
   status: 'suggested' | 'approved' | 'rejected' | 'written'
   blog_post_id: string | null
+  archetype: BlogArchetype | null
   created_at: string
 }
 
@@ -87,6 +90,7 @@ export async function createPost(post: {
   seo_description?: string
   target_keywords?: string[]
   ai_generated?: boolean
+  archetype?: BlogArchetype | null
 }): Promise<string> {
   const { data, error } = await supabase
     .from('blog_posts')
@@ -102,6 +106,7 @@ export async function createPost(post: {
       seo_description: post.seo_description || null,
       target_keywords: post.target_keywords || [],
       ai_generated: post.ai_generated || false,
+      archetype: post.archetype ?? null,
     })
     .select('id')
     .single()
@@ -223,6 +228,7 @@ export async function createIdea(idea: {
   keywords: string[]
   rationale?: string
   target_audience?: string
+  archetype?: BlogArchetype | null
 }): Promise<string> {
   const { data, error } = await supabase
     .from('blog_ideas')
@@ -231,6 +237,7 @@ export async function createIdea(idea: {
       keywords: idea.keywords,
       rationale: idea.rationale || null,
       target_audience: idea.target_audience || null,
+      archetype: idea.archetype ?? null,
     })
     .select('id')
     .single()
