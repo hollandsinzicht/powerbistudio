@@ -7,6 +7,7 @@ import {
   ALL_ARCHETYPES,
   ARCHETYPE_LABELS,
   ARCHETYPE_DESCRIPTIONS,
+  type ArticleType,
   type BlogArchetype,
 } from "@/lib/blog-archetypes";
 
@@ -23,6 +24,7 @@ interface BlogPost {
   id: string; slug: string; title: string; excerpt: string; status: string;
   published_at: string | null; scheduled_for: string | null; ai_generated: boolean;
   image: string | null; created_at: string; archetype: BlogArchetype | null;
+  article_type?: ArticleType; spoke_post_ids?: string[];
 }
 
 interface BlogIdea {
@@ -59,6 +61,10 @@ export default function AdminDashboard() {
   const [newArchetype, setNewArchetype] = useState<BlogArchetype>("technical-deep-dive");
   // Per-idea archetype override before approve
   const [ideaArchetypeOverride, setIdeaArchetypeOverride] = useState<Record<string, BlogArchetype>>({});
+
+  // Pillar-mode state — bepaalt of de "new"-tab een regulier artikel of pillar-gids genereert.
+  const [newMode, setNewMode] = useState<"blog" | "pillar">("blog");
+  const [pillarSpokeSlugs, setPillarSpokeSlugs] = useState<Set<string>>(new Set());
 
   // LinkedIn modal state
   const [linkedinPost, setLinkedinPost] = useState<BlogPost | null>(null);
@@ -152,6 +158,52 @@ export default function AdminDashboard() {
       if (res.ok) { setNewTitle(""); setNewKeywords(""); await fetchData(); setTab("posts"); }
     } catch (e) { console.error(e); }
     setGenerating(false);
+  };
+
+  const handleWritePillar = async () => {
+    if (!newTitle.trim() || pillarSpokeSlugs.size < 3) return;
+    setGenerating(true);
+    try {
+      const res = await fetch("/api/admin/blog/generate-pillar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-admin-token": getToken() },
+        body: JSON.stringify({
+          title: newTitle,
+          keywords: newKeywords.split(",").map((k) => k.trim()).filter(Boolean),
+          spoke_slugs: Array.from(pillarSpokeSlugs),
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok) {
+        if (Array.isArray(data.missing_spoke_links) && data.missing_spoke_links.length > 0) {
+          alert(`Pillar-gids gegenereerd, maar de volgende spokes hebben (nog) geen link in de tekst: ${data.missing_spoke_links.join(", ")}. Check de inhoud in de admin.`);
+        }
+        setNewTitle("");
+        setNewKeywords("");
+        setPillarSpokeSlugs(new Set());
+        setNewMode("blog");
+        await fetchData();
+        setTab("posts");
+      } else {
+        alert(`Pillar-gids genereren mislukt: ${data.error || res.statusText}`);
+      }
+    } catch (e) {
+      console.error(e);
+      alert("Netwerkfout bij genereren van pillar-gids.");
+    }
+    setGenerating(false);
+  };
+
+  const togglePillarSpoke = (slug: string) => {
+    setPillarSpokeSlugs((prev) => {
+      const next = new Set(prev);
+      if (next.has(slug)) {
+        next.delete(slug);
+      } else if (next.size < 10) {
+        next.add(slug);
+      }
+      return next;
+    });
   };
 
   const handleUpdateLinks = async (postId: string) => {
@@ -530,7 +582,12 @@ export default function AdminDashboard() {
                             "bg-gray-100 text-gray-500"
                           }`}>{post.status}</span>
                           {post.ai_generated && <span className="text-[10px] text-[var(--accent)]">AI</span>}
-                          {post.archetype && (
+                          {post.article_type === "pillar" && (
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[var(--accent)] text-white uppercase tracking-wider" title="Pillar-gids (hub-and-spoke)">
+                              Gids
+                            </span>
+                          )}
+                          {post.archetype && post.article_type !== "pillar" && (
                             <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-purple-100 text-purple-700" title={ARCHETYPE_DESCRIPTIONS[post.archetype]}>
                               {ARCHETYPE_LABELS[post.archetype]}
                             </span>
@@ -686,45 +743,143 @@ export default function AdminDashboard() {
           })()}
 
           {/* ===== TAB: NIEUW ARTIKEL ===== */}
-          {tab === "new" && (
-            <div className="max-w-2xl">
-              <h2 className="text-xl font-display font-bold mb-6">Nieuw artikel schrijven</h2>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">Onderwerp / Titel</label>
-                  <input type="text" value={newTitle} onChange={(e) => setNewTitle(e.target.value)}
-                    placeholder="Bijv: Fabric migratie: de 5 grootste fouten"
-                    className="w-full bg-[var(--surface)] border border-[var(--border)] rounded-lg px-4 py-3 text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)] transition-colors" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">Keywords (komma-gescheiden)</label>
-                  <input type="text" value={newKeywords} onChange={(e) => setNewKeywords(e.target.value)}
-                    placeholder="fabric, migratie, fouten, premium"
-                    className="w-full bg-[var(--surface)] border border-[var(--border)] rounded-lg px-4 py-3 text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)] transition-colors" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">Archetype</label>
-                  <select
-                    value={newArchetype}
-                    onChange={(e) => setNewArchetype(e.target.value as BlogArchetype)}
-                    className="w-full bg-[var(--surface)] border border-[var(--border)] rounded-lg px-4 py-3 text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)] transition-colors"
+          {tab === "new" && (() => {
+            const spokeCandidates = posts.filter(
+              (p) => p.status === "published" && (p.article_type ?? "blog") !== "pillar",
+            );
+            const spokeCount = pillarSpokeSlugs.size;
+            const spokeOk = spokeCount >= 3 && spokeCount <= 10;
+
+            return (
+              <div className="max-w-2xl">
+                <h2 className="text-xl font-display font-bold mb-6">Nieuw artikel schrijven</h2>
+
+                {/* Mode toggle */}
+                <div className="flex gap-2 mb-6 p-1 bg-gray-100 rounded-lg w-fit">
+                  <button
+                    onClick={() => setNewMode("blog")}
+                    className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                      newMode === "blog"
+                        ? "bg-[var(--surface)] text-[var(--text-primary)] shadow-sm"
+                        : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+                    }`}
                   >
-                    {ALL_ARCHETYPES.map((a) => (
-                      <option key={a} value={a}>{ARCHETYPE_LABELS[a]}</option>
-                    ))}
-                  </select>
-                  <p className="text-xs text-[var(--text-secondary)] mt-1">{ARCHETYPE_DESCRIPTIONS[newArchetype]}</p>
+                    Reguliere blog
+                  </button>
+                  <button
+                    onClick={() => setNewMode("pillar")}
+                    className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                      newMode === "pillar"
+                        ? "bg-[var(--surface)] text-[var(--text-primary)] shadow-sm"
+                        : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+                    }`}
+                  >
+                    Pillar-gids
+                  </button>
                 </div>
-                <div className="flex items-center gap-3">
-                  <input type="checkbox" id="useAi" checked={useAi} onChange={(e) => setUseAi(e.target.checked)} className="rounded" />
-                  <label htmlFor="useAi" className="text-sm text-[var(--text-secondary)]">Laat AI het artikel schrijven</label>
+
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
+                      {newMode === "pillar" ? "Gids-titel" : "Onderwerp / Titel"}
+                    </label>
+                    <input type="text" value={newTitle} onChange={(e) => setNewTitle(e.target.value)}
+                      placeholder={newMode === "pillar" ? "Bijv: Fabric-migratie: complete gids" : "Bijv: Fabric migratie: de 5 grootste fouten"}
+                      className="w-full bg-[var(--surface)] border border-[var(--border)] rounded-lg px-4 py-3 text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)] transition-colors" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">Keywords (komma-gescheiden)</label>
+                    <input type="text" value={newKeywords} onChange={(e) => setNewKeywords(e.target.value)}
+                      placeholder="fabric, migratie, fouten, premium"
+                      className="w-full bg-[var(--surface)] border border-[var(--border)] rounded-lg px-4 py-3 text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)] transition-colors" />
+                  </div>
+
+                  {newMode === "blog" && (
+                    <>
+                      <div>
+                        <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">Archetype</label>
+                        <select
+                          value={newArchetype}
+                          onChange={(e) => setNewArchetype(e.target.value as BlogArchetype)}
+                          className="w-full bg-[var(--surface)] border border-[var(--border)] rounded-lg px-4 py-3 text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)] transition-colors"
+                        >
+                          {ALL_ARCHETYPES.map((a) => (
+                            <option key={a} value={a}>{ARCHETYPE_LABELS[a]}</option>
+                          ))}
+                        </select>
+                        <p className="text-xs text-[var(--text-secondary)] mt-1">{ARCHETYPE_DESCRIPTIONS[newArchetype]}</p>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <input type="checkbox" id="useAi" checked={useAi} onChange={(e) => setUseAi(e.target.checked)} className="rounded" />
+                        <label htmlFor="useAi" className="text-sm text-[var(--text-secondary)]">Laat AI het artikel schrijven</label>
+                      </div>
+                      <button onClick={handleWriteNew} disabled={!newTitle.trim() || generating} className="btn-primary inline-flex items-center gap-2 disabled:opacity-50">
+                        {useAi ? <><Sparkles size={16} /> AI: Schrijf artikel</> : <><Plus size={16} /> Maak draft aan</>}
+                      </button>
+                    </>
+                  )}
+
+                  {newMode === "pillar" && (
+                    <>
+                      <div>
+                        <div className="flex items-center justify-between mb-2">
+                          <label className="block text-sm font-medium text-[var(--text-secondary)]">
+                            Spoke-artikelen (selecteer 3-10)
+                          </label>
+                          <span className={`text-xs font-bold ${
+                            spokeOk ? "text-green-600" : spokeCount > 10 ? "text-red-600" : "text-red-600"
+                          }`}>
+                            {spokeCount} / 3-10
+                          </span>
+                        </div>
+                        {spokeCandidates.length === 0 ? (
+                          <p className="text-sm text-[var(--text-secondary)] py-3">
+                            Er zijn geen gepubliceerde blog-artikelen om als spoke te selecteren. Publiceer eerst minimaal 3 reguliere blogs.
+                          </p>
+                        ) : (
+                          <div className="border border-[var(--border)] rounded-lg max-h-72 overflow-y-auto bg-[var(--surface)]">
+                            {spokeCandidates.map((p) => {
+                              const checked = pillarSpokeSlugs.has(p.slug);
+                              const disabled = !checked && spokeCount >= 10;
+                              return (
+                                <label
+                                  key={p.id}
+                                  className={`flex items-center gap-3 px-3 py-2 border-b border-[var(--border)] last:border-b-0 cursor-pointer transition-colors ${
+                                    checked ? "bg-[var(--accent)]/10" : "hover:bg-gray-50"
+                                  } ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
+                                >
+                                  <input
+                                    type="checkbox"
+                                    checked={checked}
+                                    disabled={disabled}
+                                    onChange={() => togglePillarSpoke(p.slug)}
+                                    className="rounded"
+                                  />
+                                  <span className="text-sm text-[var(--text-primary)] truncate">{p.title}</span>
+                                </label>
+                              );
+                            })}
+                          </div>
+                        )}
+                        <p className="text-xs text-[var(--text-secondary)] mt-2">
+                          De pillar-gids zal naar elke geselecteerde spoke minimaal één keer linken vanuit lopende tekst.
+                        </p>
+                      </div>
+                      <button
+                        onClick={handleWritePillar}
+                        disabled={!newTitle.trim() || !spokeOk || generating}
+                        className="inline-flex items-center gap-2 px-6 py-3 rounded font-medium text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                        style={{ backgroundColor: "var(--color-sector-saas)" }}
+                      >
+                        {generating ? <Loader2 size={16} className="animate-spin" /> : <Sparkles size={16} />}
+                        Genereer pillar-gids
+                      </button>
+                    </>
+                  )}
                 </div>
-                <button onClick={handleWriteNew} disabled={!newTitle.trim() || generating} className="btn-primary inline-flex items-center gap-2 disabled:opacity-50">
-                  {useAi ? <><Sparkles size={16} /> AI: Schrijf artikel</> : <><Plus size={16} /> Maak draft aan</>}
-                </button>
               </div>
-            </div>
-          )}
+            );
+          })()}
         </>
       )}
 

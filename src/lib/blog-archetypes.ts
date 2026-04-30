@@ -1,6 +1,22 @@
 import { cases } from './cases-data'
 import type { CaseStudy } from './types/sectors'
 
+// ===== ARTICLE TYPES =====
+
+/**
+ * Het inhoudelijke content-type van een blog_post:
+ * - 'blog': een regulier artikel dat een archetype volgt.
+ * - 'pillar': een hub-and-spoke gids die naar 3-10 spoke-artikelen linkt.
+ * Stored as TEXT zonder CHECK in de DB, gevalideerd in TS.
+ */
+export type ArticleType = 'blog' | 'pillar'
+
+export const ALL_ARTICLE_TYPES: ArticleType[] = ['blog', 'pillar']
+
+export function isValidArticleType(value: unknown): value is ArticleType {
+  return value === 'blog' || value === 'pillar'
+}
+
 // ===== ARCHETYPES =====
 
 export type BlogArchetype =

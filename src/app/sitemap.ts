@@ -49,7 +49,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         url: `${BASE_URL}/blog/${article.slug}`,
         lastModified: new Date(article.isoDate),
         changeFrequency: 'monthly',
-        priority: 0.7,
+        // Pillars zijn autoriteits-stukken die hoger in sitemap-prioriteit komen.
+        priority: article.articleType === 'pillar' ? 0.9 : 0.7,
     }));
 
     return [...staticRoutes, ...caseRoutes, ...categoryRoutes, ...blogRoutes];

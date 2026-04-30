@@ -1,5 +1,5 @@
 import { supabase } from './supabase'
-import type { BlogArchetype } from './blog-archetypes'
+import type { ArticleType, BlogArchetype } from './blog-archetypes'
 
 export interface BlogPost {
   id: string
@@ -16,6 +16,10 @@ export interface BlogPost {
   target_keywords: string[]
   ai_generated: boolean
   archetype: BlogArchetype | null
+  /** 'blog' (default) of 'pillar' (hub-and-spoke gids). */
+  article_type: ArticleType
+  /** UUIDs van spoke-posts; alleen relevant voor article_type='pillar'. */
+  spoke_post_ids: string[]
   created_at: string
   updated_at: string
 }
@@ -78,6 +82,47 @@ export async function getPostById(id: string): Promise<BlogPost | null> {
   return data
 }
 
+/**
+ * Haal alle published posts op van een specifiek article_type.
+ * Voor pillars: getPublishedPostsByType('pillar').
+ * Voor reguliere blogs: getPublishedPostsByType('blog').
+ */
+export async function getPublishedPostsByType(type: ArticleType): Promise<BlogPost[]> {
+  const { data, error } = await supabase
+    .from('blog_posts')
+    .select('*')
+    .eq('status', 'published')
+    .eq('article_type', type)
+    .order('published_at', { ascending: false })
+
+  if (error) throw new Error(`Failed to get posts by type: ${error.message}`)
+  return data || []
+}
+
+/**
+ * Haal published posts op aan de hand van een lijst UUIDs en bewaar de
+ * volgorde van de input-lijst. Gebruikt om spokes van een pillar in
+ * auteurs-volgorde te tonen. Posts die niet (meer) gepubliceerd zijn worden
+ * stilzwijgend overgeslagen.
+ */
+export async function getPostsByIds(ids: string[]): Promise<BlogPost[]> {
+  if (ids.length === 0) return []
+  const { data, error } = await supabase
+    .from('blog_posts')
+    .select('*')
+    .in('id', ids)
+    .eq('status', 'published')
+
+  if (error) throw new Error(`Failed to get posts by ids: ${error.message}`)
+  if (!data) return []
+
+  // Behoud input-volgorde
+  const byId = new Map(data.map((p) => [p.id, p]))
+  return ids
+    .map((id) => byId.get(id))
+    .filter((p): p is BlogPost => p !== undefined)
+}
+
 export async function createPost(post: {
   slug: string
   title: string
@@ -91,6 +136,8 @@ export async function createPost(post: {
   target_keywords?: string[]
   ai_generated?: boolean
   archetype?: BlogArchetype | null
+  article_type?: ArticleType
+  spoke_post_ids?: string[]
 }): Promise<string> {
   const { data, error } = await supabase
     .from('blog_posts')
@@ -107,6 +154,8 @@ export async function createPost(post: {
       target_keywords: post.target_keywords || [],
       ai_generated: post.ai_generated || false,
       archetype: post.archetype ?? null,
+      article_type: post.article_type ?? 'blog',
+      spoke_post_ids: post.spoke_post_ids ?? [],
     })
     .select('id')
     .single()

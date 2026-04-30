@@ -3,7 +3,22 @@ import Image from 'next/image';
 import { ArrowRight, Calendar } from 'lucide-react';
 import type { SoroArticle } from '@/lib/soro';
 
-export default function ArticleCard({ article }: { article: SoroArticle }) {
+/**
+ * Standaard articlecard. Wanneer de pillar-sectie op /blog deze card gebruikt
+ * (kind="pillar") wordt het categorie-rijtje vervangen door één "Complete gids"
+ * pill in de amber accent-kleur. De `kind`-prop overschrijft de detectie via
+ * `article.articleType` zodat de card in willekeurige context goed te tonen is.
+ */
+export default function ArticleCard({
+    article,
+    kind,
+}: {
+    article: SoroArticle;
+    kind?: 'blog' | 'pillar';
+}) {
+    const effectiveKind = kind ?? article.articleType ?? 'blog';
+    const isPillar = effectiveKind === 'pillar';
+
     return (
         <Link
             href={`/blog/${article.slug}`}
@@ -26,14 +41,20 @@ export default function ArticleCard({ article }: { article: SoroArticle }) {
                         <Calendar size={14} />
                         <time dateTime={article.isoDate}>{article.date}</time>
                     </span>
-                    {article.categories.map((cat) => (
-                        <span
-                            key={cat.slug}
-                            className="px-2 py-0.5 rounded-full bg-gray-100 border border-[var(--border)] text-[var(--text-secondary)] font-medium"
-                        >
-                            {cat.name}
+                    {isPillar ? (
+                        <span className="px-2 py-0.5 rounded-full bg-[var(--accent)] text-white font-bold uppercase tracking-wider">
+                            Complete gids
                         </span>
-                    ))}
+                    ) : (
+                        article.categories.map((cat) => (
+                            <span
+                                key={cat.slug}
+                                className="px-2 py-0.5 rounded-full bg-gray-100 border border-[var(--border)] text-[var(--text-secondary)] font-medium"
+                            >
+                                {cat.name}
+                            </span>
+                        ))
+                    )}
                 </div>
                 <h2 className="text-lg font-display font-bold text-[var(--text-primary)] mb-3 group-hover:text-[var(--accent)] transition-colors">
                     {article.title}

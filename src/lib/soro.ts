@@ -5,8 +5,14 @@
  * BlogCTA en sitemap NIET aangepast hoeven te worden.
  */
 
-import { getPublishedPosts, getPostBySlug as getStorePostBySlug } from './blog-store'
+import {
+    getPublishedPosts,
+    getPublishedPostsByType,
+    getPostBySlug as getStorePostBySlug,
+    getPostsByIds,
+} from './blog-store'
 import type { BlogPost } from './blog-store'
+import type { ArticleType } from './blog-archetypes'
 
 export const BASE_URL = 'https://www.powerbistudio.nl';
 
@@ -117,6 +123,10 @@ export interface SoroArticle {
     categories: Category[];
     /** @deprecated Gebruik `categories` — backward-compat alias voor `categories[0]` */
     category: Category | null;
+    /** Content-type: 'blog' (regulier) of 'pillar' (hub-and-spoke gids). */
+    articleType: ArticleType;
+    /** UUIDs van spoke-posts; alleen ≠ [] wanneer articleType === 'pillar'. */
+    spokePostIds: string[];
 }
 
 // --- Helper: BlogPost → SoroArticle ---
@@ -137,6 +147,8 @@ function toSoroArticle(post: BlogPost): SoroArticle {
         image: post.image,
         categories,
         category: categories[0] ?? null,
+        articleType: post.article_type ?? 'blog',
+        spokePostIds: post.spoke_post_ids ?? [],
     };
 }
 
@@ -145,6 +157,48 @@ function toSoroArticle(post: BlogPost): SoroArticle {
 export async function getArticles(): Promise<SoroArticle[]> {
     try {
         const posts = await getPublishedPosts();
+        return posts.map(toSoroArticle);
+    } catch {
+        return [];
+    }
+}
+
+/**
+ * Alleen reguliere blog-artikelen (article_type='blog'). Pillars worden
+ * uitgesloten zodat ze in een aparte sectie op /blog gerenderd kunnen worden.
+ */
+export async function getBlogArticles(): Promise<SoroArticle[]> {
+    try {
+        const posts = await getPublishedPostsByType('blog');
+        return posts.map(toSoroArticle);
+    } catch {
+        return [];
+    }
+}
+
+/**
+ * Alleen pillar-gidsen (article_type='pillar'). Voor de "Complete gidsen"
+ * sectie op /blog en voor admin-checks.
+ */
+export async function getPillars(): Promise<SoroArticle[]> {
+    try {
+        const posts = await getPublishedPostsByType('pillar');
+        return posts.map(toSoroArticle);
+    } catch {
+        return [];
+    }
+}
+
+/**
+ * Resolveer de spokes van een pillar in de oorspronkelijke volgorde van
+ * spokePostIds. Posts die niet meer published zijn worden weggefilterd.
+ */
+export async function getSpokes(article: SoroArticle): Promise<SoroArticle[]> {
+    if (article.articleType !== 'pillar' || article.spokePostIds.length === 0) {
+        return [];
+    }
+    try {
+        const posts = await getPostsByIds(article.spokePostIds);
         return posts.map(toSoroArticle);
     } catch {
         return [];

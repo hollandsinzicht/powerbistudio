@@ -2,10 +2,20 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowLeft, Calendar } from 'lucide-react';
 import { notFound } from 'next/navigation';
-import { getArticleBySlug, getArticleContent, BASE_URL } from '@/lib/soro';
+import {
+    getArticleBySlug,
+    getArticleContent,
+    getSpokes,
+    getBlogArticles,
+    BASE_URL,
+} from '@/lib/soro';
 import type { Metadata } from 'next';
 import AuthorIntro from '@/components/blog/AuthorIntro';
 import BlogCTA from '@/components/blog/BlogCTA';
+import PillarBadge from '@/components/blog/PillarBadge';
+import PillarTOC from '@/components/blog/PillarTOC';
+import PillarRelated from '@/components/blog/PillarRelated';
+import { extractToc, injectHeadingIds } from '@/lib/pillar-toc';
 
 type Props = {
     params: Promise<{ slug: string }>;
@@ -53,7 +63,17 @@ export default async function BlogPostPage({ params }: Props) {
 
     if (!article) notFound();
 
-    const content = await getArticleContent(article.id);
+    const rawContent = await getArticleContent(article.id);
+    const isPillar = article.articleType === 'pillar';
+
+    // Voor pillars: TOC opbouwen en heading-IDs in de HTML injecteren.
+    const toc = isPillar && rawContent ? extractToc(rawContent) : [];
+    const content = isPillar && rawContent ? injectHeadingIds(rawContent, toc) : rawContent;
+
+    // Voor pillars: spokes ophalen + fallback-pool voor "Verder lezen".
+    const [spokes, fallbackPool] = isPillar
+        ? await Promise.all([getSpokes(article), getBlogArticles()])
+        : [[], []];
 
     const canonicalUrl = `${BASE_URL}/blog/${slug}`;
     const articleImage = article.image || `${BASE_URL}/og-default.png`;
@@ -67,6 +87,7 @@ export default async function BlogPostPage({ params }: Props) {
         },
         headline: article.title,
         description: article.excerpt,
+        ...(isPillar ? { articleSection: 'Guide' } : {}),
         image: {
             '@type': 'ImageObject',
             url: articleImage,
@@ -129,6 +150,12 @@ export default async function BlogPostPage({ params }: Props) {
                             Terug naar alle artikelen
                         </Link>
 
+                        {isPillar && (
+                            <div className="mb-4">
+                                <PillarBadge />
+                            </div>
+                        )}
+
                         <div className="flex flex-wrap items-center gap-2 text-sm text-[var(--text-secondary)] mb-4">
                             <span className="flex items-center gap-1">
                                 <Calendar size={16} />
@@ -165,6 +192,9 @@ export default async function BlogPostPage({ params }: Props) {
                             </div>
                         )}
 
+                        {/* TOC alleen voor pillars, na de hero-image */}
+                        {isPillar && toc.length > 0 && <PillarTOC entries={toc} />}
+
                         {content ? (
                             <div
                                 className="prose prose-lg max-w-none
@@ -182,6 +212,15 @@ export default async function BlogPostPage({ params }: Props) {
                             <p className="text-[var(--text-secondary)]">
                                 Dit artikel kon niet geladen worden. Probeer het later opnieuw.
                             </p>
+                        )}
+
+                        {/* Pillar: spokes + fallback als "Verder lezen" */}
+                        {isPillar && (
+                            <PillarRelated
+                                spokes={spokes}
+                                fallbackPool={fallbackPool}
+                                pillarId={article.id}
+                            />
                         )}
 
                         {/* Dynamische CTA op basis van content-analyse */}

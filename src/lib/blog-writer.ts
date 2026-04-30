@@ -386,6 +386,150 @@ Zoek woorden in het bestaande artikel die je kunt linken naar dit nieuwe artikel
   }
 }
 
+// ===== PILLAR-GIDS GENERATION =====
+
+export interface GeneratedPillar {
+  title: string
+  slug: string
+  excerpt: string
+  content: string // pure HTML, geen <h1>
+  seoTitle: string
+  seoDescription: string
+}
+
+/**
+ * Genereer een pillar-gids: een 2.800–4.000 woorden autoriteitsgids die
+ * fungeert als hub-pagina voor één breed onderwerp en doorlinkt naar elke
+ * meegegeven spoke-post. Gebruikt een hogere max_tokens en lagere temperature
+ * dan de reguliere blog-writer voor consistentere lange-vorm output.
+ */
+export async function generatePillarPost(params: {
+  title: string
+  keywords: string[]
+  /** Verplichte spokes; minimaal 3, maximaal 10. Caller controleert dit. */
+  spokes: { slug: string; title: string }[]
+  /** Optionele extra published posts waar de LLM extra naar mag linken. */
+  extraExistingPosts?: { slug: string; title: string }[]
+}): Promise<GeneratedPillar> {
+  if (!process.env.ANTHROPIC_API_KEY) {
+    return getMockPillar(params.title)
+  }
+
+  const spokeList = params.spokes
+    .map((s) => `- /blog/${s.slug} — "${s.title}"`)
+    .join('\n')
+
+  const extraLinks = (params.extraExistingPosts ?? [])
+    .map((p) => `- <a href="/blog/${p.slug}">${p.title}</a>`)
+    .join('\n')
+
+  const extraLinksBlock = extraLinks
+    ? `\n\nExtra interne links die je optioneel mag gebruiken (kies er 2-4 die natuurlijk passen, geen verplichting):
+${extraLinks}
+
+Beschikbare pagina-links (gebruik er 1-2 als ze passen):
+- <a href="/tools/report-auditor">Power BI Report Auditor</a>
+- <a href="/tools/dax-assistant">DAX Formula Assistant</a>
+- <a href="/tools/readiness-scan">Power BI Readiness Scan</a>
+- <a href="/tools/bi-kosten-calculator">BI-Kosten Calculator</a>
+- <a href="/fabric-migratie">Fabric migratie</a>
+- <a href="/procesverbetering">Procesverbetering</a>
+- <a href="/saas">Power BI voor SaaS</a>
+- <a href="/publieke-sector">Publieke sector BI</a>`
+    : ''
+
+  const response = await client.messages.create({
+    model: 'claude-sonnet-4-20250514',
+    max_tokens: 16000,
+    temperature: 0.7,
+    system: `Je schrijft een COMPLETE GIDS (pillar-gids) voor PowerBIStudio.nl — de website van Jan Willem den Hollander, Power BI architect.
+
+Een pillar-gids is een autoriteits-stuk dat één breed onderwerp uitputtend behandelt en lezers doorstuurt naar diepere spoke-artikelen voor specifieke deelthema's.
+
+TOON & STIJL (gelijk aan reguliere blogs):
+- Schrijf als een kennisautoriteit, niet als verkoper. De lezer komt voor informatie, niet voor een pitch.
+- Informatief en uitgebreid, generalistisch breed maar concreet — geef het volledige plaatje.
+- MENSELIJK en natuurlijk geschreven, niet corporate of stijf. Varieer in zinslengte.
+- Gebruik concrete voorbeelden in plaats van abstracte concepten.
+- Derde persoon of "je/jij" vorm — niet ik-vorm.
+- Geen corporate-speak, geen buzzwords zonder uitleg, geen "in deze blog gaan we het hebben over...".
+- Leg vakjargon uit bij eerste gebruik.
+- GEEN sales-taal, GEEN CTA's in de tekst, GEEN "neem contact op", GEEN "wij bieden".
+
+NEDERLANDSE SPELLING & HOOFDLETTERS — STRIKTE REGELS:
+- Hoofdletters ALLEEN bij: zinsbegin, eigennamen, productnamen (Power BI, Microsoft Fabric, DAX, Excel, Azure, Copilot), plaats- en organisatienamen.
+- GEEN hoofdletters bij algemene begrippen midden in een zin (datamodel, dashboard, visualisatie, migratie, governance).
+- H2/H3 koppen: Nederlandse zinhoofdlettering, GEEN Title Case.
+- Samengestelde woorden met merknaam: koppelteken (Power BI-rapport, Fabric-migratie, DAX-formule).
+
+LENGTE: 2.800–4.000 woorden. Dit is een complete gids — uitputtend maar niet redundant. Tel mee terwijl je schrijft.
+
+STRUCTUUR (PILLAR — strikt):
+- Korte, krachtige intro (3–4 zinnen) die expliciet aangeeft "in deze gids lees je..." en de belofte van de gids beschrijft.
+- 7–10 H2 hoofdsecties die samen het onderwerp uitputtend dekken.
+- H3-koppen voor subsecties binnen grotere H2's waar nodig.
+- Paragrafen van 3–5 zinnen.
+- Gebruik <ul><li> voor stappen, vergelijkingen of korte lijstjes.
+- <strong> spaarzaam voor begrippen bij eerste introductie.
+- Eén H2 "Samenvatting" aan het einde met 4–6 bullets van de kernpunten.
+- Eén H2 "Volgende stappen" als allerlaatste sectie met 3 concrete vervolgacties (mag verwijzen naar relevante spokes/tools).
+
+INTERNE LINKS — KRITIEK:
+- VERPLICHT: plaats minimaal één <a href="/blog/{spoke-slug}">natuurlijke anchor-tekst</a> naar ELK van de meegegeven spokes. Geen "klik hier", geen "lees meer", geen "voor meer info".
+- Anchor-tekst moet relevant zijn voor het gelinkte onderwerp en grammaticaal in de zin passen.
+- Spokes worden geweven in de tekst op de plek waar hun deelthema natuurlijk ter sprake komt — niet allemaal in één lijst aan het eind.
+- Mag dezelfde spoke meerdere keren linken als het natuurlijk past, maar minstens één keer per spoke is verplicht.
+- Daarnaast 2–4 extra interne links naar andere posts of tools waar relevant.
+
+GEEN:
+- Geen H1 (komt apart in title-veld).
+- Geen <html>, <body>, <head>, <title>.
+- Geen klantnamen of cases. Geen GGDGHOR, Lyreco, Technische Unie, Vattenfall.
+- Geen "wij" of "ons team".
+- Geen overdreven wetenschappelijke diepgang — die hoort in de spokes (link erheen).
+- Geen sales-CTA's in de tekst.
+
+OUTPUT — strikt valid JSON, geen markdown fences:
+{
+  "title": "De definitieve gids-titel (Nederlands, max 70 tekens)",
+  "slug": "url-vriendelijke-slug",
+  "excerpt": "Wat lezers in deze gids leren (max 160 tekens)",
+  "content": "<p>Intro...</p><h2>...</h2><p>...</p>...",
+  "seoTitle": "SEO titel (max 60 tekens) | PowerBIStudio.nl",
+  "seoDescription": "Meta description (max 155 tekens)"
+}
+
+De content moet valide HTML zijn met <h2>, <h3>, <p>, <ul>, <li>, <strong>, <em>, <a>, <table>, <pre>, <code> tags.`,
+    messages: [
+      {
+        role: 'user',
+        content: `Schrijf een COMPLETE GIDS over: "${params.title}"
+
+Keywords om te verwerken: ${params.keywords.join(', ')}
+
+VERPLICHTE SPOKE-ARTIKELEN — link naar ELK minstens één keer in de tekst met een natuurlijke anchor:
+${spokeList}
+
+Deze spokes zijn deelthema's die in jouw gids breed worden aangestipt — telkens met een natuurlijke verwijzing in de tekst naar de diepgaande spoke-post. De gids zelf gaat niet de wetenschappelijke of technische diepgang in op deze deelthema's; daarvoor stuur je de lezer door naar de spoke.${extraLinksBlock}
+
+Context over de site:
+${SITE_CONTEXT}`,
+      },
+    ],
+  })
+
+  const text = response.content[0]
+  if (text.type !== 'text') return getMockPillar(params.title)
+
+  try {
+    const cleaned = text.text.replace(/```json?\n?/g, '').replace(/```/g, '').trim()
+    return JSON.parse(cleaned) as GeneratedPillar
+  } catch {
+    console.error('Failed to parse pillar response:', text.text)
+    return getMockPillar(params.title)
+  }
+}
+
 // ===== MOCKS =====
 
 function getMockIdeas(): BlogIdeaResult[] {
@@ -406,5 +550,17 @@ function getMockPost(title: string, archetype: BlogArchetype): GeneratedPost {
     seoTitle: `${title} | PowerBIStudio.nl`,
     seoDescription: `Lees meer over ${title} op PowerBIStudio.nl.`,
     archetype,
+  }
+}
+
+function getMockPillar(title: string): GeneratedPillar {
+  const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+  return {
+    title,
+    slug,
+    excerpt: `Concept-pillar over ${title}. Bewerk de content in de admin.`,
+    content: `<p>Dit is een automatisch gegenereerd concept van een complete gids. Bewerk het in de admin voordat je publiceert.</p><h2>Inleiding</h2><p>Mock-content.</p><h2>Samenvatting</h2><ul><li>Mock-bullet</li></ul><h2>Volgende stappen</h2><ul><li>Mock-stap</li></ul>`,
+    seoTitle: `${title} | PowerBIStudio.nl`,
+    seoDescription: `Complete gids over ${title} op PowerBIStudio.nl.`,
   }
 }

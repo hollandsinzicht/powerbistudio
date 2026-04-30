@@ -45,7 +45,10 @@ export default async function CategoryPage({ params }: Props) {
 
     if (!cat) notFound();
 
-    const articles = await getArticlesByCategory(category);
+    // Categorie-pagina's tonen alleen reguliere blog-artikelen, geen pillars.
+    const articles = (await getArticlesByCategory(category)).filter(
+        (a) => a.articleType === 'blog',
+    );
 
     return (
         <>

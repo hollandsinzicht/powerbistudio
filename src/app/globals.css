@@ -38,6 +38,11 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Anchor-jumps op pillar-pagina's: laat de heading onder de sticky sub-nav landen. */
+:where(h2[id], h3[id]) {
+  scroll-margin-top: 6rem;
+}
+
 /* Base utility classes for gradients and effects */
 @utility text-gradient {
   background-image: linear-gradient(to right, var(--text-primary), var(--text-secondary));
