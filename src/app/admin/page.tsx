@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
-import { Sparkles, FileText, Plus, CheckCircle2, XCircle, PenLine, Eye, Send, Archive, Loader2, Clock, Link2, ArrowUp, ArrowDown, Image as ImageIcon, Linkedin, Copy, Check, Images, Download, Target } from "lucide-react";
+import { Sparkles, FileText, Plus, CheckCircle2, XCircle, PenLine, Eye, Send, Archive, Loader2, Clock, Link2, ArrowUp, ArrowDown, Image as ImageIcon, Linkedin, Copy, Check, Images, Download, Target, Upload } from "lucide-react";
 import {
   ALL_ARCHETYPES,
   ARCHETYPE_LABELS,
@@ -78,6 +78,9 @@ export default function AdminDashboard() {
   const [quoteImagesPost, setQuoteImagesPost] = useState<BlogPost | null>(null);
   const [quoteImages, setQuoteImages] = useState<{ index: number; text: string; emphasis: string; url: string }[] | null>(null);
   const [quoteImagesLoading, setQuoteImagesLoading] = useState(false);
+
+  // Per-row hidden file inputs voor manual image upload
+  const fileInputs = useRef<Record<string, HTMLInputElement | null>>({});
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -244,6 +247,36 @@ export default function AdminDashboard() {
       }
     } catch (e) { console.error(e); }
     setGenerating(false);
+  };
+
+  const handleUploadImage = async (postId: string, file: File) => {
+    setGenerating(true);
+    try {
+      const fd = new FormData();
+      fd.append("id", postId);
+      fd.append("file", file);
+      // Geen Content-Type header meegeven — browser zet zelf de multipart boundary.
+      const res = await fetch("/api/admin/blog/upload-image", {
+        method: "POST",
+        headers: { "x-admin-token": getToken() },
+        body: fd,
+      });
+      if (res.ok) {
+        await fetchData();
+      } else {
+        const data = await res.json().catch(() => ({}));
+        alert(`Upload mislukt: ${data.error || res.statusText}`);
+      }
+    } catch (e) {
+      console.error(e);
+      alert(`Netwerkfout bij upload: ${e instanceof Error ? e.message : "onbekend"}`);
+    } finally {
+      setGenerating(false);
+    }
+  };
+
+  const triggerUpload = (postId: string) => {
+    fileInputs.current[postId]?.click();
   };
 
   const handlePostAction = async (id: string, action: string, extra?: Record<string, string>) => {
@@ -628,6 +661,29 @@ export default function AdminDashboard() {
                         )}
                         {post.status !== "archived" && (
                           <button onClick={() => handleRegenerateImage(post.id)} disabled={generating} className="p-2 text-[var(--text-secondary)] hover:text-purple-500" title={post.image ? "Image opnieuw genereren" : "Image genereren"}><ImageIcon size={15} /></button>
+                        )}
+                        {post.status !== "archived" && (
+                          <>
+                            <input
+                              type="file"
+                              accept="image/jpeg,image/png,image/webp"
+                              ref={(el) => { fileInputs.current[post.id] = el; }}
+                              className="hidden"
+                              onChange={(e) => {
+                                const f = e.target.files?.[0];
+                                if (f) handleUploadImage(post.id, f);
+                                e.target.value = "";
+                              }}
+                            />
+                            <button
+                              onClick={() => triggerUpload(post.id)}
+                              disabled={generating}
+                              className="p-2 text-[var(--text-secondary)] hover:text-emerald-500"
+                              title="Upload eigen afbeelding (JPG/PNG/WEBP, max 10MB)"
+                            >
+                              <Upload size={15} />
+                            </button>
+                          </>
                         )}
                         <Link href={`/admin/edit/${post.id}`} className="p-2 text-[var(--text-secondary)] hover:text-[var(--primary)]" title="Bewerk"><PenLine size={15} /></Link>
                         {(post.status === "draft" || post.status === "scheduled") && (
