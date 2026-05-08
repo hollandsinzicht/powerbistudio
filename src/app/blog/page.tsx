@@ -1,16 +1,31 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
+import { Suspense } from 'react';
 import { getBlogArticles, getPillars, CATEGORIES } from '@/lib/soro';
-import ArticleCard from '@/components/blog/ArticleCard';
 import PillarSectionEyebrow from '@/components/blog/PillarSectionEyebrow';
+import PillarFeatured from '@/components/blog/PillarFeatured';
+import BlogList from '@/components/blog/BlogList';
 
 export const metadata: Metadata = {
     title: 'Blog | PowerBIStudio',
     description: 'Artikelen en inzichten over Power BI, data-analyse en business intelligence.',
 };
 
-export default async function BlogPage() {
-    const [pillars, blogArticles] = await Promise.all([getPillars(), getBlogArticles()]);
+type SearchParams = Promise<{ categorie?: string | string[] }>;
+
+export default async function BlogPage({
+    searchParams,
+}: {
+    searchParams: SearchParams;
+}) {
+    const sp = await searchParams;
+    const raw = Array.isArray(sp.categorie) ? sp.categorie[0] : sp.categorie;
+    const initialCategory =
+        raw && CATEGORIES.some((c) => c.slug === raw) ? raw : null;
+
+    const [pillars, blogArticles] = await Promise.all([
+        getPillars(),
+        getBlogArticles(),
+    ]);
     const hasPillars = pillars.length > 0;
 
     return (
@@ -68,11 +83,7 @@ export default async function BlogPage() {
                                 Uitputtende gidsen die één breed onderwerp van A tot Z behandelen — met directe doorklikken naar de diepgaande deel-artikelen.
                             </p>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-                            {pillars.map((pillar) => (
-                                <ArticleCard key={pillar.id} article={pillar} kind="pillar" />
-                            ))}
-                        </div>
+                        <PillarFeatured pillars={pillars} />
                     </div>
                 </section>
             )}
@@ -90,31 +101,17 @@ export default async function BlogPage() {
                         </div>
                     )}
 
-                    <div className="flex flex-wrap gap-3 mb-12 max-w-6xl mx-auto">
-                        <span className="px-4 py-2 rounded-full text-sm font-medium bg-[var(--primary)] text-white">
-                            Alles
-                        </span>
-                        {CATEGORIES.map((cat) => (
-                            <Link
-                                key={cat.slug}
-                                href={`/blog/categorie/${cat.slug}`}
-                                className="px-4 py-2 rounded-full text-sm font-medium border border-[var(--border)] text-[var(--text-secondary)] hover:border-[var(--accent)] hover:text-[var(--primary)] transition-colors"
-                            >
-                                {cat.name}
-                            </Link>
-                        ))}
-                    </div>
-
                     {blogArticles.length === 0 ? (
                         <p className="text-[var(--text-secondary)] text-center text-lg">
                             Binnenkort verschijnen hier nieuwe artikelen.
                         </p>
                     ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-                            {blogArticles.map((article) => (
-                                <ArticleCard key={article.id} article={article} />
-                            ))}
-                        </div>
+                        <Suspense fallback={null}>
+                            <BlogList
+                                articles={blogArticles}
+                                initialCategory={initialCategory}
+                            />
+                        </Suspense>
                     )}
                 </div>
             </section>

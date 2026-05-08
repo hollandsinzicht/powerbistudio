@@ -56,10 +56,10 @@ export default function ArticleCard({
                         ))
                     )}
                 </div>
-                <h2 className="text-lg font-display font-bold text-[var(--text-primary)] mb-3 group-hover:text-[var(--accent)] transition-colors">
+                <h2 className="text-lg font-display font-bold text-[var(--text-primary)] mb-3 group-hover:text-[var(--accent)] transition-colors line-clamp-2">
                     {article.title}
                 </h2>
-                <p className="text-[var(--text-secondary)] text-sm leading-relaxed flex-1">
+                <p className="text-[var(--text-secondary)] text-sm leading-relaxed flex-1 line-clamp-3">
                     {article.excerpt}
                 </p>
                 <span className="inline-flex items-center gap-1 text-sm font-medium text-[var(--accent)] mt-4">
