@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import { getBlogArticles, getPillars, CATEGORIES } from '@/lib/soro';
+import ArticleCard from '@/components/blog/ArticleCard';
 import PillarSectionEyebrow from '@/components/blog/PillarSectionEyebrow';
-import PillarFeatured from '@/components/blog/PillarFeatured';
 import BlogList from '@/components/blog/BlogList';
 
 export const metadata: Metadata = {
@@ -83,7 +83,11 @@ export default async function BlogPage({
                                 Uitputtende gidsen die één breed onderwerp van A tot Z behandelen — met directe doorklikken naar de diepgaande deel-artikelen.
                             </p>
                         </div>
-                        <PillarFeatured pillars={pillars} />
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                            {pillars.map((pillar) => (
+                                <ArticleCard key={pillar.id} article={pillar} kind="pillar" />
+                            ))}
+                        </div>
                     </div>
                 </section>
             )}
