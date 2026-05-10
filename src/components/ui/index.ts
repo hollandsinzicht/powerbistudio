@@ -4,3 +4,4 @@ export { default as PriorityBadge } from './PriorityBadge';
 export { default as StatBlok } from './StatBlok';
 export { default as ProbleemIntro } from './ProbleemIntro';
 export { default as CTA, type CTAVariant } from './CTA';
+export { default as MethodieDiagram } from './MethodieDiagram';
