@@ -109,7 +109,7 @@ const SERVICE_CTAS: ScoredCTA[] = [
   },
   {
     // Fallback — always scores 0
-    cta: { title: 'Neem contact op', description: 'Laten we bespreken hoe we jouw data voor je kunnen laten werken.', href: '/contact', icon: MessageSquare, color: '#1E3A5F' },
+    cta: { title: 'Neem contact op', description: 'Plan een verkennend gesprek om te bespreken hoe ik je HR-rapportage kan helpen verbeteren.', href: '/contact?type=verkennend', icon: MessageSquare, color: '#1E3A5F' },
     keywords: [],
   },
 ];

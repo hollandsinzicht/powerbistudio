@@ -153,7 +153,7 @@ export default function LeadCaptureForm({
       {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
 
       <p className="text-[10px] text-[var(--text-secondary)] mt-3 opacity-60">
-        We respecteren je privacy. Je kunt je op elk moment uitschrijven.
+        Ik respecteer je privacy. Je kunt je op elk moment uitschrijven.
       </p>
     </div>
   );

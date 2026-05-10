@@ -39,7 +39,7 @@ export default function Footer() {
                     <div>
                         <h4 className="text-[var(--text-primary)] font-medium mb-4 font-display">Over & Cases</h4>
                         <ul className="flex flex-col gap-3">
-                            <li><Link href="/over" className={linkClass}>Over het team</Link></li>
+                            <li><Link href="/over" className={linkClass}>Jan Willem den Hollander</Link></li>
                             <li><Link href="/cases" className={linkClass}>Cases</Link></li>
                             <li><Link href="/blog" className={linkClass}>Blog</Link></li>
                             <li><Link href="/contact" className={linkClass}>Contact</Link></li>

@@ -79,7 +79,7 @@ export default function AgentSignature({
         <p className="text-xs text-[var(--text-secondary)]">
           Klantinteractie loopt altijd via Jan Willem. {agent.name} werkt onder de motorkap.{' '}
           <Link href="/over" className="font-medium hover:underline" style={{ color: TEAM_ACCENT_COLOR[agent.accent] }}>
-            Lees meer over het team →
+            Lees meer over Power BI Studio →
           </Link>
         </p>
       </div>

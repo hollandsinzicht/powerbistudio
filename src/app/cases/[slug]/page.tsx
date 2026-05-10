@@ -85,11 +85,11 @@ export default async function CaseDetailPage({ params }: { params: Promise<{ slu
         </div>
       </section>
 
-      {/* Wat we bewust niet deden */}
+      {/* Wat ik bewust niet deed */}
       {kase.whatWeDidNot && (
         <section className="py-20">
           <div className="container mx-auto px-6 md:px-12 max-w-3xl">
-            <h2 className="text-2xl md:text-3xl font-display font-bold mb-6">Wat we bewust niet deden</h2>
+            <h2 className="text-2xl md:text-3xl font-display font-bold mb-6">Wat ik bewust niet deed</h2>
             <p className="text-[var(--text-secondary)] leading-relaxed text-lg">
               {kase.whatWeDidNot}
             </p>

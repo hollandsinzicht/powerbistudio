@@ -7,7 +7,7 @@ export const cases: CaseStudy[] = [
     sector: 'zorg',
     sectorLabel: 'Zorg & overheid',
     seoTitle: 'GGDGHOR — nationaal Power BI dataportaal voor 25 GGD-regio\'s en RIVM | PowerBIStudio.nl',
-    seoDescription: 'Hoe wij voor 25 GGD-regio\'s en het RIVM één gedeeld Power BI datamodel bouwden met RLS-isolatie per regio. Lessen in multi-regio governance en publieke sector architectuur.',
+    seoDescription: 'Hoe ik voor 25 GGD-regio\'s en het RIVM één gedeeld Power BI datamodel bouwde met RLS-isolatie per regio. Lessen in multi-regio governance en publieke sector architectuur.',
     heroTitle: 'Één bron van waarheid voor alle gezondheidsdata in Nederland',
     heroSubtitle: 'Nationaal dataportaal in Power BI voor GGDGHOR — de koepelorganisatie van 25 GGD-regio\'s en het RIVM.',
     stats: [
@@ -24,7 +24,7 @@ export const cases: CaseStudy[] = [
       'Deployment pipeline voor gecontroleerde uitrol van updates',
       'Governance-structuur met data-eigenaarschap per regio',
     ],
-    whatWeDidNot: 'We hebben bewust geen losse dashboards per regio gebouwd. Het alternatief — 25 individuele modellen — zou onderhoud onmogelijk hebben gemaakt. Eén centraal model met RLS was de enige schaalbare oplossing.',
+    whatWeDidNot: 'Ik heb bewust geen losse dashboards per regio gebouwd. Het alternatief — 25 individuele modellen — zou onderhoud onmogelijk hebben gemaakt. Eén centraal model met RLS was de enige schaalbare oplossing.',
     result: 'Eén bron van waarheid voor alle gezondheidsdata in Nederland. Rapportagetijd van uren naar realtime voor alle regio\'s.',
     resultHighlight: 'Rapportagetijd van uren naar realtime voor alle regio\'s',
     lessons: [
@@ -42,7 +42,7 @@ export const cases: CaseStudy[] = [
     sector: 'data',
     sectorLabel: 'Groothandel',
     seoTitle: 'Technische Unie — afdelingsoverstijgend Power BI inzicht | PowerBIStudio.nl',
-    seoDescription: 'Hoe wij voor Technische Unie een Power BI omgeving bouwden die sales, finance en voorraad verbindt. Handmatig rapportagewerk geëlimineerd.',
+    seoDescription: 'Hoe ik voor Technische Unie een Power BI omgeving bouwde die sales, finance en voorraad verbindt. Handmatig rapportagewerk geëlimineerd.',
     heroTitle: 'Afdelingsoverstijgend inzicht over sales, finance en voorraad',
     heroSubtitle: 'Een Power BI omgeving die de silo\'s tussen afdelingen doorbreekt bij een van de grootste technische groothandels van Nederland.',
     stats: [
@@ -74,9 +74,9 @@ export const cases: CaseStudy[] = [
     sector: 'data',
     sectorLabel: 'Finance & operations',
     seoTitle: 'Lyreco — real-time finance dashboards voor Benelux management | PowerBIStudio.nl',
-    seoDescription: 'Hoe wij voor Lyreco de wekelijkse rapportagecyclus automatiseerden en real-time finance dashboards bouwden voor het Benelux management team.',
+    seoDescription: 'Hoe ik voor Lyreco de wekelijkse rapportagecyclus automatiseerde en real-time finance dashboards bouwde voor het Benelux management team.',
     heroTitle: 'Real-time finance dashboards voor Benelux management',
-    heroSubtitle: 'Power BI Studio leverde bij Lyreco interim data team lead-capaciteit (Jan Willem, oprichter). We bouwden niet alleen BI-oplossingen — we optimaliseerden het team en de processen eromheen.',
+    heroSubtitle: 'Power BI Studio leverde bij Lyreco interim data team lead-capaciteit (Jan Willem). Ik bouwde niet alleen BI-oplossingen — ik optimaliseerde het team en de processen eromheen.',
     stats: [
       { value: 'Benelux', label: 'Scope' },
       { value: 'Realtime', label: 'Finance inzicht' },

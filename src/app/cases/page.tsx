@@ -44,7 +44,7 @@ export default function CasesPage() {
                         Staat jouw organisatie hier binnenkort?
                     </h3>
                     <p className="text-[var(--text-secondary)] mb-8">
-                        Laten we bespreken hoe we jullie data-uitdagingen kunnen omzetten in structurele oplossingen.
+                        Werk je in HR en herken je deze problematiek? Plan een Quick Scan om je bestaande HR-model te laten beoordelen.
                     </p>
                     <Link href="/contact" className="btn-primary inline-flex items-center gap-2 text-lg">
                         Neem contact op <ArrowRight size={20} />
