@@ -6,8 +6,9 @@ import PillarSectionEyebrow from '@/components/blog/PillarSectionEyebrow';
 import BlogList from '@/components/blog/BlogList';
 
 export const metadata: Metadata = {
-    title: 'Blog | PowerBIStudio',
-    description: 'Artikelen en inzichten over Power BI, data-analyse en business intelligence.',
+    title: 'Blog \u2014 HR Analytics, Power BI, AVG-compliance | PowerBIStudio',
+    description:
+        'Artikelen over HR analytics in Power BI, AVG-compliance, datamodellering en de bron-zilver-goud-methodiek.',
 };
 
 type SearchParams = Promise<{ categorie?: string | string[] }>;
@@ -30,17 +31,17 @@ export default async function BlogPage({
 
     return (
         <>
-            <section className="pt-32 pb-16 border-b border-[var(--border)] relative overflow-hidden">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(59,130,246,0.1),transparent_50%)] pointer-events-none" />
-                <div className="container mx-auto px-6 md:px-12 relative z-10">
-                    <div className="max-w-3xl">
-                        <h1 className="text-4xl md:text-5xl font-display font-bold mb-6">
-                            <span className="text-[var(--accent)]">Blog</span>
-                        </h1>
-                        <p className="text-xl text-[var(--text-secondary)] leading-relaxed">
-                            Inzichten, tips en best practices over Power BI, data-analyse en business intelligence.
-                        </p>
-                    </div>
+            <section className="border-b border-[var(--border)] bg-white">
+                <div className="container mx-auto max-w-4xl px-6 py-20 md:px-12 md:py-24">
+                    <p className="eyebrow mb-4">Blog</p>
+                    <h1 className="mb-4">Artikelen over HR analytics in Power BI.</h1>
+                    <p className="lead">
+                        Inzichten over AVG-compliance, type-2 historiek, RLS op
+                        organisatiehiërarchie, bron-zilver-goud-architectuur en
+                        andere patterns die HR-rapportage in Power BI succesvol
+                        maken. Geen marketing-praatjes — concrete patterns uit de
+                        praktijk.
+                    </p>
                 </div>
             </section>
 

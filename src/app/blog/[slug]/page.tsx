@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowLeft, Calendar } from 'lucide-react';
+import { ArrowLeft, Calendar, Clock } from 'lucide-react';
 import { notFound } from 'next/navigation';
 import {
     getArticleBySlug,
@@ -15,7 +15,10 @@ import BlogCTA from '@/components/blog/BlogCTA';
 import PillarBadge from '@/components/blog/PillarBadge';
 import PillarTOC from '@/components/blog/PillarTOC';
 import PillarRelated from '@/components/blog/PillarRelated';
+import InlineCTA from '@/components/blog/InlineCTA';
+import StickyCTA from '@/components/blog/StickyCTA';
 import { extractToc, injectHeadingIds } from '@/lib/pillar-toc';
+import { readingTime } from '@/lib/reading-time';
 
 type Props = {
     params: Promise<{ slug: string }>;
@@ -65,6 +68,7 @@ export default async function BlogPostPage({ params }: Props) {
 
     const rawContent = await getArticleContent(article.id);
     const isPillar = article.articleType === 'pillar';
+    const minutes = readingTime(rawContent);
 
     // Voor pillars: TOC opbouwen en heading-IDs in de HTML injecteren.
     const toc = isPillar && rawContent ? extractToc(rawContent) : [];
@@ -161,6 +165,10 @@ export default async function BlogPostPage({ params }: Props) {
                                 <Calendar size={16} />
                                 <time dateTime={article.isoDate}>{article.date}</time>
                             </span>
+                            <span className="flex items-center gap-1" aria-label="Geschatte leestijd">
+                                <Clock size={16} aria-hidden="true" />
+                                {minutes} min leestijd
+                            </span>
                             {article.categories.map((cat) => (
                                 <Link
                                     key={cat.slug}
@@ -214,6 +222,9 @@ export default async function BlogPostPage({ params }: Props) {
                             </p>
                         )}
 
+                        {/* Inline-CTA na de content — Quick Scan-conversie */}
+                        <InlineCTA />
+
                         {/* Pillar: spokes + fallback als "Verder lezen" */}
                         {isPillar && (
                             <PillarRelated
@@ -233,6 +244,9 @@ export default async function BlogPostPage({ params }: Props) {
                     </div>
                 </div>
             </article>
+
+            {/* Sticky scroll-CTA — verschijnt vanaf 25% scroll-diepte */}
+            <StickyCTA />
         </>
     );
 }
