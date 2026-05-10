@@ -1,238 +1,236 @@
-import Image from "next/image";
-import Link from "next/link";
-import { ArrowRight, Code2, Users, Lightbulb } from "lucide-react";
+import Image from 'next/image';
+import Link from 'next/link';
 import type { Metadata } from 'next';
-import { StatBlok } from '@/components/ui';
+import { StatBlok, CTA } from '@/components/ui';
 
 export const metadata: Metadata = {
-    title: 'Over Power BI Studio — aanpak, ervaring en tools',
-    description: 'Power BI Studio is een Nederlandse studio voor Power BI architectuur, Fabric-migratie en procesverbetering. Opgericht door Jan Willem den Hollander — 15 jaar Power BI, LSS Black Belt.',
-    alternates: { canonical: 'https://www.powerbistudio.nl/over' },
+  title: 'Jan Willem den Hollander — HR analytics-specialist | PowerBIStudio',
+  description:
+    '15 jaar Power BI-ervaring, Lean Six Sigma Black Belt, gespecialiseerd in HR analytics voor mid-market. GGDGHOR, Lyreco, Vattenfall.',
+  alternates: { canonical: 'https://www.powerbistudio.nl/over' },
 };
 
 const BASE_URL = 'https://www.powerbistudio.nl';
 
 const personLd = {
-    '@context': 'https://schema.org',
-    '@type': 'Person',
-    '@id': `${BASE_URL}/over#jan-willem`,
-    name: 'Jan Willem den Hollander',
-    jobTitle: 'Oprichter & Power BI architect',
-    description: '15 jaar Power BI. LSS Black Belt. Oprichter van Power BI Studio.',
-    url: `${BASE_URL}/over`,
-    image: `${BASE_URL}/team/jan-willem.jpg`,
-    worksFor: { '@id': `${BASE_URL}/#organization` },
-    knowsAbout: ['Power BI', 'DAX', 'Microsoft Fabric', 'Lean Six Sigma', 'Power BI Embedded'],
-    sameAs: ['https://www.linkedin.com/in/jan-willem-den-hollander/'],
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  '@id': `${BASE_URL}/over#jan-willem`,
+  name: 'Jan Willem den Hollander',
+  jobTitle: 'HR analytics-specialist',
+  description:
+    '15 jaar Power BI-ervaring. Lean Six Sigma Black Belt. Solo-specialist in HR analytics voor mid-market werkgevers met AFAS, Visma of Nmbrs.',
+  url: `${BASE_URL}/over`,
+  image: `${BASE_URL}/team/jan-willem.jpg`,
+  worksFor: { '@id': `${BASE_URL}/#organization` },
+  knowsAbout: [
+    'Power BI',
+    'DAX',
+    'Microsoft Fabric',
+    'Lean Six Sigma',
+    'HR analytics',
+    'AVG / GDPR',
+    'Row-level security',
+    'AFAS',
+    'Visma',
+    'Nmbrs',
+  ],
+  sameAs: ['https://www.linkedin.com/in/jan-willem-den-hollander/'],
 };
 
 const breadcrumbLd = {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: [
-        { '@type': 'ListItem', position: 1, name: 'Home', item: BASE_URL },
-        { '@type': 'ListItem', position: 2, name: 'Over', item: `${BASE_URL}/over` },
-    ],
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: BASE_URL },
+    { '@type': 'ListItem', position: 2, name: 'Over', item: `${BASE_URL}/over` },
+  ],
 };
 
+const SKILLS = [
+  'Power BI',
+  'DAX',
+  'SQL',
+  'Python',
+  'Azure Data Factory',
+  'Microsoft Fabric',
+  'Datamodellering',
+  'Type-2 historiek',
+  'AVG / GDPR',
+  'Row-level security',
+  'Lean Six Sigma Black Belt',
+  'AFAS',
+  'Visma',
+  'Nmbrs',
+  'Power BI Embedded',
+  'Deployment Pipelines',
+  'TMDL / versiecontrole',
+];
+
 export default function OverPage() {
-    const skills = [
-        "Power BI", "DAX", "SQL", "Python",
-        "Azure Data Factory", "Microsoft Fabric",
-        "Datamodellering", "ETL Processen", "AI-integraties",
-        "Lean Six Sigma Black Belt", "Deployment Pipelines",
-        "Power BI Embedded", "RLS-architectuur", "TMDL/versiecontrole",
-    ];
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(personLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
+      />
 
-    return (
-        <>
-            <script
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(personLd) }}
-            />
-            <script
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
-            />
+      {/* ═══ HERO ═══ */}
+      <section className="border-b border-[var(--border)] bg-white">
+        <div className="container mx-auto px-6 md:px-12">
+          <div className="grid grid-cols-1 items-center gap-10 py-20 md:grid-cols-2 md:gap-16 md:py-28">
+            {/* Foto + beschikbaarheidsbadge */}
+            <div className="flex flex-col items-center md:items-start">
+              <div className="relative w-64 overflow-hidden rounded-lg border border-[var(--border)] md:w-80">
+                <Image
+                  src="/team/jan-willem.jpg"
+                  alt="Jan Willem den Hollander, HR analytics-specialist"
+                  width={400}
+                  height={500}
+                  priority
+                  className="aspect-[4/5] w-full object-cover"
+                />
+              </div>
+              <span className="mt-3 inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-white px-3 py-1.5 text-xs font-medium text-[var(--text-secondary)]">
+                <span className="inline-block h-2 w-2 rounded-full bg-[var(--color-success)]" />
+                Beschikbaar voor HR-trajecten Q2-Q3 2026
+              </span>
+            </div>
 
-            {/* Hero — foto oprichter + studio intro */}
-            <section className="pt-32 pb-16 border-b border-[var(--border)] relative overflow-hidden">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(59,130,246,0.1),transparent_50%)] pointer-events-none" />
-                <div className="container mx-auto px-6 md:px-12 relative z-10">
-                    <div className="flex flex-col md:flex-row items-center gap-12 md:gap-24">
-                        <div className="w-full md:w-1/2 flex justify-center md:justify-end order-2 md:order-1 relative">
-                            <div className="w-64 h-64 md:w-80 md:h-80 relative rounded-2xl overflow-hidden border border-[var(--border)] shadow-[0_0_40px_rgba(59,130,246,0.15)] group">
-                                <div className="absolute inset-0 bg-gradient-to-t from-[var(--background)] to-transparent z-10 opacity-60" />
-                                <Image
-                                    src="/team/jan-willem.jpg"
-                                    alt="Jan Willem den Hollander — oprichter Power BI Studio"
-                                    fill
-                                    className="object-cover transition-transform duration-700 group-hover:scale-105"
-                                    priority
-                                />
-                                <div className="absolute bottom-4 left-4 z-20 flex items-center gap-2 bg-[rgba(255,255,255,0.9)] backdrop-blur px-3 py-1.5 rounded-full border border-[var(--border)]">
-                                    <span className="w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.6)]" />
-                                    <span className="text-xs font-medium text-[var(--text-primary)]">Beschikbaar voor interim</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="w-full md:w-1/2 order-1 md:order-2">
-                            <span className="text-[0.7rem] font-semibold tracking-widest uppercase text-[var(--text-secondary)] mb-3 block">
-                                De studio
-                            </span>
-                            <h1 className="text-3xl md:text-5xl font-display font-bold mb-6">
-                                De Power BI studio die procesverbetering als <span className="text-[var(--accent)]">uitkomst</span> levert
-                            </h1>
-                            <p className="text-lg text-[var(--text-secondary)] leading-relaxed">
-                                Power BI Studio is opgericht door Jan Willem den Hollander.
-                                We combineren publieke sector-bewijs, Lean Six Sigma-methodiek,
-                                eigen productstack en hands-on senioriteit als developer, interim
-                                lead én product owner.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </section>
+            {/* Tekst */}
+            <div>
+              <p className="eyebrow mb-4">Over mij</p>
+              <h1 className="mb-6">
+                HR analytics-specialist met 15 jaar Power BI-ervaring.
+              </h1>
+              <p className="lead">
+                Mijn naam is Jan Willem den Hollander. Power BI Studio is mijn
+                specialistenpraktijk. Sinds 2026 richt ik me uitsluitend op HR
+                analytics in mid-market organisaties met AFAS, Visma of Nmbrs.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
 
-            {/* StatBlokken */}
-            <section className="py-12 border-b border-[var(--border)] bg-gray-50">
-                <div className="container mx-auto px-6 md:px-12">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-                        <StatBlok value="15 jaar" label="Power BI-ervaring" />
-                        <StatBlok value="25+" label="GGD-regio's bediend" />
-                        <StatBlok value="5" label="Sectoren" />
-                        <StatBlok value="3" label="Eigen producten" />
-                    </div>
-                </div>
-            </section>
+      {/* ═══ STATS ═══ */}
+      <section className="border-b border-[var(--border)] bg-[var(--color-neutral-50)] py-12">
+        <div className="container mx-auto px-6 md:px-12">
+          <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
+            <StatBlok value="15 jaar" label="Power BI-ervaring" />
+            <StatBlok value="25+" label="GGD-regio's bediend (multi-tenant RLS)" />
+            <StatBlok value="3" label="HR-systemen als specialisme (AFAS, Visma, Nmbrs)" />
+            <StatBlok value="1" label="Specialist — geen team" />
+          </div>
+        </div>
+      </section>
 
-            {/* Drie leveringsmodi — één studio */}
-            <section className="py-24">
-                <div className="container mx-auto px-6 md:px-12">
-                    <span className="text-[0.7rem] font-semibold tracking-widest uppercase text-[var(--text-secondary)] mb-4 block">
-                        Drie leveringsmodi — één studio
+      {/* ═══ HET VERHAAL ═══ */}
+      <section className="py-20 md:py-24">
+        <div className="container mx-auto px-6 md:px-12">
+          <div className="mx-auto grid max-w-6xl grid-cols-1 gap-16 lg:grid-cols-3">
+            <div className="lg:col-span-2">
+              <h2 className="mb-8">Het verhaal van de studio</h2>
+              <div className="space-y-6 text-base leading-relaxed text-[var(--text-secondary)]">
+                <p>
+                  Ik werk al 15 jaar in business intelligence. Power BI, DAX, SQL,
+                  Python, Azure, Fabric. Ik heb gewerkt voor GGDGHOR, Lyreco,
+                  Vattenfall, Renewi en Technische Unie — meestal aan complexe
+                  data-uitdagingen waar privacy, historiek en multi-tenant toegang
+                  allemaal samenkwamen.
+                </p>
+                <p>
+                  Een paar jaar geleden zag ik dat HR-rapportage in Power BI bij
+                  vrijwel elke organisatie stuk loopt op dezelfde drie punten:
+                  row-level security die niet klopt, historiek die ontbreekt, en
+                  AVG-conformiteit die er pas achteraf bij komt. Niet omdat de
+                  bouwers slecht werk leveren — maar omdat HR-data anders is dan
+                  finance- of operations-data, en die nuance ontbreekt in de meeste
+                  BI-trajecten.
+                </p>
+                <p>
+                  Daarom ben ik me gaan specialiseren. Power BI Studio levert nu
+                  één ding: HR analytics-trajecten voor werkgevers van 250-2.000
+                  FTE met AFAS, Visma of Nmbrs. Quick Scan om te onderzoeken,
+                  Foundation om te implementeren, DashPortal HR voor de hosting.
+                  Vaste prijzen. Bewezen methodiek. Geen interim of urenwerk
+                  daarbuiten — die discipline is wat het verhaal werkbaar maakt.
+                </p>
+                <p>
+                  Ik ben Lean Six Sigma Black Belt. Dat betekent dat ik
+                  HR-rapportage niet als doel zie, maar als middel: kortere
+                  verzuim-detectie, betere onboarding-cijfers, eerlijker
+                  beoordelingen. Dashboards die het gedrag in een proces
+                  veranderen, niet beschrijven.
+                </p>
+              </div>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <CTA variant="navigation" href="/methodiek">
+                  Lees over mijn methodiek
+                </CTA>
+                <CTA variant="navigation" href="/hr-analytics">
+                  Bekijk de pakketten
+                </CTA>
+              </div>
+            </div>
+
+            {/* Sidebar — technische stack + beschikbaarheid */}
+            <aside className="space-y-6">
+              <div className="rounded-lg border border-[var(--border)] bg-white p-6">
+                <h3 className="mb-4 text-base">Technische stack</h3>
+                <div className="flex flex-wrap gap-2">
+                  {SKILLS.map((skill) => (
+                    <span
+                      key={skill}
+                      className="rounded-md border border-[var(--border)] bg-[var(--color-neutral-50)] px-2.5 py-1 text-xs text-[var(--text-secondary)]"
+                    >
+                      {skill}
                     </span>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-2">
-                        <div className="glass-card rounded-xl p-6 md:p-8 border border-[var(--border)]">
-                            <Code2 size={24} className="text-[var(--primary)] mb-4" />
-                            <h3 className="text-lg font-display font-bold mb-3">Als development-partner</h3>
-                            <p className="text-[var(--text-secondary)] text-sm leading-relaxed mb-4">
-                                We bouwen het zelf. DAX, Power Query, semantische modellen,
-                                RLS-architectuur, deployment pipelines. Geen interpretatie
-                                verloren in een overdracht.
-                            </p>
-                            <p className="text-xs text-[var(--text-secondary)]">
-                                Referentie: <Link href="/cases/ggdghor" className="text-[var(--primary)] hover:underline">GGDGHOR — nationaal dataportaal</Link>
-                            </p>
-                        </div>
-                        <div className="glass-card rounded-xl p-6 md:p-8 border border-[var(--border)]">
-                            <Users size={24} className="text-[var(--primary)] mb-4" />
-                            <h3 className="text-lg font-display font-bold mb-3">Als interim data lead</h3>
-                            <p className="text-[var(--text-secondary)] text-sm leading-relaxed mb-4">
-                                We nemen tijdelijk de leiding van een data team. Prioritering,
-                                stakeholdermanagement, backlog, governance. We vertalen
-                                bedrijfsvragen naar technische beslissingen.
-                            </p>
-                            <p className="text-xs text-[var(--text-secondary)]">
-                                Referentie: <Link href="/cases/lyreco" className="text-[var(--primary)] hover:underline">Lyreco — interim data team lead Benelux</Link>
-                            </p>
-                        </div>
-                        <div className="glass-card rounded-xl p-6 md:p-8 border border-[var(--border)]">
-                            <Lightbulb size={24} className="text-[var(--primary)] mb-4" />
-                            <h3 className="text-lg font-display font-bold mb-3">Als product owner</h3>
-                            <p className="text-[var(--text-secondary)] text-sm leading-relaxed mb-4">
-                                We vertalen gebruikersbehoeften naar product. Van epics en
-                                user stories tot acceptance criteria en sprintplanning.
-                                Met een oog op technische haalbaarheid.
-                            </p>
-                            <p className="text-xs text-[var(--text-secondary)]">
-                                Referentie: <Link href="/dashportal" className="text-[var(--primary)] hover:underline">DashPortal — van idee tot SaaS-product</Link>
-                            </p>
-                        </div>
-                    </div>
+                  ))}
                 </div>
-            </section>
+              </div>
 
-            {/* Het verhaal van de studio */}
-            <section className="py-24 bg-gray-50 border-y border-[var(--border)]">
-                <div className="container mx-auto px-6 md:px-12">
-                    <div className="flex flex-col lg:flex-row gap-16 lg:gap-24 max-w-6xl mx-auto">
-                        <div className="w-full lg:w-3/5">
-                            <h2 className="text-3xl font-display font-bold mb-8 text-[var(--text-primary)]">Het verhaal van de studio</h2>
-                            <div className="text-[var(--text-secondary)] leading-relaxed space-y-6">
-                                <p>
-                                    Power BI Studio begon als de solo-praktijk van Jan Willem den Hollander —
-                                    15 jaar diep in Power BI, de Microsoft Data stack, en de bedrijfsprocessen
-                                    die eromheen draaien. Vandaag is het een studio waar menselijke expertise
-                                    gecombineerd wordt met zelfgebouwde AI-tools voor specifieke vragen.
-                                </p>
-                                <p>
-                                    Wat de studio onderscheidt van de meeste BI-consultancies is de Lean Six Sigma-
-                                    achtergrond van de oprichter. Niet als marketingterm op een CV, maar als lens
-                                    waarmee we naar data kijken. Elk dashboard heeft een procesreden. Elke
-                                    vertraging in een rapport heeft een oorzaak. Die oorzaak zoeken we op.
-                                </p>
-                                <p>
-                                    We hebben gewerkt voor organisaties als GGDGHOR (25 GGD-regio&apos;s + RIVM),
-                                    Lyreco (finance dashboards Benelux), Vattenfall (energie), Technische
-                                    Unie (groothandel) en Renewi (afvalbeheer). In die trajecten hebben we
-                                    niet alleen gebouwd — we hebben aangestuurd, geadviseerd en meegedacht
-                                    over architectuur op organisatieniveau.
-                                </p>
-                                <p>
-                                    Naast interim- en advieswerk bouwt de studio eigen producten. DashPortal is
-                                    een white-label Power BI portal. De Report Auditor analyseert Power BI
-                                    datamodellen op kwaliteit. De DAX Formula Assistant schrijft DAX op basis van
-                                    natuurlijke taal. Die AI-tools ondersteunen ons werk — bekijk ze op de
-                                    <Link href="/tools" className="text-[var(--primary)] hover:underline"> tools-pagina</Link>.
-                                </p>
-                            </div>
-                            <div className="mt-8">
-                                <Link href="/procesverbetering" className="inline-flex items-center gap-2 font-medium text-[var(--primary)] hover:gap-3 transition-all">
-                                    Lees meer over de Lean-aanpak <ArrowRight size={16} />
-                                </Link>
-                            </div>
-                        </div>
+              <div className="rounded-lg border border-[var(--border)] border-l-[3px] border-l-[var(--color-accent-700)] bg-white p-6">
+                <h3 className="mb-3 text-base">Beschikbaar voor</h3>
+                <ul className="space-y-2 text-sm leading-relaxed text-[var(--text-secondary)]">
+                  <li>HR Analytics Quick Scans (€1.950)</li>
+                  <li>Foundation-trajecten (vaste prijs)</li>
+                  <li>DashPortal HR Hosting (vanaf €1.250/mnd)</li>
+                </ul>
+                <p className="mt-4 border-t border-[var(--border)] pt-4 text-xs text-[var(--text-secondary)]">
+                  Geen losse interim-uren of generiek Power BI-werk.
+                </p>
+              </div>
 
-                        {/* Sidebar */}
-                        <div className="w-full lg:w-2/5">
-                            <div className="glass-card p-8 rounded-xl mb-8">
-                                <h3 className="text-xl font-display font-bold mb-6">Technische Stack</h3>
-                                <div className="flex flex-wrap gap-2">
-                                    {skills.map(skill => (
-                                        <span key={skill} className="bg-gray-50 border border-[var(--border)] text-[var(--text-secondary)] px-3 py-1.5 rounded-md text-sm cursor-default hover:border-[var(--accent)] hover:text-[var(--text-primary)] transition-colors">
-                                            {skill}
-                                        </span>
-                                    ))}
-                                </div>
-                            </div>
+              <Link
+                href="https://www.linkedin.com/in/jan-willem-den-hollander/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block rounded-lg border border-[var(--border)] bg-white p-4 text-sm text-[var(--text-primary)] transition-colors hover:border-[var(--color-primary-700)]"
+              >
+                LinkedIn-profiel →
+              </Link>
+            </aside>
+          </div>
+        </div>
+      </section>
 
-                            {/* Klantcitaat placeholder */}
-                            <div className="glass-card p-8 rounded-xl border-l-4 border-[var(--accent)]">
-                                <blockquote className="italic text-[var(--text-secondary)] leading-relaxed">
-                                    &ldquo;[Citaat van contactpersoon — in te vullen met toestemming van opdrachtgever]&rdquo;
-                                </blockquote>
-                                <p className="text-sm text-[var(--text-secondary)] mt-4">— [Naam], [Functie], [Organisatie]</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* CTA */}
-            <section className="py-24">
-                <div className="container mx-auto px-6 md:px-12 text-center max-w-2xl">
-                    <h2 className="text-2xl md:text-3xl font-display font-bold mb-6">
-                        Laten we kennismaken
-                    </h2>
-                    <p className="text-[var(--text-secondary)] mb-8">
-                        Je bericht komt bij Jan Willem terecht. Binnen één werkdag een reactie, altijd van een mens.
-                    </p>
-                    <Link href="/contact" className="btn-primary inline-flex items-center gap-2 text-lg px-8 py-3">
-                        Neem contact op <ArrowRight size={18} />
-                    </Link>
-                </div>
-            </section>
-        </>
-    );
+      {/* ═══ CTA ═══ */}
+      <section className="border-t border-[var(--border)] bg-[var(--color-neutral-50)] py-20 md:py-24">
+        <div className="container mx-auto max-w-2xl px-6 text-center md:px-12">
+          <h2 className="mb-4">Laten we kennismaken</h2>
+          <p className="lead mx-auto mb-8">
+            Een verkennend gesprek van 30 minuten. Je krijgt mij persoonlijk aan de
+            lijn — geen account-manager, geen developer-vervanging halverwege.
+            Binnen één werkdag een reactie.
+          </p>
+          <CTA variant="soft" />
+        </div>
+      </section>
+    </>
+  );
 }
