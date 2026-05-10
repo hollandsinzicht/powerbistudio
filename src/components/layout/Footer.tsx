@@ -1,112 +1,116 @@
-import Link from "next/link";
-import Image from "next/image";
-import { Linkedin, Mail } from "lucide-react";
+import Link from 'next/link';
+import Image from 'next/image';
+import { Linkedin, Mail } from 'lucide-react';
 
 export default function Footer() {
-    const currentYear = new Date().getFullYear();
+  const currentYear = new Date().getFullYear();
+  const linkClass = 'text-[var(--text-secondary)] hover:text-[var(--color-primary-900)] transition-colors';
 
-    const linkClass = "text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors";
+  return (
+    <footer className="border-t border-[var(--border)] bg-[var(--surface)] pb-8 pt-16">
+      <div className="container mx-auto px-6 md:px-12">
+        <div className="mb-12 grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-4">
+          {/* Kolom 1: HR Analytics */}
+          <div>
+            <h4 className="mb-4 font-display font-medium text-[var(--text-primary)]">HR Analytics</h4>
+            <ul className="flex flex-col gap-3 text-sm">
+              <li><Link href="/hr-analytics" className={linkClass}>Hoe ik werk</Link></li>
+              <li><Link href="/methodiek" className={linkClass}>Methodiek</Link></li>
+              <li><Link href="/dashportal" className={linkClass}>DashPortal HR Hosting</Link></li>
+              <li><Link href="/cases" className={linkClass}>Cases</Link></li>
+            </ul>
+          </div>
 
-    return (
-        <footer className="bg-[var(--surface)] border-t border-[var(--border)] pt-16 pb-8">
-            <div className="container mx-auto px-6 md:px-12">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
-                    {/* Kolom 1: Diensten */}
-                    <div>
-                        <h4 className="text-[var(--text-primary)] font-medium mb-4 font-display">Diensten</h4>
-                        <ul className="flex flex-col gap-3">
-                            <li><Link href="/saas" className={linkClass}>Power BI voor SaaS & software</Link></li>
-                            <li><Link href="/publieke-sector" className={linkClass}>Power BI voor zorg & overheid</Link></li>
-                            <li><Link href="/fabric-migratie" className={linkClass}>Fabric migratie</Link></li>
-                            <li><Link href="/copilot-readiness" className={linkClass}>Copilot readiness</Link></li>
-                            <li><Link href="/procesverbetering" className={linkClass}>Procesverbetering</Link></li>
-                        </ul>
-                    </div>
+          {/* Kolom 2: Tools & Resources */}
+          <div>
+            <h4 className="mb-4 font-display font-medium text-[var(--text-primary)]">Tools &amp; Resources</h4>
+            <ul className="flex flex-col gap-3 text-sm">
+              <li><Link href="/tools/readiness-scan" className={linkClass}>HR Readiness Scan</Link></li>
+              <li><Link href="/tools/bi-kosten-calculator" className={linkClass}>HR Kosten Calculator</Link></li>
+              <li><Link href="/avg-checklist-hr" className={linkClass}>AVG-checklist HR</Link></li>
+              <li><Link href="/tools/dax-assistant" className={linkClass}>DAX Assistant</Link></li>
+            </ul>
+          </div>
 
-                    {/* Kolom 2: Producten & Tools */}
-                    <div>
-                        <h4 className="text-[var(--text-primary)] font-medium mb-4 font-display">Producten & Tools</h4>
-                        <ul className="flex flex-col gap-3">
-                            <li><Link href="/dashportal" className={linkClass}>DashPortal HR Hosting</Link></li>
-                            <li><Link href="/tools/dax-assistant" className={linkClass}>DAX Formula Assistant</Link></li>
-                            <li><Link href="/tools/readiness-scan" className={linkClass}>Power BI Readiness Scan</Link></li>
-                            <li><Link href="/tools/bi-kosten-calculator" className={linkClass}>BI-Kosten Calculator</Link></li>
-                            <li><Link href="/resources" className={linkClass}>Resources & Downloads</Link></li>
-                        </ul>
-                    </div>
+          {/* Kolom 3: Over */}
+          <div>
+            <h4 className="mb-4 font-display font-medium text-[var(--text-primary)]">Over</h4>
+            <ul className="flex flex-col gap-3 text-sm">
+              <li><Link href="/over" className={linkClass}>Jan Willem den Hollander</Link></li>
+              <li><Link href="/blog" className={linkClass}>Blog</Link></li>
+              <li><Link href="/contact" className={linkClass}>Contact</Link></li>
+              <li><Link href="/privacy" className={linkClass}>Privacy</Link></li>
+            </ul>
+          </div>
 
-                    {/* Kolom 3: Over & Cases */}
-                    <div>
-                        <h4 className="text-[var(--text-primary)] font-medium mb-4 font-display">Over & Cases</h4>
-                        <ul className="flex flex-col gap-3">
-                            <li><Link href="/over" className={linkClass}>Jan Willem den Hollander</Link></li>
-                            <li><Link href="/cases" className={linkClass}>Cases</Link></li>
-                            <li><Link href="/blog" className={linkClass}>Blog</Link></li>
-                            <li><Link href="/contact" className={linkClass}>Contact</Link></li>
-                        </ul>
-                    </div>
-
-                    {/* Kolom 4: Contact */}
-                    <div>
-                        <h4 className="text-[var(--text-primary)] font-medium mb-4 font-display">Contact</h4>
-                        <ul className="flex flex-col gap-3 text-[var(--text-secondary)]">
-                            <li>
-                                <a href="mailto:info@powerbistudio.nl" className="hover:text-[var(--text-primary)] transition-colors">
-                                    info@powerbistudio.nl
-                                </a>
-                            </li>
-                            <li>
-                                <a
-                                    href="https://www.linkedin.com/in/jan-willem-den-hollander/"
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className="hover:text-[var(--text-primary)] transition-colors"
-                                >
-                                    LinkedIn
-                                </a>
-                            </li>
-                            <li className="flex items-center gap-2 text-sm">
-                                <span className="w-2 h-2 rounded-full bg-green-500" />
-                                Beschikbaar voor opdrachten
-                            </li>
-                            <li className="mt-2 text-xs opacity-70">KVK: 62432168</li>
-                        </ul>
-                        <div className="flex items-center gap-3 mt-4">
-                            <a
-                                href="https://www.linkedin.com/in/jan-willem-den-hollander/"
-                                target="_blank"
-                                rel="noreferrer"
-                                className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors p-2 bg-gray-100 rounded-full border border-[var(--border)] hover:border-[var(--accent)]"
-                                aria-label="LinkedIn"
-                            >
-                                <Linkedin size={18} />
-                            </a>
-                            <a
-                                href="mailto:info@powerbistudio.nl"
-                                className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors p-2 bg-gray-100 rounded-full border border-[var(--border)] hover:border-[var(--accent)]"
-                                aria-label="Email"
-                            >
-                                <Mail size={18} />
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="pt-8 border-t border-[var(--border)] flex flex-col md:flex-row items-center justify-between gap-4">
-                    <Link href="/" className="flex items-center gap-2 group">
-                        <Image
-                            src="/logo.png"
-                            alt="Power BI Studio"
-                            width={140}
-                            height={32}
-                            className="h-6 w-auto opacity-70 group-hover:opacity-100 transition-opacity"
-                        />
-                    </Link>
-                    <p className="text-[var(--text-secondary)] text-sm">
-                        &copy; {currentYear} Power BI Studio — opgericht door Jan Willem den Hollander
-                    </p>
-                </div>
+          {/* Kolom 4: Contact */}
+          <div>
+            <h4 className="mb-4 font-display font-medium text-[var(--text-primary)]">Contact</h4>
+            <ul className="flex flex-col gap-3 text-sm text-[var(--text-secondary)]">
+              <li>
+                <a
+                  href="mailto:info@powerbistudio.nl"
+                  className="transition-colors hover:text-[var(--text-primary)]"
+                >
+                  info@powerbistudio.nl
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://www.linkedin.com/in/jan-willem-den-hollander/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="transition-colors hover:text-[var(--text-primary)]"
+                >
+                  LinkedIn
+                </a>
+              </li>
+              <li className="flex items-start gap-2 pt-2">
+                <span className="mt-1.5 inline-block h-2 w-2 shrink-0 rounded-full bg-[var(--color-success)]" />
+                <span className="text-xs leading-relaxed">
+                  Beschikbaar voor HR-trajecten Q2-Q3 2026
+                </span>
+              </li>
+              <li className="mt-1 text-xs opacity-70">
+                KVK: 62432168 — Think Different Media
+              </li>
+            </ul>
+            <div className="mt-4 flex items-center gap-3">
+              <a
+                href="https://www.linkedin.com/in/jan-willem-den-hollander/"
+                target="_blank"
+                rel="noreferrer"
+                className="rounded-full border border-[var(--border)] bg-[var(--color-neutral-50)] p-2 text-[var(--text-secondary)] transition-colors hover:border-[var(--color-primary-900)] hover:text-[var(--text-primary)]"
+                aria-label="LinkedIn"
+              >
+                <Linkedin size={18} />
+              </a>
+              <a
+                href="mailto:info@powerbistudio.nl"
+                className="rounded-full border border-[var(--border)] bg-[var(--color-neutral-50)] p-2 text-[var(--text-secondary)] transition-colors hover:border-[var(--color-primary-900)] hover:text-[var(--text-primary)]"
+                aria-label="Email"
+              >
+                <Mail size={18} />
+              </a>
             </div>
-        </footer>
-    );
+          </div>
+        </div>
+
+        <div className="flex flex-col items-center justify-between gap-4 border-t border-[var(--border)] pt-8 md:flex-row">
+          <Link href="/" className="group flex items-center gap-2">
+            <Image
+              src="/logo.png"
+              alt="Power BI Studio"
+              width={140}
+              height={32}
+              className="h-6 w-auto opacity-70 transition-opacity group-hover:opacity-100"
+            />
+          </Link>
+          <p className="text-sm text-[var(--text-secondary)]">
+            &copy; {currentYear} Power BI Studio · HR analytics-specialist · Jan Willem den Hollander
+          </p>
+        </div>
+      </div>
+    </footer>
+  );
 }
