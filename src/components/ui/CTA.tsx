@@ -54,15 +54,19 @@ const VARIANT_DEFAULTS: Record<
   },
 };
 
+// Tailwind v4 + bestaande @theme inline conflict: scaled tokens als
+// `bg-action-600` worden niet gegenereerd zolang er ook flat aliases
+// (--color-primary, --color-accent) bestaan. Daarom gebruiken we de
+// expliciete bracket-syntax met var(...) wat altijd werkt.
 const VARIANT_STYLES: Record<CTAVariant, string> = {
   primary:
-    'inline-flex items-center justify-center gap-2 rounded-md bg-[--color-action-600] px-6 py-3 text-[0.9375rem] font-semibold text-white transition-colors hover:bg-[--color-action-700] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[--color-action-700]',
+    'inline-flex items-center justify-center gap-2 rounded-md bg-[var(--color-action-600)] px-6 py-3 text-[0.9375rem] font-semibold text-white transition-colors hover:bg-[var(--color-action-700)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-action-700)]',
   'lead-magnet':
-    'inline-flex items-center justify-center gap-2 rounded-md border border-[--color-primary-900] bg-transparent px-5 py-2.5 text-[0.9375rem] font-semibold text-[--color-primary-900] transition-colors hover:bg-[--color-primary-900] hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[--color-primary-900]',
+    'inline-flex items-center justify-center gap-2 rounded-md border border-[var(--color-primary-900)] bg-transparent px-5 py-2.5 text-[0.9375rem] font-semibold text-[var(--color-primary-900)] transition-colors hover:bg-[var(--color-primary-900)] hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-primary-900)]',
   soft:
-    'inline-flex items-center justify-center gap-2 rounded-md border border-[--color-primary-900] bg-transparent px-5 py-2.5 text-[0.9375rem] font-semibold text-[--color-primary-900] transition-colors hover:bg-[--color-primary-900] hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[--color-primary-900]',
+    'inline-flex items-center justify-center gap-2 rounded-md border border-[var(--color-primary-900)] bg-transparent px-5 py-2.5 text-[0.9375rem] font-semibold text-[var(--color-primary-900)] transition-colors hover:bg-[var(--color-primary-900)] hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-primary-900)]',
   navigation:
-    'inline-flex items-center gap-1 text-[0.9375rem] font-medium text-[--color-primary-700] underline underline-offset-4 transition-colors hover:text-[--color-primary-900]',
+    'inline-flex items-center gap-1 text-[0.9375rem] font-medium text-[var(--color-primary-700)] underline underline-offset-4 transition-colors hover:text-[var(--color-primary-900)]',
 };
 
 const SIZE_OVERRIDES: Record<NonNullable<CTAProps['size']>, string> = {
