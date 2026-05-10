@@ -1,29 +1,146 @@
-import type { Metadata } from "next";
-import { Geist, DM_Sans, JetBrains_Mono } from "next/font/google";
-import Script from "next/script";
-import "./globals.css";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
+import type { Metadata } from 'next';
+import { Geist, DM_Sans, JetBrains_Mono } from 'next/font/google';
+import Script from 'next/script';
+import './globals.css';
+import Navbar from '@/components/layout/Navbar';
+import Footer from '@/components/layout/Footer';
 
 const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+  variable: '--font-geist-sans',
+  subsets: ['latin'],
 });
 
 const dmSans = DM_Sans({
-  variable: "--font-dm-sans",
-  subsets: ["latin"],
+  variable: '--font-dm-sans',
+  subsets: ['latin'],
 });
 
 const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-jetbrains-mono",
-  subsets: ["latin"],
+  variable: '--font-jetbrains-mono',
+  subsets: ['latin'],
 });
 
 export const metadata: Metadata = {
-  title: "Power BI Studio — Power BI architectuur, AI-tools en procesverbetering",
-  description: "Power BI Studio: een Nederlands collectief voor Power BI architectuur, Fabric-migratie en transparante AI-tools. 15 jaar ervaring, LSS-methodiek, eigen productstack (ADA & LEX).",
+  title: 'HR analytics in Power BI — vaste prijzen, AVG-proof | PowerBIStudio',
+  description:
+    'HR analytics-specialist voor mid-market werkgevers met AFAS, Visma of Nmbrs. Quick Scan €1.950, Foundation €34.500 vast. AVG-by-design. 15 jaar Power BI ervaring.',
   metadataBase: new URL('https://www.powerbistudio.nl'),
+  openGraph: {
+    type: 'website',
+    locale: 'nl_NL',
+    siteName: 'PowerBIStudio',
+    url: 'https://www.powerbistudio.nl',
+  },
+};
+
+// Schema.org — ProfessionalService (was Organization). Inclusief NAW,
+// founder, kennisgebieden en services-catalogus voor de drie HR-pakketten.
+const professionalServiceLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfessionalService',
+  '@id': 'https://www.powerbistudio.nl/#organization',
+  name: 'Power BI Studio',
+  alternateName: 'PowerBIStudio.nl',
+  legalName: 'Think Different Media',
+  url: 'https://www.powerbistudio.nl',
+  logo: {
+    '@type': 'ImageObject',
+    url: 'https://www.powerbistudio.nl/logo.png',
+    width: 600,
+    height: 60,
+  },
+  image: 'https://www.powerbistudio.nl/logo.png',
+  description:
+    'HR analytics-specialist voor mid-market werkgevers (250-2.000 FTE) met AFAS, Visma of Nmbrs. Vaste prijzen, AVG-proof, doorlopende hosting via DashPortal HR.',
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Papendrecht',
+    addressCountry: 'NL',
+  },
+  taxID: 'NL-KVK-62432168',
+  founder: {
+    '@type': 'Person',
+    '@id': 'https://www.powerbistudio.nl/over#jan-willem',
+    name: 'Jan Willem den Hollander',
+    jobTitle: 'HR analytics-specialist',
+    url: 'https://www.powerbistudio.nl/over',
+  },
+  sameAs: ['https://www.linkedin.com/in/jan-willem-den-hollander/'],
+  contactPoint: {
+    '@type': 'ContactPoint',
+    contactType: 'customer service',
+    email: 'info@powerbistudio.nl',
+    url: 'https://www.powerbistudio.nl/contact',
+    availableLanguage: ['Dutch', 'English'],
+  },
+  knowsAbout: [
+    'Power BI',
+    'DAX',
+    'Microsoft Fabric',
+    'HR analytics',
+    'AVG / GDPR',
+    'Row-level security',
+    'Type-2 historiek',
+    'Lean Six Sigma',
+    'AFAS',
+    'Visma',
+    'Nmbrs',
+    'Power BI Embedded',
+  ],
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: 'HR Analytics-pakketten',
+    itemListElement: [
+      {
+        '@type': 'Offer',
+        itemOffered: {
+          '@type': 'Service',
+          name: 'HR Analytics Quick Scan',
+          description:
+            'Audit van bestaand HR-model in Power BI. 1,5 dag, vaste prijs.',
+        },
+        price: '1950',
+        priceCurrency: 'EUR',
+      },
+      {
+        '@type': 'Offer',
+        itemOffered: {
+          '@type': 'Service',
+          name: 'HR Analytics Foundation',
+          description:
+            'Volledige implementatie HR-rapportage in Power BI. 6-8 weken, vaste prijs.',
+        },
+        price: '34500',
+        priceCurrency: 'EUR',
+      },
+      {
+        '@type': 'Offer',
+        itemOffered: {
+          '@type': 'Service',
+          name: 'HR Analytics Foundation Plus',
+          description:
+            'Multi-bron HR-rapportage met maatwerk-dashboards. 8-10 weken.',
+        },
+        price: '58500',
+        priceCurrency: 'EUR',
+      },
+      {
+        '@type': 'Offer',
+        itemOffered: {
+          '@type': 'Service',
+          name: 'DashPortal HR Hosting',
+          description:
+            'Doorlopende hosting voor HR-dashboards. AVG-proof, branded portaal, monitoring.',
+        },
+        priceSpecification: {
+          '@type': 'UnitPriceSpecification',
+          price: '1250',
+          priceCurrency: 'EUR',
+          referenceQuantity: { '@type': 'QuantitativeValue', value: 1, unitCode: 'MON' },
+        },
+      },
+    ],
+  },
 };
 
 export default function RootLayout({
@@ -34,7 +151,12 @@ export default function RootLayout({
   return (
     <html lang="nl">
       <head>
-        <Script src="https://www.googletagmanager.com/gtag/js?id=G-YHED8H8DHL" strategy="afterInteractive" />
+        {/* Google Analytics 4 — keuze: behoud GA4, geen Plausible-migratie in
+         * deze branch. Cookie-banner voor opt-in volgt in feat/microcopy. */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-YHED8H8DHL"
+          strategy="afterInteractive"
+        />
         <Script id="google-analytics" strategy="afterInteractive">
           {`
             window.dataLayer = window.dataLayer || [];
@@ -43,73 +165,13 @@ export default function RootLayout({
             gtag('config', 'G-YHED8H8DHL');
           `}
         </Script>
-        <Script id="meta-pixel" strategy="afterInteractive">
-          {`
-            !function(f,b,e,v,n,t,s)
-            {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-            n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-            if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-            n.queue=[];t=b.createElement(e);t.async=!0;
-            t.src=v;s=b.getElementsByTagName(e)[0];
-            s.parentNode.insertBefore(t,s)}(window, document,'script',
-            'https://connect.facebook.net/en_US/fbevents.js');
-            fbq('init', '1197212833963947');
-            fbq('track', 'PageView');
-          `}
-        </Script>
-        <noscript>
-          <img height="1" width="1" style={{ display: 'none' }}
-            src="https://www.facebook.com/tr?id=1197212833963947&ev=PageView&noscript=1"
-            alt=""
-          />
-        </noscript>
+        {/* Facebook/Meta Pixel verwijderd in feat/seo-metadata —
+         * past niet bij AVG-positionering. */}
+
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              '@context': 'https://schema.org',
-              '@type': 'Organization',
-              '@id': 'https://www.powerbistudio.nl/#organization',
-              name: 'Power BI Studio',
-              url: 'https://www.powerbistudio.nl',
-              logo: {
-                '@type': 'ImageObject',
-                url: 'https://www.powerbistudio.nl/logo.png',
-                width: 600,
-                height: 60,
-              },
-              image: 'https://www.powerbistudio.nl/logo.png',
-              description: 'Nederlandse studio voor Power BI architectuur, procesverbetering en eigen AI-tools (ADA, LEX). 15 jaar ervaring, LSS Black Belt-methodiek, bewezen in publieke sector, energie en finance.',
-              founder: {
-                '@type': 'Person',
-                '@id': 'https://www.powerbistudio.nl/over#jan-willem',
-                name: 'Jan Willem den Hollander',
-                jobTitle: 'Oprichter & Power BI architect',
-                url: 'https://www.powerbistudio.nl/over',
-              },
-              sameAs: [
-                'https://www.linkedin.com/in/jan-willem-den-hollander/',
-              ],
-              contactPoint: {
-                '@type': 'ContactPoint',
-                contactType: 'customer service',
-                email: 'info@powerbistudio.nl',
-                url: 'https://www.powerbistudio.nl/contact',
-                availableLanguage: ['Dutch', 'English'],
-              },
-              knowsAbout: ['Power BI', 'DAX', 'Microsoft Fabric', 'Azure', 'SQL', 'Data Engineering', 'ETL', 'Business Intelligence', 'Lean Six Sigma', 'Power BI Embedded', 'Copilot'],
-              hasOfferCatalog: {
-                '@type': 'OfferCatalog',
-                name: 'Diensten',
-                itemListElement: [
-                  { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Power BI voor SaaS & ISV' } },
-                  { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Power BI voor zorg & overheid' } },
-                  { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Fabric migratie' } },
-                  { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Copilot Readiness Audit' } },
-                  { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Procesverbetering met Power BI' } },
-                ],
-              },
-            }),
+            __html: JSON.stringify(professionalServiceLd),
           }}
         />
       </head>
@@ -117,9 +179,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${dmSans.variable} ${jetbrainsMono.variable} antialiased min-h-screen flex flex-col`}
       >
         <Navbar />
-        <main className="flex-grow">
-          {children}
-        </main>
+        <main className="flex-grow">{children}</main>
         <Footer />
       </body>
     </html>
