@@ -4,6 +4,7 @@ import Script from 'next/script';
 import './globals.css';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
+import CookieBanner from '@/components/ui/CookieBanner';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -151,18 +152,34 @@ export default function RootLayout({
   return (
     <html lang="nl">
       <head>
-        {/* Google Analytics 4 — keuze: behoud GA4, geen Plausible-migratie in
-         * deze branch. Cookie-banner voor opt-in volgt in feat/microcopy. */}
+        {/* Google Analytics 4 met Consent Mode v2.
+         * Default: alle consent-types op 'denied'. Pas wanneer een gebruiker
+         * de cookie-banner accepteert wordt analytics_storage 'granted'.
+         * Zie src/components/ui/CookieBanner.tsx voor de opt-in-flow. */}
+        <Script id="google-consent-default" strategy="beforeInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            window.gtag = gtag;
+            gtag('consent', 'default', {
+              ad_storage: 'denied',
+              ad_user_data: 'denied',
+              ad_personalization: 'denied',
+              analytics_storage: 'denied',
+              functionality_storage: 'denied',
+              personalization_storage: 'denied',
+              security_storage: 'granted'
+            });
+          `}
+        </Script>
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-YHED8H8DHL"
           strategy="afterInteractive"
         />
         <Script id="google-analytics" strategy="afterInteractive">
           {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-            gtag('config', 'G-YHED8H8DHL');
+            gtag('config', 'G-YHED8H8DHL', { anonymize_ip: true });
           `}
         </Script>
         {/* Facebook/Meta Pixel verwijderd in feat/seo-metadata —
@@ -181,6 +198,7 @@ export default function RootLayout({
         <Navbar />
         <main className="flex-grow">{children}</main>
         <Footer />
+        <CookieBanner />
       </body>
     </html>
   );
