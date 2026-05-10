@@ -1,324 +1,357 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import Link from "next/link";
-import { ArrowRight, ArrowLeft, CheckCircle2, RotateCcw } from "lucide-react";
-import AgentSignature from "@/components/team/AgentSignature";
+import { useState } from 'react';
+import Link from 'next/link';
+import { ArrowRight, ArrowLeft, CheckCircle2, RotateCcw, ShieldCheck } from 'lucide-react';
+import AgentSignature from '@/components/team/AgentSignature';
 
 type Question = {
-    id: number;
-    question: string;
-    options: { value: number; label: string }[];
+  id: number;
+  vraag: string;
+  opties: { value: number; label: string }[];
 };
 
-const QUESTIONS: Question[] = [
-    {
-        id: 1,
-        question: "Hoe slaat jouw organisatie data op?",
-        options: [
-            { value: 1, label: "Vooral in Excel-bestanden op lokale schijven" },
-            { value: 2, label: "In een mix van Excel, e-mail en gedeelde mappen" },
-            { value: 3, label: "In een CRM/ERP systeem, maar niet centraal ontsloten" },
-            { value: 4, label: "In een centrale database of datawarehouse" }
-        ]
-    },
-    {
-        id: 2,
-        question: "Hoeveel mensen in jouw organisatie maken beslissingen op basis van data?",
-        options: [
-            { value: 1, label: "Vrijwel niemand — we werken op gevoel" },
-            { value: 2, label: "Enkele managers, maar niet structureel" },
-            { value: 3, label: "Veel managers, maar ieder met eigen bestanden" },
-            { value: 4, label: "De meeste beslissingen zijn datagedreven en gedeeld" }
-        ]
-    },
-    {
-        id: 3,
-        question: "Gebruikt jullie organisatie al Power BI?",
-        options: [
-            { value: 1, label: "Nee, nog nooit van gehoord" },
-            { value: 2, label: "We hebben er een licentie voor maar doen er weinig mee" },
-            { value: 3, label: "We gebruiken het, maar zonder structuur of standaard" },
-            { value: 4, label: "We hebben een volwassen Power BI omgeving" }
-        ]
-    },
-    {
-        id: 4,
-        question: "Hoe worden jullie rapporten nu gedeeld?",
-        options: [
-            { value: 1, label: "Via e-mail als PDF of Excel" },
-            { value: 2, label: "Via gedeelde mappen of SharePoint" },
-            { value: 3, label: "Via een BI-tool maar handmatig geüpdatet" },
-            { value: 4, label: "Automatisch, real-time beschikbaar voor de juiste mensen" }
-        ]
-    },
-    {
-        id: 5,
-        question: "Is er iemand verantwoordelijk voor data kwaliteit?",
-        options: [
-            { value: 1, label: "Nee" },
-            { value: 2, label: "Dat regelt iedereen zelf" },
-            { value: 3, label: "Er is een informele eigenaar" },
-            { value: 4, label: "Ja, formeel belegd" }
-        ]
-    },
-    {
-        id: 6,
-        question: "Hoe lang duurt het om een managementrapportage te maken?",
-        options: [
-            { value: 1, label: "Meer dan een week" },
-            { value: 2, label: "Enkele dagen" },
-            { value: 3, label: "Een halve dag" },
-            { value: 4, label: "Het gaat automatisch / real-time" }
-        ]
-    },
-    {
-        id: 7,
-        question: "Heeft jullie organisatie KPI's gedefinieerd?",
-        options: [
-            { value: 1, label: "Nee" },
-            { value: 2, label: "Informeel, niet schriftelijk vastgelegd" },
-            { value: 3, label: "Ja, maar niet consistent gebruikt" },
-            { value: 4, label: "Ja, SMART gedefinieerd en gemeten" }
-        ]
-    },
-    {
-        id: 8,
-        question: "Hoeveel budget is er voor data en BI?",
-        options: [
-            { value: 1, label: "Geen budget" },
-            { value: 2, label: "Ad hoc, geen structureel budget" },
-            { value: 3, label: "Beperkt budget, reactief ingezet" },
-            { value: 4, label: "Structureel budget, proactief ingezet" }
-        ]
-    },
-    {
-        id: 9,
-        question: "Wat is de technische volwassenheid van jullie IT-omgeving?",
-        options: [
-            { value: 1, label: "Geen IT-afdeling, alles ad hoc" },
-            { value: 2, label: "Basale IT, weinig cloud" },
-            { value: 3, label: "Microsoft 365 omgeving aanwezig" },
-            { value: 4, label: "Azure / cloud-first, moderne infrastructuur" }
-        ]
-    },
-    {
-        id: 10,
-        question: "Wat is jouw grootste pijn rondom data en rapportage nu?",
-        options: [
-            { value: 1, label: "We hebben geen inzicht in onze eigen cijfers" },
-            { value: 2, label: "Iedereen heeft andere cijfers" },
-            { value: 3, label: "Rapporten kosten te veel tijd" },
-            { value: 4, label: "We missen de vertaalslag van data naar actie" }
-        ]
-    }
+const VRAGEN: Question[] = [
+  {
+    id: 1,
+    vraag: 'Hoe is row-level security in jullie HR Power BI ingericht?',
+    opties: [
+      { value: 1, label: 'Geen RLS — iedereen ziet alle data' },
+      { value: 2, label: 'Handmatige user-mapping per dataset, maandelijks bijwerken' },
+      { value: 3, label: 'RLS-rollen, maar niet automatisch gekoppeld aan organisatiehiërarchie' },
+      { value: 4, label: 'Automatisch RLS op organisatiehiërarchie, met audit-trail' },
+    ],
+  },
+  {
+    id: 2,
+    vraag: 'Klopt jullie verloop-cijfer over 2 jaar terug nog steeds?',
+    opties: [
+      { value: 1, label: 'Geen idee — niemand kijkt achteruit' },
+      { value: 2, label: 'Nee, retroactieve afdelingsherindelingen veranderen historische cijfers' },
+      { value: 3, label: 'Soms wel, soms niet — afhankelijk van welke dimensie' },
+      { value: 4, label: 'Ja, type-2 historiek voor alle HR-dimensies' },
+    ],
+  },
+  {
+    id: 3,
+    vraag: 'Weet jullie DPO welke gevoelige velden in het HR-model zitten?',
+    opties: [
+      { value: 1, label: 'Wij hebben geen DPO of die kijkt niet naar Power BI' },
+      { value: 2, label: 'Ja, maar via een spreadsheet die niet altijd up-to-date is' },
+      { value: 3, label: 'Wel weten welke velden er zijn, niet welke RLS daarop staat' },
+      { value: 4, label: 'AVG-cockpit met live overzicht van velden, RLS en bewaartermijn' },
+    ],
+  },
+  {
+    id: 4,
+    vraag: 'Wordt afdelingshistoriek correct meegenomen in retroactieve rapporten?',
+    opties: [
+      { value: 1, label: 'Wij hebben geen retroactieve rapporten' },
+      { value: 2, label: 'Nee — historie wordt overschreven bij wijzigingen' },
+      { value: 3, label: 'Deels — voor sommige dimensies wel, andere niet' },
+      { value: 4, label: 'Ja — alle dimensies hebben geldig-van/tot dates' },
+    ],
+  },
+  {
+    id: 5,
+    vraag: 'Uit welke bron komt jullie HR-data?',
+    opties: [
+      { value: 1, label: 'Excel-exports die handmatig worden samengevoegd' },
+      { value: 2, label: 'Eén HR-systeem (AFAS/Visma/Nmbrs), maar verzuim/formatie zit elders' },
+      { value: 3, label: 'Meerdere bronnen, half-geautomatiseerd verbonden' },
+      { value: 4, label: 'Geconsolideerd in één bron-zilver-goud architectuur' },
+    ],
+  },
+  {
+    id: 6,
+    vraag: 'Wie kan een nieuwe manager toegang geven tot zijn Power BI dashboards?',
+    opties: [
+      { value: 1, label: 'Niemand precies — IT, HR en BI gooien het over de schutting' },
+      { value: 2, label: 'IT-afdeling, maar het duurt 1-2 weken' },
+      { value: 3, label: 'HR via een ticket-systeem, binnen 1-3 dagen' },
+      { value: 4, label: 'Automatisch op basis van organisatiehiërarchie in HR-systeem' },
+    ],
+  },
+  {
+    id: 7,
+    vraag: 'Zijn maandelijkse HR-rapportages consistent zonder Excel-correctie?',
+    opties: [
+      { value: 1, label: 'Nee — er is altijd een controleurs-Excel achter de schermen' },
+      { value: 2, label: 'Soms wel, soms niet — afhankelijk van welk rapport' },
+      { value: 3, label: 'Meestal wel, alleen bij reorganisaties handmatig werk' },
+      { value: 4, label: 'Ja, één bron van waarheid — geen Excel-correcties' },
+    ],
+  },
+  {
+    id: 8,
+    vraag: 'Hoe up-to-date is jullie HR-rapportage per gisterochtend gezien?',
+    opties: [
+      { value: 1, label: 'Een paar weken oud, maandelijkse exports' },
+      { value: 2, label: 'Wekelijks ververst' },
+      { value: 3, label: 'Dagelijks ververst, maar niemand monitort' },
+      { value: 4, label: 'Dagelijks of vaker, met monitoring op refresh-fouten' },
+    ],
+  },
+  {
+    id: 9,
+    vraag: 'Heeft elk dashboard een gedocumenteerde eigenaar die cijfers kan uitleggen?',
+    opties: [
+      { value: 1, label: 'Nee — als iemand vraagt is er paniek' },
+      { value: 2, label: 'Eigenaar is bekend, maar niet gedocumenteerd' },
+      { value: 3, label: 'Wel gedocumenteerd, maar definities staan los van het rapport' },
+      { value: 4, label: 'Eigenaar én definities zijn ingebouwd in het Power BI model' },
+    ],
+  },
+  {
+    id: 10,
+    vraag: 'Wat gebeurt er als de dataset-refresh faalt op zaterdagochtend?',
+    opties: [
+      { value: 1, label: 'We weten dat pas maandag, als een manager een vreemd cijfer ziet' },
+      { value: 2, label: 'Iemand checkt op maandag of het goed staat' },
+      { value: 3, label: 'Automatische e-mail bij faalde refresh, fix gebeurt maandag' },
+      { value: 4, label: 'Alerting + automatische retry, fix binnen 4 uur ook in weekend' },
+    ],
+  },
 ];
 
-type ResultType = {
-    level: number;
-    title: string;
-    message: string;
-    recommendations: string[];
-};
+interface ScanResult {
+  score: number;
+  niveau: 'Risico' | 'Achterstand' | 'Onderweg' | 'Volwassen';
+  kleur: string;
+  samenvatting: string;
+  prioriteiten: string[];
+}
 
-export default function ReadinessScan() {
-    const [currentStep, setCurrentStep] = useState(0);
-    const [answers, setAnswers] = useState<number[]>(Array(QUESTIONS.length).fill(0));
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [result, setResult] = useState<ResultType | null>(null);
-
-    const handleOptionSelect = (value: number) => {
-        const newAnswers = [...answers];
-        newAnswers[currentStep] = value;
-        setAnswers(newAnswers);
-
-        // Auto advance after short delay
-        if (currentStep < QUESTIONS.length - 1) {
-            setTimeout(() => setCurrentStep(prev => prev + 1), 300);
-        }
+function bepaalResultaat(score: number): ScanResult {
+  // Score range: 10-40
+  if (score <= 16) {
+    return {
+      score,
+      niveau: 'Risico',
+      kleur: 'var(--color-error)',
+      samenvatting:
+        'Jullie HR-rapportage zit op AVG-risiconiveau. Meerdere fundamentele patterns ontbreken — RLS, historiek, datakwaliteit. Een Quick Scan levert binnen 1,5 dag een prioriteitenlijst op.',
+      prioriteiten: [
+        'Eerste prioriteit: row-level security op organisatiehiërarchie',
+        'Tweede prioriteit: type-2 historiek voor verloop-rapportage',
+        'Derde prioriteit: AVG-cockpit voor DPO-zichtbaarheid',
+      ],
     };
-
-    const handleNext = () => {
-        if (currentStep < QUESTIONS.length - 1 && answers[currentStep] !== 0) {
-            setCurrentStep(prev => prev + 1);
-        }
+  }
+  if (score <= 25) {
+    return {
+      score,
+      niveau: 'Achterstand',
+      kleur: 'var(--color-warning)',
+      samenvatting:
+        'Jullie HR-rapportage werkt, maar mist structurele fundamenten. Een Quick Scan kan helpen om te bepalen of een Foundation-traject de juiste investering is, of dat losse fixes voldoende zijn.',
+      prioriteiten: [
+        'Audit van bestaand RLS-mechanisme',
+        'Inventarisatie waar historiek correct is en waar niet',
+        'Documentatie van data-eigenaarschap per dashboard',
+      ],
     };
-
-    const handlePrev = () => {
-        if (currentStep > 0) {
-            setCurrentStep(prev => prev - 1);
-        }
+  }
+  if (score <= 33) {
+    return {
+      score,
+      niveau: 'Onderweg',
+      kleur: 'var(--color-accent-700)',
+      samenvatting:
+        'Jullie hebben een goede basis. De architectuur klopt, maar er zijn specifieke patterns die nog beter kunnen — vaak in de monitoring- of governance-laag. Een Quick Scan kan de specifieke verbetering identificeren.',
+      prioriteiten: [
+        'Verfijn monitoring op refresh-fouten en schema-drift',
+        'Documentatie van measure-definities in het Power BI model',
+        'Periodieke AVG-controle op nieuwe gevoelige velden',
+      ],
     };
+  }
+  return {
+    score,
+    niveau: 'Volwassen',
+    kleur: 'var(--color-accent-700)',
+    samenvatting:
+      'Jullie HR-rapportage is volwassen. Quick Scan is waarschijnlijk niet nodig — maar als jullie willen schalen naar 100+ managers of multi-bron willen integreren, is een Foundation Plus-traject mogelijk relevant.',
+    prioriteiten: [
+      'Overweeg DashPortal HR Hosting voor schaal-ondersteuning',
+      'Periodieke kwartaal-review op model-performance',
+      'Documenteer governance-patterns voor toekomstige overdracht',
+    ],
+  };
+}
 
-    const calculateResult = async () => {
-        if (answers.includes(0)) return; // Ensure all answered
+export default function ReadinessScanPage() {
+  const [stap, setStap] = useState(0);
+  const [antwoorden, setAntwoorden] = useState<Record<number, number>>({});
+  const [klaar, setKlaar] = useState(false);
 
-        setIsSubmitting(true);
-        try {
-            const res = await fetch("/api/readiness-scan", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ answers })
-            });
-            const data = await res.json();
-            setResult(data);
-        } catch (error) {
-            console.error("Failed to calculate results:", error);
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
+  const huidigeVraag = VRAGEN[stap];
+  const gegevenAntwoord = antwoorden[huidigeVraag?.id];
 
-    const progress = ((currentStep) / QUESTIONS.length) * 100;
+  const handleSelect = (value: number) => {
+    setAntwoorden({ ...antwoorden, [huidigeVraag.id]: value });
+  };
 
-    return (
-        <div className="min-h-screen bg-[var(--background)] pt-32 pb-24">
-            <div className="container mx-auto px-6 max-w-3xl">
+  const handleVolgende = () => {
+    if (stap < VRAGEN.length - 1) {
+      setStap(stap + 1);
+    } else {
+      setKlaar(true);
+    }
+  };
 
-                {/* Header */}
-                <div className="text-center mb-12">
-                    <Link href="/tools" className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] inline-flex items-center gap-2 mb-6 text-sm transition-colors">
-                        <ArrowLeft size={16} /> Terug naar Tools
-                    </Link>
-                    <h1 className="text-4xl font-display font-bold mb-4">Power BI Readiness Scan</h1>
-                    {!result && (
-                        <p className="text-[var(--text-secondary)]">Beantwoord 10 vragen om te zien hoe volwassen jouw datafundament is.</p>
-                    )}
-                </div>
+  const handleVorige = () => {
+    if (stap > 0) setStap(stap - 1);
+  };
 
-                {/* Agent signature */}
-                {!result && (
-                    <div className="mb-10">
-                        <AgentSignature agentId="nova" intro="De Readiness Scan wordt aangedreven door" />
-                    </div>
-                )}
+  const handleReset = () => {
+    setStap(0);
+    setAntwoorden({});
+    setKlaar(false);
+  };
 
-                {/* Form Container */}
-                <div className="glass-card rounded-2xl overflow-hidden relative">
+  const score = Object.values(antwoorden).reduce((sum, v) => sum + v, 0);
+  const totaalScore = Math.max(score, 10);
+  const resultaat = klaar ? bepaalResultaat(totaalScore) : null;
 
-                    {!result ? (
-                        <>
-                            {/* Progress Bar */}
-                            <div className="h-1.5 w-full bg-[rgba(255,255,255,0.05)]">
-                                <div
-                                    className="h-full bg-[var(--accent)] transition-all duration-300 ease-out"
-                                    style={{ width: `${progress}%` }}
-                                />
-                            </div>
-
-                            <div className="p-8 md:p-12">
-                                <div className="mb-8">
-                                    <span className="text-[var(--accent)] font-mono text-sm tracking-wider uppercase mb-2 block">
-                                        Vraag {currentStep + 1} van {QUESTIONS.length}
-                                    </span>
-                                    <h2 className="text-2xl font-bold font-display leading-snug">
-                                        {QUESTIONS[currentStep].question}
-                                    </h2>
-                                </div>
-
-                                <div className="space-y-3">
-                                    {QUESTIONS[currentStep].options.map((option, index) => {
-                                        const isSelected = answers[currentStep] === option.value;
-                                        const letters = ['A', 'B', 'C', 'D'];
-                                        return (
-                                            <button
-                                                key={option.value}
-                                                onClick={() => handleOptionSelect(option.value)}
-                                                className={`w-full text-left p-4 rounded-xl border flex items-center gap-4 transition-all duration-200 ${isSelected
-                                                        ? "border-[var(--accent)] bg-[rgba(59,130,246,0.1)] shadow-[0_0_15px_rgba(59,130,246,0.1)]"
-                                                        : "border-[var(--border)] hover:border-[var(--text-secondary)] bg-[var(--surface)] hover:bg-[#1f2937]"
-                                                    }`}
-                                            >
-                                                <span className={`w-8 h-8 rounded-full flex items-center justify-center font-mono text-sm shrink-0 ${isSelected ? "bg-[var(--accent)] text-[var(--text-primary)]" : "bg-[var(--surface)] text-[var(--text-secondary)] border border-[var(--border)]"
-                                                    }`}>
-                                                    {letters[index]}
-                                                </span>
-                                                <span className={`text-base font-medium ${isSelected ? "text-[var(--text-primary)]" : "text-[var(--text-secondary)]"}`}>
-                                                    {option.label}
-                                                </span>
-                                            </button>
-                                        );
-                                    })}
-                                </div>
-
-                                {/* Navigation */}
-                                <div className="mt-12 flex items-center justify-between pt-6 border-t border-[var(--border)]">
-                                    <button
-                                        onClick={handlePrev}
-                                        disabled={currentStep === 0}
-                                        className="flex items-center gap-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] disabled:opacity-30 disabled:hover:text-[var(--text-secondary)] transition-colors"
-                                    >
-                                        <ArrowLeft size={18} /> Vorige
-                                    </button>
-
-                                    {currentStep < QUESTIONS.length - 1 ? (
-                                        <button
-                                            onClick={handleNext}
-                                            disabled={answers[currentStep] === 0}
-                                            className="btn-primary flex items-center gap-2 px-6 disabled:opacity-50 disabled:cursor-not-allowed"
-                                        >
-                                            Volgende <ArrowRight size={18} />
-                                        </button>
-                                    ) : (
-                                        <button
-                                            onClick={calculateResult}
-                                            disabled={answers[currentStep] === 0 || isSubmitting}
-                                            className="btn-primary flex items-center gap-2 px-6 disabled:opacity-50"
-                                        >
-                                            {isSubmitting ? "Bezig met berekenen..." : "Bekijk Resultaat"} <CheckCircle2 size={18} />
-                                        </button>
-                                    )}
-                                </div>
-                            </div>
-                        </>
-                    ) : (
-                        /* Results View */
-                        <div className="p-8 md:p-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                            <div className="text-center mb-10">
-                                <span className="inline-block px-4 py-1.5 rounded-full bg-[rgba(59,130,246,0.1)] text-[var(--accent)] font-mono text-sm font-bold border border-[rgba(59,130,246,0.2)] mb-4 shadow-[0_0_20px_rgba(59,130,246,0.2)]">
-                                    Niveau {result.level}
-                                </span>
-                                <h2 className="text-4xl font-display font-bold mb-6 text-[var(--text-primary)]">{result.title}</h2>
-                                <p className="text-lg text-[var(--text-secondary)] leading-relaxed mx-auto max-w-xl">
-                                    {result.message}
-                                </p>
-                            </div>
-
-                            <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-6 md:p-8 mb-10">
-                                <h3 className="text-xl font-display font-bold mb-6 text-[var(--text-primary)] border-b border-[var(--border)] pb-4">
-                                    Aanbevolen Volgende Stappen
-                                </h3>
-                                <ul className="space-y-4">
-                                    {result.recommendations.map((rec, i) => (
-                                        <li key={i} className="flex gap-4">
-                                            <div className="mt-1 shrink-0 w-6 h-6 rounded-full bg-[rgba(245,158,11,0.1)] text-[var(--accent-warm)] border border-[rgba(245,158,11,0.2)] flex items-center justify-center font-bold text-xs">
-                                                {i + 1}
-                                            </div>
-                                            <p className="text-[var(--text-secondary)] leading-relaxed">{rec}</p>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-
-                            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                                <Link href="/contact" className="btn-primary w-full sm:w-auto flex items-center justify-center gap-2">
-                                    Plan direct een gesprek <ArrowRight size={18} />
-                                </Link>
-                                <button
-                                    onClick={() => {
-                                        setResult(null);
-                                        setCurrentStep(0);
-                                        setAnswers(Array(QUESTIONS.length).fill(0));
-                                    }}
-                                    className="btn-secondary w-full sm:w-auto flex items-center justify-center gap-2"
-                                >
-                                    <RotateCcw size={18} /> Plan opnieuw
-                                </button>
-                            </div>
-                        </div>
-                    )}
-                </div>
-            </div>
+  return (
+    <>
+      <section className="border-b border-[var(--border)] bg-white">
+        <div className="container mx-auto max-w-3xl px-6 py-16 md:px-12 md:py-20">
+          <p className="eyebrow mb-4">HR Analytics Readiness Scan</p>
+          <h1 className="mb-4">Hoe volwassen is jullie HR-rapportage in Power BI?</h1>
+          <p className="lead">
+            Tien vragen over RLS, historiek, AVG, datakwaliteit en monitoring.
+            Resultaat: persoonlijke beoordeling van jullie HR-rapportage in
+            Power BI, plus drie concrete prioriteiten.
+          </p>
         </div>
-    );
+      </section>
+
+      <section className="py-12 md:py-16">
+        <div className="container mx-auto max-w-2xl px-6 md:px-12">
+          {!klaar && huidigeVraag && (
+            <div className="rounded-lg border border-[var(--border)] bg-white p-6 md:p-8">
+              <div className="mb-6 flex items-center justify-between">
+                <p className="text-sm font-semibold text-[var(--text-secondary)]">
+                  Vraag {stap + 1} van {VRAGEN.length}
+                </p>
+                <div className="h-1 w-32 overflow-hidden rounded-full bg-[var(--color-neutral-100)]">
+                  <div
+                    className="h-full bg-[var(--color-accent-700)] transition-all"
+                    style={{ width: `${((stap + 1) / VRAGEN.length) * 100}%` }}
+                  />
+                </div>
+              </div>
+
+              <h2 className="mb-6 text-xl">{huidigeVraag.vraag}</h2>
+
+              <div className="space-y-3">
+                {huidigeVraag.opties.map((optie) => {
+                  const geselecteerd = gegevenAntwoord === optie.value;
+                  return (
+                    <button
+                      key={optie.value}
+                      onClick={() => handleSelect(optie.value)}
+                      className={`flex w-full items-start gap-3 rounded-md border p-3 text-left text-sm transition-colors ${
+                        geselecteerd
+                          ? 'border-[var(--color-accent-700)] bg-[var(--color-accent-100)]/50'
+                          : 'border-[var(--border)] hover:border-[var(--color-accent-700)]/40 hover:bg-[var(--color-neutral-50)]'
+                      }`}
+                    >
+                      <span
+                        className={`mt-0.5 inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full border ${
+                          geselecteerd
+                            ? 'border-[var(--color-accent-700)] bg-[var(--color-accent-700)]'
+                            : 'border-[var(--color-neutral-200)]'
+                        }`}
+                      >
+                        {geselecteerd && (
+                          <CheckCircle2 className="h-3 w-3 text-white" aria-hidden="true" />
+                        )}
+                      </span>
+                      <span>{optie.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              <div className="mt-8 flex items-center justify-between">
+                <button
+                  onClick={handleVorige}
+                  disabled={stap === 0}
+                  className="inline-flex items-center gap-2 text-sm text-[var(--text-secondary)] disabled:opacity-30"
+                >
+                  <ArrowLeft className="h-4 w-4" /> Vorige
+                </button>
+                <button
+                  onClick={handleVolgende}
+                  disabled={!gegevenAntwoord}
+                  className="inline-flex items-center justify-center gap-2 rounded-md bg-[var(--color-action-600)] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[var(--color-action-700)] disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  {stap === VRAGEN.length - 1 ? 'Toon resultaat' : 'Volgende'}
+                  <ArrowRight className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+          )}
+
+          {klaar && resultaat && (
+            <div className="rounded-lg border border-[var(--border)] bg-white p-6 md:p-8">
+              <div className="mb-6 flex items-center gap-3">
+                <ShieldCheck
+                  className="h-8 w-8"
+                  style={{ color: resultaat.kleur }}
+                  aria-hidden="true"
+                />
+                <div>
+                  <p className="eyebrow" style={{ color: resultaat.kleur }}>
+                    Niveau: {resultaat.niveau}
+                  </p>
+                  <p className="text-2xl font-display font-semibold">
+                    Score {totaalScore} van 40
+                  </p>
+                </div>
+              </div>
+
+              <p className="mb-6 leading-relaxed">{resultaat.samenvatting}</p>
+
+              <h3 className="mb-3 text-base">Drie prioriteiten</h3>
+              <ul className="mb-8 space-y-2">
+                {resultaat.prioriteiten.map((p) => (
+                  <li key={p} className="flex items-start gap-2.5 text-sm">
+                    <CheckCircle2
+                      className="mt-0.5 h-4 w-4 shrink-0 text-[var(--color-accent-700)]"
+                      aria-hidden="true"
+                    />
+                    <span>{p}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <div className="flex flex-wrap gap-3">
+                <Link
+                  href="/contact?type=quick-scan"
+                  className="inline-flex items-center justify-center gap-2 rounded-md bg-[var(--color-action-600)] px-6 py-3 text-[0.9375rem] font-semibold text-white transition-colors hover:bg-[var(--color-action-700)]"
+                >
+                  Plan een Quick Scan – €1.950
+                </Link>
+                <button
+                  onClick={handleReset}
+                  className="inline-flex items-center gap-2 rounded-md border border-[var(--border)] px-5 py-2.5 text-[0.9375rem] font-medium text-[var(--text-secondary)] transition-colors hover:border-[var(--color-primary-700)] hover:text-[var(--color-primary-900)]"
+                >
+                  <RotateCcw className="h-4 w-4" />
+                  Opnieuw scannen
+                </button>
+              </div>
+
+              <div className="mt-8 border-t border-[var(--border)] pt-6">
+                <AgentSignature agentId="nova" />
+              </div>
+            </div>
+          )}
+        </div>
+      </section>
+    </>
+  );
 }

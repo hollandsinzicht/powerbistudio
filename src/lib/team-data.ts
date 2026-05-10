@@ -62,24 +62,8 @@ export const team: TeamMember[] = [
     linkHref: '/tools/dax-assistant',
     linkText: 'Probeer ADA (gratis) →',
   },
-  {
-    id: 'lex',
-    name: 'LEX',
-    role: 'AI Model Auditor',
-    type: 'ai-agent',
-    image: '/team/lex.png',
-    bio: 'LEX is onze AI-kwaliteitsauditor. Upload een .pbix en LEX scant het datamodel op vijf kwaliteitscategorieën — van DAX-prestaties tot RLS-integriteit.',
-    specialties: [
-      'Datamodel-audit',
-      'RLS-integriteit',
-      'Performance-diagnostiek',
-      'Privacy-first',
-    ],
-    tiedToProduct: { name: 'Report Auditor', href: '/tools/report-auditor' },
-    accent: 'orange',
-    linkHref: '/tools/report-auditor',
-    linkText: 'Laat LEX je model auditen (€49) →',
-  },
+  // LEX (Report Auditor agent) is verwijderd in feat/tools-cleanup —
+  // Report Auditor is uitgefaseerd in HR-rebrand.
 ];
 
 export const founders = team.filter((m) => m.type === 'founder');

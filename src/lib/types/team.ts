@@ -20,7 +20,7 @@ export const TEAM_ACCENT_COLOR: Record<TeamAccent, string> = {
   orange: 'var(--color-sector-data)',
 };
 
-export type TeamMemberId = 'jan-willem' | 'nova' | 'ada' | 'lex';
+export type TeamMemberId = 'jan-willem' | 'nova' | 'ada';
 
 export interface TeamMember {
   id: TeamMemberId;

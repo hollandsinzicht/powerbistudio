@@ -67,6 +67,22 @@ export default function DaxAssistant() {
                     <Link href="/tools" className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] inline-flex items-center gap-2 mb-6 text-sm transition-colors">
                         <ArrowLeft size={16} /> Terug naar Tools
                     </Link>
+
+                    {/* Banner — verwijst naar HR Analytics als hoofdpropositie */}
+                    <div className="mb-8 rounded-md border border-[var(--color-accent-700)]/30 bg-[var(--color-accent-100)]/40 p-4 text-sm">
+                        <p className="text-[var(--text-primary)]">
+                            <strong className="font-semibold">Voor HR-modellering, kijk hier:</strong>{' '}
+                            Power BI Studio richt zich tegenwoordig op HR analytics-trajecten.
+                            De DAX Assistant blijft beschikbaar als gratis tool.{' '}
+                            <Link
+                                href="/hr-analytics"
+                                className="font-semibold text-[var(--color-primary-700)] underline underline-offset-4 hover:text-[var(--color-primary-900)]"
+                            >
+                                Lees over HR Analytics →
+                            </Link>
+                        </p>
+                    </div>
+
                     <div className="flex items-center gap-4 mb-4">
                         <h1 className="text-4xl font-display font-bold">DAX Formula Assistant</h1>
                         <span className="bg-[rgba(245,158,11,0.1)] text-[var(--accent-warm)] text-xs font-mono px-3 py-1 border border-[rgba(245,158,11,0.2)] rounded-full flex items-center gap-1.5">

@@ -5,10 +5,10 @@ import { Calculator, TrendingDown, ArrowRight } from "lucide-react";
 import LeadCaptureForm from "@/components/lead/LeadCaptureForm";
 
 function getRecommendation(cost: number): string {
-  if (cost < 5000) return "Je kosten zijn relatief laag. Een Power BI Readiness Scan kan helpen bepalen waar de quick wins zitten.";
-  if (cost < 15000) return "Dit bedrag rechtvaardigt een gerichte investering in Power BI en procesoptimalisatie. Een Fabric QuickScan of Report Audit is een logische eerste stap.";
-  if (cost < 50000) return "Dit is een serieus bedrag dat structurele verbetering rechtvaardigt. Een procesverbeterings-intake met Lean Six Sigma-aanpak is aan te raden.";
-  return "Dit is een kritieke kostenpost. Directe actie is nodig. Een combinatie van procesverbetering, data-architectuur en governance-interventie heeft de hoogste impact.";
+  if (cost < 5000) return 'Jullie kosten zijn relatief laag. Een HR Analytics Readiness Scan helpt om te bepalen waar de quick wins zitten zonder direct een investering aan te gaan.';
+  if (cost < 15000) return 'Dit bedrag rechtvaardigt een gerichte investering. Een Quick Scan (€1.950, 1,5 dag) levert binnen een week een prioriteitenlijst op waarmee je morgen kunt beginnen.';
+  if (cost < 50000) return 'Dit is een serieus bedrag dat structurele verbetering rechtvaardigt. Een Foundation-traject (€34.500 vast, 6-8 weken) zou dit binnen een jaar terugverdienen.';
+  return 'Dit is een kritieke kostenpost. Directe actie is nodig. Een Foundation Plus-traject (€58.500) plus DashPortal HR Hosting voor doorlopende support is meestal de juiste combinatie.';
 }
 
 export default function BiKostenCalculatorPage() {
@@ -27,19 +27,16 @@ export default function BiKostenCalculatorPage() {
   return (
     <>
       {/* Hero */}
-      <section className="pt-32 pb-16 border-b border-[var(--border)] relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(184,150,62,0.08),transparent_50%)] pointer-events-none" />
-        <div className="container mx-auto px-6 md:px-12 relative z-10">
+      <section className="border-b border-[var(--border)] bg-white">
+        <div className="container mx-auto px-6 py-20 md:px-12 md:py-24">
           <div className="max-w-3xl">
-            <span className="inline-flex items-center text-[0.7rem] font-semibold px-3 py-1 rounded-full mb-4" style={{ backgroundColor: "rgba(184, 150, 62, 0.1)", color: "#B8963E" }}>
-              Gratis tool
-            </span>
-            <h1 className="text-3xl md:text-5xl font-display font-bold mt-2 mb-4">
-              Wat kost slechte data jouw organisatie?
+            <p className="eyebrow mb-4">HR Rapportage-kosten Calculator</p>
+            <h1 className="mb-4">
+              Wat kost handmatige HR-rapportage jullie organisatie?
             </h1>
-            <p className="text-[var(--text-secondary)] text-lg max-w-2xl leading-relaxed">
-              Bereken de maandelijkse kosten van handmatig rapportagewerk en vertraagde beslissingen.
-              Het resultaat zal je verbazen.
+            <p className="lead">
+              Bereken de maandelijkse en jaarlijkse kosten van handmatig HR-rapportagewerk
+              door HR-medewerkers en controllers — plus de gemiste-inzicht-kosten.
             </p>
           </div>
         </div>
@@ -56,13 +53,13 @@ export default function BiKostenCalculatorPage() {
                 <div className="space-y-6">
                   <div>
                     <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
-                      Aantal FTE dat handmatig rapporteert
+                      Aantal HR-medewerkers + controllers die handmatig rapporteren
                     </label>
                     <div className="flex items-center gap-4">
                       <input
                         type="range" min={1} max={50} value={fte}
                         onChange={(e) => setFte(Number(e.target.value))}
-                        className="flex-grow accent-[#B8963E]"
+                        className="flex-grow accent-[var(--color-accent-700)]"
                       />
                       <span className="text-lg font-mono font-bold w-12 text-right">{fte}</span>
                     </div>
@@ -70,13 +67,13 @@ export default function BiKostenCalculatorPage() {
 
                   <div>
                     <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
-                      Gemiddeld uren per week per FTE
+                      Gemiddeld uren per week aan HR-rapportagewerk
                     </label>
                     <div className="flex items-center gap-4">
                       <input
                         type="range" min={1} max={40} value={hours}
                         onChange={(e) => setHours(Number(e.target.value))}
-                        className="flex-grow accent-[#B8963E]"
+                        className="flex-grow accent-[var(--color-accent-700)]"
                       />
                       <span className="text-lg font-mono font-bold w-12 text-right">{hours}</span>
                     </div>
@@ -84,26 +81,26 @@ export default function BiKostenCalculatorPage() {
 
                   <div>
                     <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
-                      Gemiddeld uurtarief (intern, in &euro;)
+                      Gemiddeld uurtarief HR-staff (intern, in &euro;)
                     </label>
                     <input
                       type="number" min={25} max={250} value={rate}
                       onChange={(e) => setRate(Number(e.target.value))}
-                      className="w-full bg-[var(--surface)] border border-[var(--border)] rounded-lg px-4 py-3 text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)] transition-colors font-mono"
+                      className="w-full bg-[var(--surface)] border border-[var(--border)] rounded-lg px-4 py-3 text-[var(--text-primary)] focus:outline-none focus:border-[var(--color-accent-700)] transition-colors font-mono"
                     />
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
-                      Geschatte kosten vertraagde beslissingen per maand (&euro;)
+                      Geschatte kosten gemiste HR-inzichten per maand (&euro;)
                     </label>
                     <input
                       type="number" min={0} step={1000} value={delayed}
                       onChange={(e) => setDelayed(Number(e.target.value))}
-                      className="w-full bg-[var(--surface)] border border-[var(--border)] rounded-lg px-4 py-3 text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)] transition-colors font-mono"
+                      className="w-full bg-[var(--surface)] border border-[var(--border)] rounded-lg px-4 py-3 text-[var(--text-primary)] focus:outline-none focus:border-[var(--color-accent-700)] transition-colors font-mono"
                     />
                     <p className="text-xs text-[var(--text-secondary)] mt-1">
-                      Denk aan: uitgestelde investeringen, gemiste contractdeadlines, voorraadfouten
+                      Denk aan: te late verzuim-detectie, ongewenst verloop niet zien aankomen, gemiste onboarding-correcties, formatie-overschrijdingen
                     </p>
                   </div>
 
@@ -125,7 +122,7 @@ export default function BiKostenCalculatorPage() {
                     <div className="text-center mb-6">
                       <TrendingDown size={32} className="mx-auto mb-3 text-red-500" />
                       <p className="text-sm text-[var(--text-secondary)]">Geschatte maandelijkse kosten</p>
-                      <p className="text-4xl md:text-5xl font-display font-bold mt-2" style={{ color: "#B8963E" }}>
+                      <p className="text-4xl md:text-5xl font-display font-bold mt-2" style={{ color: 'var(--color-accent-700)' }}>
                         {formattedMonthly}
                       </p>
                       <p className="text-[var(--text-secondary)] text-sm mt-1">per maand</p>
@@ -170,19 +167,19 @@ export default function BiKostenCalculatorPage() {
       </section>
 
       {/* Context */}
-      <section className="py-20 bg-gray-50 border-y border-[var(--border)]">
-        <div className="container mx-auto px-6 md:px-12 max-w-3xl">
-          <h2 className="text-2xl font-display font-bold mb-6">Hoe werkt deze berekening?</h2>
-          <div className="text-[var(--text-secondary)] leading-relaxed space-y-4">
+      <section className="border-y border-[var(--border)] bg-[var(--color-neutral-50)] py-20">
+        <div className="container mx-auto max-w-3xl px-6 md:px-12">
+          <h2 className="mb-6">Hoe werkt deze berekening?</h2>
+          <div className="space-y-4 leading-relaxed text-[var(--text-secondary)]">
             <p>
-              De formule is eenvoudig: <strong>(FTE &times; uren &times; uurtarief &times; 4,33 weken)</strong> plus
-              de geschatte kosten van vertraagde beslissingen. Het eerste deel meet de directe
-              kosten van handmatig rapportagewerk. Het tweede deel — vaak veel groter — meet
-              wat het kost als beslissingen te laat of op basis van verkeerde data worden genomen.
+              De formule is eenvoudig: <strong>(HR-staff &times; uren per week &times; uurtarief &times; 4,33 weken)</strong>{' '}
+              plus de geschatte kosten van gemiste HR-inzichten. Het eerste deel meet de directe
+              kosten van handmatig HR-rapportagewerk. Het tweede deel — vaak veel groter — meet
+              wat het kost als verzuim, verloop of formatie-issues niet of te laat in beeld komen.
             </p>
             <p>
-              Dit is de taal die CFO&apos;s en COO&apos;s spreken. Niet &ldquo;we hebben een dashboard nodig&rdquo;,
-              maar &ldquo;dit kost ons X per maand en dat kunnen we terugbrengen naar Y&rdquo;.
+              Dit is de taal die HR-directeuren en CFO&apos;s spreken. Niet &ldquo;we hebben een dashboard
+              nodig&rdquo;, maar &ldquo;dit kost ons X per maand en dat kunnen we terugbrengen naar Y&rdquo;.
             </p>
           </div>
         </div>

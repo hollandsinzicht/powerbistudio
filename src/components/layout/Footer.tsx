@@ -27,8 +27,7 @@ export default function Footer() {
                     <div>
                         <h4 className="text-[var(--text-primary)] font-medium mb-4 font-display">Producten & Tools</h4>
                         <ul className="flex flex-col gap-3">
-                            <li><Link href="/dashportal" className={linkClass}>DashPortal</Link></li>
-                            <li><Link href="/tools/report-auditor" className={linkClass}>Report Auditor</Link></li>
+                            <li><Link href="/dashportal" className={linkClass}>DashPortal HR Hosting</Link></li>
                             <li><Link href="/tools/dax-assistant" className={linkClass}>DAX Formula Assistant</Link></li>
                             <li><Link href="/tools/readiness-scan" className={linkClass}>Power BI Readiness Scan</Link></li>
                             <li><Link href="/tools/bi-kosten-calculator" className={linkClass}>BI-Kosten Calculator</Link></li>
