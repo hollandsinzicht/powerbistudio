@@ -16,6 +16,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         '/tools/readiness-scan',
         '/tools/bi-kosten-calculator',
         '/tools/dax-assistant',
+        '/privacy',
     ].map((route) => ({
         url: `${BASE_URL}${route}`,
         lastModified: new Date(),
