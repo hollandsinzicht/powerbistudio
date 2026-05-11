@@ -48,7 +48,7 @@ const professionalServiceLd = {
     '@type': 'ImageObject',
     url: 'https://www.powerbistudio.nl/logo.png',
     width: 600,
-    height: 180,
+    height: 150,
   },
   image: 'https://www.powerbistudio.nl/logo.png',
   description:
