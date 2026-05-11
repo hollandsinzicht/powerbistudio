@@ -81,6 +81,8 @@ const PAKKETTEN = [
       '60-min review-sessie om resultaten door te nemen',
     ],
     accent: false,
+    cta: 'quick-scan' as const,
+    roi: 'Eén voorkomen ontwerpfout in je dataplatform en de scan heeft zichzelf al terugbetaald.',
     type: 'fixed' as const,
   },
   {
@@ -97,6 +99,8 @@ const PAKKETTEN = [
       'Documentatie + handover sessie',
     ],
     accent: true,
+    cta: 'verkennend' as const,
+    roi: 'Bespaart 6-12 maanden eigen ontwikkeltijd en levert een AVG-proof basis die meerdere jaren meegaat.',
     type: 'fixed' as const,
   },
   {
@@ -112,6 +116,8 @@ const PAKKETTEN = [
       'Train-de-trainer sessie voor HR-team',
     ],
     accent: false,
+    cta: 'verkennend' as const,
+    roi: 'Voorkomt 2-3 FTE aan handmatig knip- en plakwerk per jaar bij multi-bron HR-rapportage.',
     type: 'fixed' as const,
   },
   {
@@ -127,6 +133,8 @@ const PAKKETTEN = [
       'Kwartaal-review op model-performance en KPIs',
     ],
     accent: false,
+    cta: 'verkennend' as const,
+    roi: 'Voor 50+ managers goedkoper dan Power BI Pro-licenties per gebruiker — inclusief monitoring en eerstelijns support.',
     type: 'recurring' as const,
   },
 ];
@@ -390,8 +398,23 @@ export default function HRAnalyticsPage() {
                     </li>
                   ))}
                 </ul>
-                <CTA variant={p.accent ? 'primary' : 'soft'}>
-                  {p.accent ? 'Plan een Quick Scan – €1.950' : 'Plan een verkennend gesprek'}
+                <p className="mb-6 border-l-2 border-[var(--color-accent-700)] pl-3 text-sm leading-relaxed text-[var(--text-secondary)]">
+                  <span className="font-semibold text-[var(--text-primary)]">
+                    Wat je terugverdient:{' '}
+                  </span>
+                  {p.roi}
+                </p>
+                <CTA
+                  variant={p.accent ? 'primary' : 'soft'}
+                  href={
+                    p.cta === 'quick-scan'
+                      ? '/contact?type=quick-scan'
+                      : '/contact?type=verkennend'
+                  }
+                >
+                  {p.cta === 'quick-scan'
+                    ? 'Plan een Quick Scan – €1.950'
+                    : 'Plan een verkennend gesprek'}
                 </CTA>
               </article>
             ))}
