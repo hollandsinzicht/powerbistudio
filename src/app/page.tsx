@@ -98,7 +98,7 @@ const ONDERSCHEIDEND = [
     icon: Layers,
     titel: 'Bron-zilver-goud-methodiek',
     tekst:
-      'Gestructureerd pad in plaats van ad-hoc bouwwerk dat na een jaar omgegooid wordt.',
+      'Gestructureerd pad in plaats van ad-hoc bouwwerk. Mijn zwaartepunt zit in Zilver, Goud en Semantisch — historiek, sterschema, DAX en RLS — waar het verschil tussen werkbaar en strategisch wordt gemaakt.',
   },
   {
     icon: Server,

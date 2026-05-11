@@ -35,7 +35,7 @@ const PROBLEMEN = [
     samenvatting:
       'Verloop-cijfer over 2024 verandert achteraf, omdat afdelingsherindelingen retroactief worden toegepast. Niemand vertrouwt de cijfers nog.',
     detail:
-      'HR-rapportage zonder type-2 historiek is een tijdbom. Verzuim per afdeling, instroom per kostenplaats, formatie-realisatie — allemaal afhankelijk van wie wanneer waar werkte. Ik bouw goud-laag met dimensie-historiek vanaf dag één.',
+      'HR-rapportage zonder type-2 historiek is een tijdbom. Verzuim per afdeling, instroom per kostenplaats, formatie-realisatie — allemaal afhankelijk van wie wanneer waar werkte. Ik bouw type-2 dimensie-historiek in de zilver-laag vanaf dag één, zodat alle cijfers retroactief stabiel blijven.',
   },
   {
     icon: Database,
@@ -328,6 +328,13 @@ export default function HRAnalyticsPage() {
             </p>
           </div>
           <MethodieDiagram variant="full" />
+          <p className="mx-auto mt-6 max-w-2xl text-center text-sm leading-relaxed text-[var(--text-secondary)]">
+            Ik werk over alle vier de lagen, maar mijn diepste expertise ligt in
+            Zilver, Goud en Semantisch: cleaning + type-2 historiek, sterschema,
+            DAX, RLS en KPI-bibliotheek. Bij organisaties met een bestaand
+            dataplatform stap ik daar in; bij Foundation-trajecten bouw ik de
+            volledige keten.
+          </p>
           <div className="mt-8 text-center">
             <CTA variant="navigation" href="/methodiek">
               Volledige uitleg over de methodiek

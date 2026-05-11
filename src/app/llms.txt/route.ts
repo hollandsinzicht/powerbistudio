@@ -88,7 +88,7 @@ ${sortedArticles
 
 ## Expertise & onderwerpen
 
-HR analytics in Power BI, AFAS-rapportage, Visma-rapportage, Nmbrs-rapportage, AVG-by-design, type-2 historiek, row-level security, RLS op organisatiehiërarchie, DPO-cockpit, AVG-cockpit, verzuim-rapportage, instroom-uitstroom analytics, formatie-realisatie, retroactieve rapportage, multi-bron HR-integratie, Power BI architectuur voor HR, bron-zilver-goud-semantisch, sterschema HR, DAX voor HR-KPIs, Lean Six Sigma DMAIC voor HR, mid-market HR-tooling, doorlopende Power BI hosting, branded portaal voor managers, refresh-monitoring, schema-driftdetectie, governance HR-rapportage, deployment pipelines, TMDL, versiecontrole.
+HR analytics in Power BI, AFAS-rapportage, Visma-rapportage, Nmbrs-rapportage, AVG-by-design, type-2 historiek, row-level security, RLS op organisatiehiërarchie, DPO-cockpit, AVG-cockpit, verzuim-rapportage, instroom-uitstroom analytics, formatie-realisatie, retroactieve rapportage, multi-bron HR-integratie, Power BI architectuur voor HR, bron-zilver-goud-semantisch, sterschema HR, DAX voor HR-KPIs, Lean Six Sigma DMAIC voor HR, mid-market HR-tooling, doorlopende Power BI hosting, branded portaal voor managers, refresh-monitoring, schema-driftdetectie, governance HR-rapportage, deployment pipelines, TMDL, versiecontrole. Zwaartepunt ligt op Zilver, Goud en Semantisch (type-2 historiek, sterschema, DAX, RLS, KPI-bibliotheek); de volledige keten bron-zilver-goud-semantisch wordt bij Foundation-trajecten gebouwd, maar de diepste expertise zit in de cleaning- en modelleer-lagen.
 
 ## Contact
 

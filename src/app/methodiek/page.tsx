@@ -34,19 +34,19 @@ const LAGEN = [
   },
   {
     naam: 'Zilver',
-    rol: 'Opgeschoonde tabellen, datatypes consistent',
+    rol: 'Opgeschoonde, geharmoniseerde tabellen mét type-2 historiek',
     werking:
-      'Hier worden datatypes geforceerd, NULL-waardes vervangen, en duplicaten verwijderd. Eén regel per medewerker per peilmoment. Bron-velden worden hernoemd naar een interne nomenclatuur die over alle HR-systemen heen consistent is.',
+      'Datatypes worden geforceerd, NULL-waardes opgeschoond, duplicaten verwijderd en bron-velden krijgen een interne nomenclatuur die over AFAS, Visma en Nmbrs heen consistent is. Hier wordt ook de type-2 historiek (SCD2) opgebouwd: elke wijziging op medewerker, afdeling, functie of kostenplaats krijgt een nieuwe versie met GeldigVan/GeldigTot — zodat de waarheid van toen vastligt.',
     waarom:
-      'Datatypes en naming zijn vaak inconsistent tussen AFAS-versies of bij migratie van Visma naar Nmbrs. Zilver isoleert die complexiteit zodat de goud-laag schoon blijft.',
+      'Datatypes en naming verschillen vaak tussen AFAS-versies of bij migratie van Visma naar Nmbrs — Zilver isoleert die complexiteit. En historiek hoort thuis op het niveau waar dimensies ontstaan, niet pas in het rapportage-model: zo kan elke laag erbovenop er eenduidig uit putten zonder SCD2-logica opnieuw uit te vinden.',
   },
   {
     naam: 'Goud',
-    rol: 'HR-feiten en -dimensies met type-2 historiek',
+    rol: 'HR-feiten en -dimensies in sterschema',
     werking:
-      'Sterschema met dimensies (medewerker, afdeling, functie, kostenplaats) en feiten (in-dienst, verzuim-uren, formatie-realisatie). Type-2 historiek: elke dimensie-wijziging krijgt een nieuwe rij met geldig-van/geldig-tot dates.',
+      'Sterschema met dimensies (medewerker, afdeling, functie, kostenplaats) en feiten (in-dienst, verzuim-uren, formatie-realisatie). Goud gebruikt de type-2 versies uit Zilver en koppelt feiten via peildatum-logica aan de juiste dimensie-versie — maar bouwt zelf geen SCD2 meer op.',
     waarom:
-      'Verloop-cijfer over 2024 mag NIET veranderen als iemand vandaag van afdeling wisselt. Type-2 historiek is de enige manier om dat te garanderen — en het is technisch onuitvoerbaar om het achteraf toe te voegen aan een model dat het mist.',
+      'Een sterschema is geoptimaliseerd voor analyse, niet voor cleaning of historiek-opbouw. Door SCD2 onderop in Zilver te beleggen blijft elke laag enkelvoudig in taak — en kunnen ook andere consumenten (datalake, exports, andere rapportagetools) profiteren van dezelfde historiek-bron.',
   },
   {
     naam: 'Semantisch model',
@@ -195,6 +195,37 @@ export default function MethodiekPage() {
               </article>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* ═══ WAAR IK DE DIEPSTE EXPERTISE INBRENG ═══ */}
+      <section className="py-20 md:py-24">
+        <div className="container mx-auto max-w-3xl px-6 md:px-12">
+          <p className="eyebrow mb-4">Mijn focus binnen de vier lagen</p>
+          <h2 className="mb-6">Waar ik de diepste expertise inbreng</h2>
+          <p className="lead mb-6">
+            Alle vier de lagen horen bij het traject — en bij Foundation bouw ik ze
+            ook alle vier. Maar mijn zwaartepunt ligt bij Zilver, Goud en
+            Semantisch: cleaning + type-2 historiek, sterschema, DAX-measures,
+            row-level security en de KPI-bibliotheek waar managers daadwerkelijk
+            op sturen.
+          </p>
+          <p className="mb-4 text-base leading-relaxed text-[var(--text-secondary)]">
+            Bron is meestal werk dat zich leent voor standaardisatie: interne IT
+            ontsluit AFAS, Visma of Nmbrs, of een bestaande ETL-tool levert de
+            ruwe tabellen aan. De vertaalslag daarná — van bron-data naar een
+            model dat een HR-directeur vertrouwt, dat een DPO kan auditen en dat
+            50+ managers zonder uitleg gebruiken — speelt zich af in Zilver, Goud
+            en Semantisch. Daar zit vijftien jaar Power BI-ervaring, en daar maak
+            ik het verschil.
+          </p>
+          <p className="text-base leading-relaxed text-[var(--text-secondary)]">
+            Concreet: bij een Foundation-traject neem ik de hele keten voor mijn
+            rekening, inclusief Bron. Bij organisaties met een bestaand
+            datawarehouse of dataplatform stap ik vaak in vanaf Zilver of Goud en
+            bouw verder op wat er al staat. Beide werken — als de architectuur
+            klopt.
+          </p>
         </div>
       </section>
 

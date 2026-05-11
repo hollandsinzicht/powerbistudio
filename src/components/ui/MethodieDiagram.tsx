@@ -1,13 +1,13 @@
-import { Database, Filter, Layers, BarChart3, Server, CheckCircle2, Clock, Shield, ArrowUp } from 'lucide-react';
+import { Database, Filter, Layers, BarChart3, Server, History, Shield, ArrowUp } from 'lucide-react';
 
 /**
  * MethodieDiagram — signature visual van de bron-zilver-goud-semantisch methodiek.
  *
  * Vier lagen, bottom-up:
- *   1. Bron        — ruwe data uit AFAS, Visma, Nmbrs            (neutral-100)
- *   2. Zilver      — opgeschoonde tabellen, datatypes consistent (neutral-200)
- *   3. Goud        — HR-feiten/dimensies, type-2 historiek       (accent-100)
- *   4. Semantisch  — Power BI-model met DAX, RLS, KPI's          (accent-700)
+ *   1. Bron        — ruwe data uit AFAS, Visma, Nmbrs                (neutral-100)
+ *   2. Zilver      — opgeschoonde tabellen + type-2 historiek (SCD2) (neutral-200)
+ *   3. Goud        — HR-feiten/dimensies in sterschema                (accent-100)
+ *   4. Semantisch  — Power BI-model met DAX, RLS, KPI's               (accent-700)
  *
  * Elke laag heeft:
  *   - Label (bv. "Bron")
@@ -59,10 +59,10 @@ const LAYERS: Layer[] = [
   {
     key: 'goud',
     label: 'Goud',
-    subtitle: 'HR-feiten en -dimensies met type-2 historiek',
+    subtitle: 'HR-feiten en -dimensies in sterschema',
     icons: [
       { Icon: Layers, label: 'Feit-/dimensie-tabellen' },
-      { Icon: Clock, label: 'Type-2 historiek' },
+      { Icon: BarChart3, label: 'Analyse-klaar sterschema' },
     ],
     bg: 'bg-[var(--color-accent-100)]',
     fg: 'text-[var(--color-primary-900)]',
@@ -71,10 +71,10 @@ const LAYERS: Layer[] = [
   {
     key: 'zilver',
     label: 'Zilver',
-    subtitle: 'Opgeschoonde tabellen, datatypes consistent',
+    subtitle: 'Opgeschoonde tabellen, datatypes consistent, met type-2 historiek',
     icons: [
       { Icon: Filter, label: 'Datacleaning' },
-      { Icon: CheckCircle2, label: 'Type-validatie' },
+      { Icon: History, label: 'Type-2 historiek (SCD2)' },
     ],
     bg: 'bg-[var(--color-neutral-200)]',
     fg: 'text-[var(--color-primary-900)]',
