@@ -262,7 +262,12 @@ export const NURTURE_SEQUENCES: Partial<Record<LeadVertical, NurtureEmailDef[]>>
         <p>Negen van de tien keer staat row-level security bij HR-data verkeerd ingericht: gekoppeld aan e-mailadres of een handmatige user-mapping in een Excel-tabel. Werkt prima — tot iemand van team wisselt.</p>
         <p>Dan blijft die persoon óf data zien die niet meer van hem is, óf valt hij eruit omdat zijn naam veranderd is. Beide zijn AVG-issues.</p>
         <p>De oplossing: hiërarchische RLS gekoppeld aan de actuele organisatie-hiërarchie uit AFAS, Visma of Nmbrs — automatisch, met type-2 historiek voor retroactieve correctheid. Geen Excel-mapping meer.</p>
-        <p><a href="${BASE_URL}/methodiek" style="color: #0F766E; font-weight: 500;">Hoe ik dit in de praktijk inricht →</a></p>
+        <p style="background: #F0FDFA; border-left: 3px solid #0F766E; padding: 12px 16px; margin: 16px 0;">
+          <strong style="color: #0F766E;">Bonus voor checklist-downloaders</strong><br />
+          Ik heb drie DAX-measures opgeschreven die deze RLS-aanpak concreet maken (plus verzuim met peildatum en formatie-realisatie). Niet publiek te vinden, alleen via deze link:<br />
+          <a href="${BASE_URL}/templates/dax-hr" style="color: #0F766E; font-weight: 500;">Bekijk de DAX-templates →</a>
+        </p>
+        <p><a href="${BASE_URL}/methodiek" style="color: #0F766E; font-weight: 500;">Of lees hoe ik dit in de praktijk inricht →</a></p>
       `),
     },
     {
@@ -291,18 +296,24 @@ export const NURTURE_SEQUENCES: Partial<Record<LeadVertical, NurtureEmailDef[]>>
     },
     {
       sequenceNumber: 4, delayDays: 18,
-      subject: 'Drie routes als je hiermee aan de slag wilt',
+      subject: 'Een korte vraag — en drie routes als je verder wilt',
       bodyHtml: emailWrapper(`
-        <h2 style="color: #0F766E;">Wat je hierna kunt doen</h2>
-        <p>Je hebt de checklist, je weet waar de meest voorkomende AVG-leaks zitten, en je weet welk patroon werkt. Drie routes als je dit in je eigen organisatie wilt aanpakken:</p>
+        <h2 style="color: #0F766E;">Liever niet via een formulier?</h2>
+        <p>Je hebt deze mailserie nu doorgenomen. Voor ik je drie routes laat zien: stuur deze mail terug met één regel over je situatie — bijvoorbeeld "we werken met AFAS, 800 FTE, AVG-audit komt eraan" — dan bel ik je deze week voor 15 minuten. Geen pitch, wel een eerlijk antwoord op wat voor jou de logische eerste stap is.</p>
+        <p style="color: #6B7280; font-size: 14px;">Reageren kan gewoon op deze mail. Komt direct bij mij binnen.</p>
+        <hr style="border: none; border-top: 1px solid #E5E7EB; margin: 24px 0;" />
+        <h2 style="color: #0F766E;">De drie routes</h2>
+        <p>Liever zelf de scope kiezen? Drie pakketten waarmee je aan de slag kunt:</p>
         <ul style="line-height: 1.7;">
-          <li><strong>HR Analytics Quick Scan</strong> — €1.950 vast. Anderhalve dag waarin ik je HR-model audit op deze 12 punten met concrete actielijst.</li>
+          <li><strong>HR Analytics Quick Scan</strong> — €1.950 vast. Anderhalve dag waarin ik je HR-model audit op de 12 punten met concrete actielijst.</li>
           <li><strong>HR Analytics Foundation</strong> — €34.500 vast. Volledig opnieuw bouwen volgens bron-zilver-goud-semantisch, AVG-by-design, RLS op hiërarchie, type-2 historiek, drie standaard-dashboards.</li>
           <li><strong>DashPortal HR</strong> — vanaf €1.250/maand. Doorlopende managed hosting voor je HR-dashboards met AVG-monitoring en refresh-bewaking.</li>
         </ul>
-        <p>Geen pakket dat past? Een vrijblijvend verkennend gesprek van 30 minuten kan ook — geen pitch, wel een eerlijk antwoord op wat de logische eerste stap zou zijn.</p>
         <p><a href="${BASE_URL}/contact?type=quick-scan" style="display: inline-block; background: #0F766E; color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: 500;">Plan een Quick Scan →</a></p>
-        <p style="margin-top: 16px;"><a href="${BASE_URL}/contact?type=verkennend" style="color: #0F766E; font-weight: 500;">Of plan eerst een verkennend gesprek →</a></p>
+        <p style="background: #F0FDFA; border-left: 3px solid #0F766E; padding: 12px 16px; margin: 20px 0; font-size: 14px;">
+          <strong style="color: #0F766E;">Nog even bekeken?</strong> De drie DAX-templates die ik je eerder stuurde staan hier:
+          <a href="${BASE_URL}/templates/dax-hr" style="color: #0F766E; font-weight: 500;">DAX-templates voor HR Power BI</a>.
+        </p>
       `),
     },
   ],
