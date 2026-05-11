@@ -25,14 +25,14 @@ export interface Category {
 }
 
 export const CATEGORIES: Category[] = [
-    { slug: 'power-bi', name: 'Power BI', description: 'Artikelen over Power BI dashboards, performance, rapportages en de overstap van Excel.' },
-    { slug: 'dax-datamodellering', name: 'DAX & Datamodellering', description: 'Alles over DAX formules, datamodellen en het bouwen van een solide analytische basis.' },
-    { slug: 'data-platform', name: 'Data Platform', description: 'Artikelen over Azure, Microsoft Fabric, ETL, SQL en cloud data-architectuur.' },
-    { slug: 'strategie', name: 'Strategie', description: 'Inzichten over data-strategie, besluitvorming en de juiste aanpak voor jouw organisatie.' },
-    { slug: 'fabric-migratie', name: 'Fabric & migratie', description: 'Alles over de overgang van Power BI Premium naar Microsoft Fabric: licenties, planning en architectuur.' },
-    { slug: 'governance-avg', name: 'Governance & AVG', description: 'Data governance, AVG-compliance, Row-Level Security en privacy by design in Power BI.' },
-    { slug: 'embedded-analytics', name: 'Embedded analytics', description: 'Power BI Embedded voor ISVs en SaaS-bedrijven: architectuur, multi-tenant en white-label.' },
-    { slug: 'procesverbetering-bi', name: 'Procesverbetering & BI', description: 'Lean Six Sigma meets Power BI: hoe je dashboards inzet als middel voor procesverbetering.' },
+    { slug: 'power-bi', name: 'Power BI', description: 'Power BI voor HR-rapportage: dashboards, performance en de overstap van Excel naar betrouwbare HR-analytics.' },
+    { slug: 'dax-datamodellering', name: 'DAX & Datamodellering', description: 'DAX-formules en datamodellen voor HR-data: medewerker- en verzuim-modellen, sterschema voor HR, peildatum-logica.' },
+    { slug: 'data-platform', name: 'Data Platform', description: 'Azure, Microsoft Fabric, ETL en cloud-architectuur — toegepast op HR-data uit AFAS, Visma en Nmbrs.' },
+    { slug: 'strategie', name: 'Strategie', description: 'Data-strategie voor HR-teams in mid-market werkgevers (250-2.000 FTE): aanpak, volwassenheid en besluitvorming.' },
+    { slug: 'fabric-migratie', name: 'Fabric & migratie', description: 'Wanneer en hoe HR-organisaties van Power BI Premium naar Microsoft Fabric migreren: licenties, planning, architectuur.' },
+    { slug: 'governance-avg', name: 'Governance & AVG', description: 'AVG, RLS en governance — specifiek voor HR-data (medewerkers, salaris, verzuim). DPO-cockpit, bewaartermijnen, hiërarchische toegang.' },
+    { slug: 'embedded-analytics', name: 'Embedded analytics', description: 'Legacy categorie: Power BI Embedded voor SaaS-bedrijven. Niet langer kernpropositie van Power BI Studio.' },
+    { slug: 'procesverbetering-bi', name: 'Procesverbetering & BI', description: 'Lean Six Sigma en DMAIC toegepast op HR-processen: verzuim-meldcyclus, time-to-hire, formatie-realisatie via Power BI.' },
 ];
 
 // --- Weighted keyword scoring ---
@@ -49,6 +49,10 @@ const CATEGORY_KEYWORDS: Record<string, WeightedKeyword[]> = {
         { term: 'dashboard', weight: 1 }, { term: 'rapport', weight: 1 }, { term: 'rapportage', weight: 1 },
         { term: 'rapportages', weight: 1 }, { term: 'visualisatie', weight: 1 }, { term: 'visual', weight: 1 },
         { term: 'excel', weight: 1 }, { term: 'workspace', weight: 1 }, { term: 'service', weight: 1 },
+        // HR-relevantie: gangbare HR-rapportages versterken
+        // de Power BI-categorie als ze in een artikel staan.
+        { term: 'hr-dashboard', weight: 2 }, { term: 'verzuimdashboard', weight: 2 },
+        { term: 'formatie-dashboard', weight: 2 }, { term: 'hr-rapportage', weight: 2 },
     ],
     'dax-datamodellering': [
         { term: 'dax', weight: 3 }, { term: 'datamodel', weight: 3 }, { term: 'datamodellering', weight: 3 },
@@ -58,6 +62,10 @@ const CATEGORY_KEYWORDS: Record<string, WeightedKeyword[]> = {
         { term: 'modellering', weight: 2 }, { term: 'formule', weight: 2 }, { term: 'formules', weight: 2 },
         { term: 'measure', weight: 2 }, { term: 'measures', weight: 2 }, { term: 'dimensie', weight: 2 },
         { term: 'relatie', weight: 1 }, { term: 'relaties', weight: 1 },
+        // HR-relevantie: HR-modelleerpatronen
+        { term: 'type-2 historiek', weight: 3 }, { term: 'scd2', weight: 3 },
+        { term: 'peildatum', weight: 3 }, { term: 'medewerker-dimensie', weight: 3 },
+        { term: 'medewerkertabel', weight: 2 },
     ],
     'data-platform': [
         { term: 'etl', weight: 3 }, { term: 'elt', weight: 3 }, { term: 'datawarehouse', weight: 3 },
@@ -68,6 +76,9 @@ const CATEGORY_KEYWORDS: Record<string, WeightedKeyword[]> = {
         { term: 'dataflows', weight: 2 }, { term: 'brondata', weight: 2 },
         { term: 'cloud', weight: 1 }, { term: 'api', weight: 1 }, { term: 'automatiseren', weight: 1 },
         { term: 'automatisering', weight: 1 }, { term: 'integratie', weight: 1 }, { term: 'bron', weight: 1 },
+        // HR-relevantie: HR-bronsystemen
+        { term: 'afas', weight: 3 }, { term: 'visma', weight: 3 }, { term: 'nmbrs', weight: 3 },
+        { term: 'profit', weight: 2 }, { term: 'youserve', weight: 2 },
     ],
     'strategie': [
         { term: 'strategie', weight: 3 }, { term: 'roadmap', weight: 3 },
@@ -77,6 +88,9 @@ const CATEGORY_KEYWORDS: Record<string, WeightedKeyword[]> = {
         { term: 'organisatie', weight: 1 }, { term: 'advies', weight: 1 }, { term: 'kiezen', weight: 1 },
         { term: 'keuze', weight: 1 }, { term: 'implementatie', weight: 1 }, { term: 'kosten', weight: 1 },
         { term: 'aanpak', weight: 1 },
+        // HR-relevantie: HR-strategie context
+        { term: 'hr-analytics', weight: 3 }, { term: 'people analytics', weight: 3 },
+        { term: 'hr-strategie', weight: 3 }, { term: 'mid-market', weight: 2 },
     ],
     'fabric-migratie': [
         { term: 'fabric', weight: 3 }, { term: 'migratie', weight: 3 }, { term: 'migreren', weight: 3 },
@@ -90,6 +104,12 @@ const CATEGORY_KEYWORDS: Record<string, WeightedKeyword[]> = {
         { term: 'gdpr', weight: 3 }, { term: 'audit trail', weight: 3 }, { term: 'compliance', weight: 3 },
         { term: 'dataclassificatie', weight: 3 }, { term: 'toegangsbeheer', weight: 3 },
         { term: 'rls', weight: 2 }, { term: 'row-level', weight: 2 }, { term: 'beveiliging', weight: 2 },
+        // HR-relevantie: HR is de zwaarste AVG-use-case
+        { term: 'dpo', weight: 3 }, { term: 'functionaris gegevensbescherming', weight: 3 },
+        { term: 'verwerkingsregister', weight: 3 }, { term: 'bewaartermijn', weight: 3 },
+        { term: 'medewerkersgegevens', weight: 3 }, { term: 'personeelsgegevens', weight: 3 },
+        { term: 'salaris', weight: 2 }, { term: 'organisatie-hi\u00ebrarchie', weight: 3 },
+        { term: 'hi\u00ebrarchische rls', weight: 3 }, { term: 'manager-rol', weight: 2 },
     ],
     'embedded-analytics': [
         { term: 'embed', weight: 3 }, { term: 'isv', weight: 3 }, { term: 'multi-tenant', weight: 3 },
@@ -103,6 +123,13 @@ const CATEGORY_KEYWORDS: Record<string, WeightedKeyword[]> = {
         { term: 'procesverbetering', weight: 3 },
         { term: 'kpi', weight: 2 }, { term: 'waste', weight: 2 }, { term: 'operationeel', weight: 2 },
         { term: 'proces', weight: 1 }, { term: 'efficiëntie', weight: 1 },
+        // HR-relevantie: HR-processen die met DMAIC verbeterd kunnen worden
+        { term: 'verzuim', weight: 3 }, { term: 'verzuimpercentage', weight: 3 },
+        { term: 'instroom', weight: 3 }, { term: 'uitstroom', weight: 3 },
+        { term: 'doorstroom', weight: 3 }, { term: 'time-to-hire', weight: 3 },
+        { term: 'formatie', weight: 3 }, { term: 'formatie-realisatie', weight: 3 },
+        { term: 'onboarding', weight: 2 }, { term: 'recruitment', weight: 2 },
+        { term: 'verzuim-meldcyclus', weight: 3 },
     ],
 };
 

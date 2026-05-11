@@ -15,13 +15,24 @@ const client = new Anthropic({
 })
 
 const SITE_CONTEXT = `
-PowerBIStudio.nl is de website van Jan Willem den Hollander — Power BI architect, Lean Six Sigma Black Belt, met 15 jaar ervaring.
+PowerBIStudio.nl is de specialistenpraktijk van Jan Willem den Hollander — Power BI architect, Lean Six Sigma Black Belt, 15 jaar ervaring. Sinds 2026 uitsluitend HR analytics in Power BI voor mid-market werkgevers (250-2.000 FTE) met AFAS, Visma of Nmbrs als HR-bronsysteem.
 
-Diensten: Power BI voor SaaS/ISV, Publieke sector BI, Fabric migratie, Copilot readiness, Procesverbetering.
-Producten: DashPortal (white-label Power BI portaal), Report Auditor (AI-audit €49), DAX Formula Assistant (gratis).
-Doelgroepen: ISV/SaaS CTOs, CFO/COO/operations, publieke sector (gemeenten, GGDs), Power BI consultants.
+Propositie: drie vaste pakketten (HR Analytics Quick Scan €1.950, Foundation €34.500, Foundation Plus €58.500) plus doorlopende hosting via DashPortal HR (€1.250-€3.500/maand).
 
-Bestaande blogcategorieën: Power BI, DAX & Datamodellering, Data Platform, Strategie, Fabric & migratie, Governance & AVG, Embedded analytics, Procesverbetering & BI.
+Methodiek: vier-lagen-architectuur (bron-zilver-goud-semantisch) plus DMAIC (Lean Six Sigma) toegepast op HR-processen zoals verzuim-meldcyclus, time-to-hire en formatie-realisatie. AVG-by-design vanaf laag 1.
+
+Doelgroepen: HR-directeur, HR-controller, DPO (Functionaris Gegevensbescherming), BI-lead bij HR-team. NIET MEER: ISV/SaaS-bouwers (oude propositie), generieke Power BI-consultants als peer-publiek.
+
+Bestaande blogcategorieën: Power BI, DAX & Datamodellering, Data Platform, Strategie, Fabric & migratie, Governance & AVG, Embedded analytics (legacy), Procesverbetering & BI. Alle categorieën worden door een HR-lens behandeld.
+
+HR-CONTEXT VOOR ELK ARTIKEL — VERPLICHT:
+Elk artikel moet binnen de eerste 150 woorden óf een HR-probleem (verzuim, formatie, instroom/uitstroom, AVG-risico, manager-toegang), óf een HR-dataset (medewerkertabel, verzuimregistratie, organisatie-hi\u00ebrarchie), óf een HR-rol (HR-directeur, HR-controller, DPO, BI-lead bij HR) als aangrijpingspunt nemen. Uitzondering alleen bij universele Microsoft-feature-aankondigingen (nieuwe Fabric SKU, nieuwe DAX-functie). Code-voorbeelden gebruiken HR-kolomnamen (Medewerker_ID, FTE, Verzuim_uren, Manager_ID, Org_Eenheid). Drempelwaarden en scenario\'s zijn in HR-grootheden (aantal medewerkers, aantal managers met RLS, FTE, mid-market 250-2.000).
+
+HR-VOCABULAIRE OM TE GEBRUIKEN WAAR RELEVANT:
+verzuim, verzuimpercentage, instroom, uitstroom, doorstroom, formatie, formatie-realisatie, FTE, time-to-hire, employee turnover, hi\u00ebrarchische RLS, organisatie-hi\u00ebrarchie, type-2 historiek (SCD2), peildatum, manager-rol, AVG, DPO, verwerkingsregister, bewaartermijn, AFAS, Visma, Nmbrs.
+
+WAT NIET MEER:
+Geen ISV/SaaS-voorbeelden. Geen verkoopdata, voorraad of finance-zonder-HR als voorbeeld-dataset. Geen generieke "elke organisatie kan..."-openingen. Geen Workday- of SAP SuccessFactors-vergelijkingen (worden niet aangeboden). Embedded Analytics is een legacy categorie — niet meer als kernpropositie aanvliegen.
 `.trim()
 
 // ===== BLOG IDEAS =====
@@ -176,22 +187,21 @@ export async function generateBlogPost(params: {
     return getMockPost(params.title, archetype)
   }
 
-  // Bouw interne link-context op
+  // Bouw interne link-context op (HR-propositie sinds 2026)
   const internalLinksContext = params.existingPostSlugs?.length
     ? `\n\nBeschikbare interne links naar andere blogartikelen (gebruik er minstens 2-3 waar relevant):
 ${params.existingPostSlugs.map((p) => `- <a href="/blog/${p.slug}">${p.title}</a>`).join('\n')}
 
-Beschikbare pagina-links:
-- <a href="/tools/report-auditor">Power BI Report Auditor</a> (AI-audit van datamodellen)
-- <a href="/tools/dax-assistant">DAX Formula Assistant</a> (DAX in gewone taal)
-- <a href="/tools/readiness-scan">Power BI Readiness Scan</a> (volwassenheidscheck)
-- <a href="/tools/bi-kosten-calculator">BI-Kosten Calculator</a> (bereken kosten slechte data)
-- <a href="/fabric-migratie">Fabric migratie</a> (Fabric QuickScan)
-- <a href="/procesverbetering">Procesverbetering</a> (Lean Six Sigma + BI)
-- <a href="/saas">Power BI voor SaaS</a> (embedded analytics)
-- <a href="/publieke-sector">Publieke sector BI</a> (gemeenten, GGD's)
-- <a href="/dashportal">DashPortal</a> (white-label Power BI portaal)
-- <a href="/copilot-readiness">Copilot readiness</a> (semantic model audit)`
+Beschikbare pagina-links (kernpropositie HR-analytics):
+- <a href="/hr-analytics">HR Analytics</a> (de propositie: drie vaste pakketten voor mid-market HR)
+- <a href="/methodiek">Methodiek</a> (bron-zilver-goud-semantisch + DMAIC)
+- <a href="/dashportal">DashPortal HR</a> (doorlopende hosting voor HR-dashboards)
+- <a href="/tools/readiness-scan">HR Analytics Readiness Scan</a> (10-vragen volwassenheidscheck)
+- <a href="/tools/bi-kosten-calculator">HR Rapportage-kosten Calculator</a> (kosten van handmatig HR-rapportagewerk)
+- <a href="/avg-checklist-hr">AVG-checklist HR</a> (12 punten voor elk HR-Power BI-model)
+- <a href="/tools/dax-assistant">DAX Formula Assistant</a> (DAX-formules in gewone taal)
+- <a href="/over">Over Jan Willem</a> (achtergrond + beschikbaarheid)
+- <a href="/contact">Contact</a> (Quick Scan, verkennend gesprek, DashPortal demo)`
     : ''
 
   // Case-context alleen voor case-driven archetype
@@ -427,15 +437,14 @@ export async function generatePillarPost(params: {
     ? `\n\nExtra interne links die je optioneel mag gebruiken (kies er 2-4 die natuurlijk passen, geen verplichting):
 ${extraLinks}
 
-Beschikbare pagina-links (gebruik er 1-2 als ze passen):
-- <a href="/tools/report-auditor">Power BI Report Auditor</a>
-- <a href="/tools/dax-assistant">DAX Formula Assistant</a>
-- <a href="/tools/readiness-scan">Power BI Readiness Scan</a>
-- <a href="/tools/bi-kosten-calculator">BI-Kosten Calculator</a>
-- <a href="/fabric-migratie">Fabric migratie</a>
-- <a href="/procesverbetering">Procesverbetering</a>
-- <a href="/saas">Power BI voor SaaS</a>
-- <a href="/publieke-sector">Publieke sector BI</a>`
+Beschikbare pagina-links (gebruik er 1-2 als ze passen, allemaal HR-propositie):
+- <a href="/hr-analytics">HR Analytics</a>
+- <a href="/methodiek">Methodiek</a>
+- <a href="/dashportal">DashPortal HR</a>
+- <a href="/tools/readiness-scan">HR Analytics Readiness Scan</a>
+- <a href="/tools/bi-kosten-calculator">HR Rapportage-kosten Calculator</a>
+- <a href="/avg-checklist-hr">AVG-checklist HR</a>
+- <a href="/tools/dax-assistant">DAX Formula Assistant</a>`
     : ''
 
   const response = await client.messages.create({
@@ -534,9 +543,9 @@ ${SITE_CONTEXT}`,
 
 function getMockIdeas(): BlogIdeaResult[] {
   return [
-    { title: 'Fabric migratie: de 5 grootste fouten die organisaties maken', keywords: ['fabric', 'migratie', 'fouten'], rationale: 'Hoog zoekvolume, directe link naar Fabric QuickScan dienst', target_audience: 'Data team lead', archetype: 'anti-pattern-essay' },
-    { title: 'DAX performance: waarom je CALCULATE verkeerd gebruikt', keywords: ['dax', 'performance', 'calculate'], rationale: 'Technisch artikel dat DAX Assistant en Report Auditor promoot', target_audience: 'Power BI consultant', archetype: 'technical-deep-dive' },
-    { title: 'Power BI governance voor gemeenten: een praktische gids', keywords: ['governance', 'gemeente', 'power bi'], rationale: 'Publieke sector keyword, linkt naar BI-checklist lead magnet', target_audience: 'gemeente/GGD', archetype: 'decision-framework' },
+    { title: 'Hiërarchische RLS in Power BI: de 5 valkuilen bij HR-data', keywords: ['rls', 'hr', 'hiërarchie', 'avg'], rationale: 'HR-directeuren en DPO\'s zoeken hier expliciet op; linkt naar AVG-checklist HR.', target_audience: 'HR-controller / DPO', archetype: 'anti-pattern-essay' },
+    { title: 'DAX voor verzuim: peildatum, peilperiode en de fouten daarin', keywords: ['dax', 'verzuim', 'peildatum'], rationale: 'Technische HR-Power BI vraag met hoog zoekvolume; linkt naar DAX Assistant.', target_audience: 'BI-lead bij HR-team', archetype: 'technical-deep-dive' },
+    { title: 'AFAS-data in Power BI: directe verbinding of via warehouse?', keywords: ['afas', 'power bi', 'integratie'], rationale: 'Beslisvraag bij start van elke HR-analytics implementatie.', target_audience: 'HR-controller / IT-lead', archetype: 'decision-framework' },
   ]
 }
 
