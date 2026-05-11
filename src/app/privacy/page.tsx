@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'Privacy statement | PowerBIStudio',
@@ -9,13 +8,7 @@ export const metadata: Metadata = {
 };
 
 /**
- * Privacy statement — placeholder versie.
- *
- * STOP-POINT: definitieve tekst moet door AVG-jurist gecheckt worden voor
- * go-live. Deze placeholder dekt de basis maar is geen juridisch advies.
- *
- * Tot validatie blijven concrete bewaartermijnen, doelbinding en
- * sub-processors-lijst placeholders.
+ * Privacy statement voor powerbistudio.nl conform AVG.
  */
 export default function PrivacyPage() {
   return (
@@ -30,8 +23,7 @@ export default function PrivacyPage() {
             verwerkt op powerbistudio.nl en hoe je je rechten kunt uitoefenen.
           </p>
           <p className="mt-4 text-sm text-[var(--text-secondary)]">
-            Laatst bijgewerkt: mei 2026 · Concept-versie — definitieve tekst is in
-            review bij een AVG-jurist.
+            Laatst bijgewerkt: mei 2026.
           </p>
         </div>
       </section>
@@ -101,6 +93,46 @@ export default function PrivacyPage() {
             </div>
 
             <div>
+              <h2 className="mb-3">Wettelijke grondslag</h2>
+              <p className="mb-3">
+                Voor iedere verwerking gebruikt Power BI Studio één van de
+                grondslagen uit artikel 6 lid 1 AVG:
+              </p>
+              <ul className="ml-5 list-disc space-y-2">
+                <li>
+                  <strong className="text-[var(--text-primary)]">
+                    Toestemming (art. 6 lid 1 sub a):
+                  </strong>{' '}
+                  contactformulier, lead-magnet downloads, doorgeven van
+                  tool-resultaten via e-mail en analytics-cookies (alleen na
+                  opt-in via de cookie-banner).
+                </li>
+                <li>
+                  <strong className="text-[var(--text-primary)]">
+                    Uitvoering van een overeenkomst (art. 6 lid 1 sub b):
+                  </strong>{' '}
+                  klant-trajecten, projectcommunicatie en de bijbehorende
+                  guest-account-toegang tot jouw Microsoft-tenant.
+                </li>
+                <li>
+                  <strong className="text-[var(--text-primary)]">
+                    Wettelijke verplichting (art. 6 lid 1 sub c):
+                  </strong>{' '}
+                  bewaring van e-mail- en factuur-correspondentie gedurende
+                  zeven jaar op grond van de fiscale bewaarplicht.
+                </li>
+                <li>
+                  <strong className="text-[var(--text-primary)]">
+                    Gerechtvaardigd belang (art. 6 lid 1 sub f):
+                  </strong>{' '}
+                  beveiliging van de website, fraudepreventie en het bijhouden
+                  van geaggregeerde, niet tot een persoon herleidbare
+                  server-logs.
+                </li>
+              </ul>
+            </div>
+
+            <div>
               <h2 className="mb-3">Bewaartermijnen</h2>
               <p>
                 E-mail-correspondentie wordt 7 jaar bewaard (fiscale
@@ -135,8 +167,23 @@ export default function PrivacyPage() {
             </div>
 
             <div>
-              <h2 className="mb-3">Jouw rechten</h2>
+              <h2 className="mb-3">Doorgifte buiten de EU</h2>
               <p>
+                Alle sub-processors hierboven hosten data binnen de Europese
+                Economische Ruimte, met uitzondering van Anthropic. De Claude
+                API (gebruikt voor de DAX Formula Assistant) draait op
+                infrastructuur in de Verenigde Staten. Voor deze doorgifte
+                gelden de Standard Contractual Clauses (SCC&apos;s) van de
+                Europese Commissie als adequate waarborg. Via de DAX Formula
+                Assistant worden geen persoonsgegevens naar Anthropic
+                verstuurd; alleen de door jou ingevoerde DAX-vraag en de
+                bijbehorende formule.
+              </p>
+            </div>
+
+            <div>
+              <h2 className="mb-3">Jouw rechten</h2>
+              <p className="mb-3">
                 Je hebt het recht op inzage, rectificatie, verwijdering, beperking
                 van verwerking, dataportabiliteit en bezwaar. Stuur een verzoek
                 naar{' '}
@@ -148,6 +195,14 @@ export default function PrivacyPage() {
                 </a>
                 . Reactie binnen één werkdag. Klacht? De Autoriteit Persoonsgegevens
                 is de toezichthouder.
+              </p>
+              <p>
+                Om te voorkomen dat gegevens bij de verkeerde persoon
+                terechtkomen, vraagt Power BI Studio bij een inzage- of
+                verwijderingsverzoek om aanvullende identificatie wanneer de
+                identiteit niet redelijkerwijs vastgesteld kan worden via het
+                e-mailadres dat in onze administratie bekend is. Er worden
+                geen kopieën van een paspoort of identiteitsbewijs bewaard.
               </p>
             </div>
 
@@ -162,21 +217,15 @@ export default function PrivacyPage() {
               </p>
             </div>
 
-            <div className="rounded-lg border border-[var(--border)] border-l-[3px] border-l-[var(--color-warning)] bg-[var(--color-neutral-50)] p-5 text-sm">
-              <p className="mb-2 font-semibold text-[var(--text-primary)]">
-                Concept-versie
-              </p>
+            <div>
+              <h2 className="mb-3">Wijzigingen in deze privacy statement</h2>
               <p>
-                Deze tekst is een werkversie. De definitieve privacy-verklaring
-                wordt geverifieerd door een AVG-jurist vóór go-live. Voor concrete
-                AVG-vragen tijdens een opdracht: stel ze direct via{' '}
-                <Link
-                  href="/contact?type=verkennend"
-                  className="text-[var(--color-primary-700)] underline underline-offset-4"
-                >
-                  een verkennend gesprek
-                </Link>
-                .
+                Power BI Studio kan deze privacy statement aanpassen bij
+                wijzigingen in werkwijze, sub-processors of regelgeving. De
+                meest recente versie staat altijd op deze pagina, met de datum
+                onder de titel als referentie. Bij ingrijpende wijzigingen
+                (bijvoorbeeld een nieuwe verwerking of een sub-processor buiten
+                de EU) ontvangen actieve contacten een melding per e-mail.
               </p>
             </div>
           </div>
