@@ -3,11 +3,10 @@ import type { LeadVertical } from './lead-store'
 
 /**
  * Verticals waarvoor een nurture-sequence bestaat. Een Lead kan ook
- * verticals hebben waarvoor (nog) geen sequence is gedefinieerd
- * (bijv. 'hr' — HR-flow staat op de roadmap). Voor die leads slaat
- * de cron-job het verzenden over.
+ * verticals hebben waarvoor (nog) geen sequence is gedefinieerd; voor
+ * die leads slaat de cron-job het verzenden over.
  */
-export type NurtureVertical = 'beslissers' | 'publieke-sector' | 'isv' | 'vakgenoot'
+export type NurtureVertical = 'beslissers' | 'publieke-sector' | 'isv' | 'vakgenoot' | 'hr'
 
 export interface NurtureEmailDef {
   sequenceNumber: number
@@ -232,6 +231,78 @@ export const NURTURE_SEQUENCES: Partial<Record<LeadVertical, NurtureEmailDef[]>>
         <h2 style="color: #1E3A5F;">Bied DashPortal aan als onderdeel van jouw dienstverlening</h2>
         <p>Als consultant of BI-bureau kun je DashPortal doorverkopen aan je klanten. Eigen pricing, eigen klantrelatie. Wij regelen de techniek.</p>
         <p><a href="${BASE_URL}/dashportal#isv-gebruik" style="display: inline-block; background: #1E3A5F; color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: 500;">Start een gratis trial →</a></p>
+      `),
+    },
+  ],
+
+  // HR-flow (sinds 2026): voor leads die de AVG-checklist HR hebben
+  // gedownload of via de HR Readiness Scan zijn binnengekomen. Vijf
+  // mails over 18 dagen — checklist-levering, twee inhoudelijke duikjes
+  // (RLS + historiek), één transferbare case-les, en een soft CTA naar
+  // Quick Scan / DashPortal HR. Geen sales-pitch, wel concrete waarde
+  // per mail. Kleurpalet: groen/teal (#0F766E, #14B8A6) matchend met
+  // de HR-rebrand.
+  'hr': [
+    {
+      sequenceNumber: 0, delayDays: 0,
+      subject: 'Je AVG-checklist HR — direct downloaden',
+      bodyHtml: emailWrapper(`
+        <h2 style="color: #0F766E;">Bedankt voor het opvragen van de checklist</h2>
+        <p>De PDF staat klaar — twaalf concrete controlepunten voor je HR Power BI-model. Niet de AVG-theorie, wel de specifieke fouten die ik in audits tegenkom.</p>
+        <p><a href="${BASE_URL}/downloads/avg-checklist-hr.pdf" style="display: inline-block; background: #0F766E; color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: 500;">Download de checklist (PDF) →</a></p>
+        <p>De komende weken stuur ik je vier korte mails over de punten waar het vaakst iets misgaat. Geen verkooppraatje — je kunt op elk moment uitschrijven onderaan elke mail.</p>
+        <p style="color: #6B7280; font-size: 14px;">Jan Willem den Hollander — HR analytics-specialist, Lean Six Sigma Black Belt</p>
+      `),
+    },
+    {
+      sequenceNumber: 1, delayDays: 3,
+      subject: 'RLS in HR Power BI: één fout, alle managers zien alles',
+      bodyHtml: emailWrapper(`
+        <h2 style="color: #0F766E;">Het meest voorkomende AVG-lek bij HR-rapportage</h2>
+        <p>Negen van de tien keer staat row-level security bij HR-data verkeerd ingericht: gekoppeld aan e-mailadres of een handmatige user-mapping in een Excel-tabel. Werkt prima — tot iemand van team wisselt.</p>
+        <p>Dan blijft die persoon óf data zien die niet meer van hem is, óf valt hij eruit omdat zijn naam veranderd is. Beide zijn AVG-issues.</p>
+        <p>De oplossing: hiërarchische RLS gekoppeld aan de actuele organisatie-hiërarchie uit AFAS, Visma of Nmbrs — automatisch, met type-2 historiek voor retroactieve correctheid. Geen Excel-mapping meer.</p>
+        <p><a href="${BASE_URL}/methodiek" style="color: #0F766E; font-weight: 500;">Hoe ik dit in de praktijk inricht →</a></p>
+      `),
+    },
+    {
+      sequenceNumber: 2, delayDays: 7,
+      subject: 'Klopt je verzuim-cijfer van twee jaar terug nog?',
+      bodyHtml: emailWrapper(`
+        <h2 style="color: #0F766E;">De verborgen rapportagefout: ontbrekende historiek</h2>
+        <p>Een reorganisatie verandert je hele HR-historie zonder dat iemand het merkt. Afdeling A wordt opgeknipt in A1 en A2, de medewerker-tabel wordt overschreven, en je verzuim-percentage van vorig jaar staat ineens 30% hoger of lager.</p>
+        <p>Klopt het dan wat er stond? Of klopt het nu? Allebei niet — want zonder type-2 historiek (SCD2) ken je het verleden niet meer.</p>
+        <p>Dit is geen schoonheidsfoutje. HR-managers nemen jaarlijks beslissingen op basis van trends. Als die trends elke maand stilletjes veranderen, sturen ze op ruis.</p>
+        <p>Het patroon dat wel werkt: peildatum-logica in het semantisch model. De vraag "hoeveel FTE hadden we per 1 januari" geeft altijd hetzelfde antwoord, ongeacht latere mutaties.</p>
+        <p><a href="${BASE_URL}/tools/readiness-scan" style="color: #0F766E; font-weight: 500;">Check je eigen historiek-aanpak in de Readiness Scan →</a></p>
+      `),
+    },
+    {
+      sequenceNumber: 3, delayDays: 12,
+      subject: 'Wat ik leerde bij 25 GGD-regio\'s over gevoelige data',
+      bodyHtml: emailWrapper(`
+        <h2 style="color: #0F766E;">Multi-tenant RLS — een patroon dat ook voor HR werkt</h2>
+        <p>Bij GGDGHOR bouwde ik een centraal datamodel voor 25 regio's plus het RIVM. Elk regio mag alleen eigen data zien; RIVM ziet het landelijk overzicht. Eén model, niet 25.</p>
+        <p>Dat is precies het patroon dat HR-organisaties met meerdere vestigingen, BV's of landen nodig hebben. De manager van team A ziet team A. De HR-controller van BV X ziet BV X. De DPO ziet het volledige verwerkingsregister.</p>
+        <p>De truc zit niet in de techniek (RLS is een Power BI-feature) maar in het ontwerp: één hiërarchie-tabel met type-2 historiek, en RLS-rollen die daar dynamisch op aansluiten.</p>
+        <p>De alternatieven — losse rapporten per locatie, of één rapport waar iedereen alles ziet — zijn beide AVG-risico's. De eerste is onbeheersbaar, de tweede onverdedigbaar.</p>
+        <p><a href="${BASE_URL}/cases/ggdghor" style="color: #0F766E; font-weight: 500;">Lees de GGDGHOR-case →</a></p>
+      `),
+    },
+    {
+      sequenceNumber: 4, delayDays: 18,
+      subject: 'Drie routes als je hiermee aan de slag wilt',
+      bodyHtml: emailWrapper(`
+        <h2 style="color: #0F766E;">Wat je hierna kunt doen</h2>
+        <p>Je hebt de checklist, je weet waar de meest voorkomende AVG-leaks zitten, en je weet welk patroon werkt. Drie routes als je dit in je eigen organisatie wilt aanpakken:</p>
+        <ul style="line-height: 1.7;">
+          <li><strong>HR Analytics Quick Scan</strong> — €1.950 vast. Anderhalve dag waarin ik je HR-model audit op deze 12 punten met concrete actielijst.</li>
+          <li><strong>HR Analytics Foundation</strong> — €34.500 vast. Volledig opnieuw bouwen volgens bron-zilver-goud-semantisch, AVG-by-design, RLS op hiërarchie, type-2 historiek, drie standaard-dashboards.</li>
+          <li><strong>DashPortal HR</strong> — vanaf €1.250/maand. Doorlopende managed hosting voor je HR-dashboards met AVG-monitoring en refresh-bewaking.</li>
+        </ul>
+        <p>Geen pakket dat past? Een vrijblijvend verkennend gesprek van 30 minuten kan ook — geen pitch, wel een eerlijk antwoord op wat de logische eerste stap zou zijn.</p>
+        <p><a href="${BASE_URL}/contact?type=quick-scan" style="display: inline-block; background: #0F766E; color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: 500;">Plan een Quick Scan →</a></p>
+        <p style="margin-top: 16px;"><a href="${BASE_URL}/contact?type=verkennend" style="color: #0F766E; font-weight: 500;">Of plan eerst een verkennend gesprek →</a></p>
       `),
     },
   ],
