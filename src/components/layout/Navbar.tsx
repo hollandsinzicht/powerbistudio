@@ -49,7 +49,7 @@ export default function Navbar() {
             src="/logo.png"
             alt="Power BI Studio"
             width={180}
-            height={40}
+            height={54}
             className="h-7 w-auto opacity-90 transition-opacity group-hover:opacity-100"
             priority
           />

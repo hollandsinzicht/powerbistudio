@@ -79,9 +79,9 @@ export async function GET(req: Request) {
             height: '100%',
             display: 'flex',
             flexDirection: 'column',
-            backgroundColor: '#F3F6FA',
+            backgroundColor: '#F0FDFA',
             backgroundImage:
-              'linear-gradient(#E3EAF3 1px, transparent 1px), linear-gradient(90deg, #E3EAF3 1px, transparent 1px)',
+              'linear-gradient(#CCFBF1 1px, transparent 1px), linear-gradient(90deg, #CCFBF1 1px, transparent 1px)',
             backgroundSize: '48px 48px',
             padding: '80px',
             fontFamily: 'Inter',
@@ -90,11 +90,11 @@ export async function GET(req: Request) {
           {/* ===== Header: Power BI Studio logo ===== */}
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <div style={{ display: 'flex', alignItems: 'center' }}>
-              {/* Bar chart icon */}
+              {/* Bar chart icon — kleuren matchen het nieuwe groen/teal logo */}
               <svg width={72} height={72} viewBox="0 0 80 80" style={{ marginRight: 20 }}>
-                <rect x={8} y={46} width={16} height={26} rx={3} fill="#6B8AAC" />
-                <rect x={32} y={30} width={16} height={42} rx={3} fill="#1E3A5F" />
-                <rect x={56} y={12} width={16} height={60} rx={3} fill="#1E3A5F" />
+                <rect x={8} y={46} width={16} height={26} rx={3} fill="#14B8A6" />
+                <rect x={32} y={30} width={16} height={42} rx={3} fill="#0F766E" />
+                <rect x={56} y={12} width={16} height={60} rx={3} fill="#0F766E" />
               </svg>
               <div
                 style={{
@@ -104,16 +104,16 @@ export async function GET(req: Request) {
                   letterSpacing: -1.5,
                 }}
               >
-                <div style={{ color: '#1E3A5F' }}>Power</div>
-                <div style={{ color: '#1E3A5F', marginLeft: 14 }}>BI</div>
-                <div style={{ color: '#374151', marginLeft: 14, fontWeight: 400 }}>Studio</div>
+                <div style={{ color: '#0F766E' }}>Power</div>
+                <div style={{ color: '#0F766E', marginLeft: 14 }}>BI</div>
+                <div style={{ color: '#1F2937', marginLeft: 14, fontWeight: 400 }}>Studio</div>
               </div>
             </div>
             <div
               style={{
                 width: 520,
                 height: 3,
-                backgroundColor: '#1E3A5F',
+                backgroundColor: '#0F766E',
                 marginTop: 22,
                 borderRadius: 2,
               }}
@@ -129,14 +129,14 @@ export async function GET(req: Request) {
             }}
           >
             <svg width={180} height={140} viewBox="0 0 180 140">
-              {/* Twee curly opening quote shapes */}
+              {/* Twee curly opening quote shapes — licht teal */}
               <path
                 d="M10 70 C10 35 35 10 70 10 L70 38 C48 38 38 52 38 70 L70 70 L70 130 L10 130 Z"
-                fill="#C5D2E0"
+                fill="#A7F3D0"
               />
               <path
                 d="M100 70 C100 35 125 10 160 10 L160 38 C138 38 128 52 128 70 L160 70 L160 130 L100 130 Z"
-                fill="#C5D2E0"
+                fill="#A7F3D0"
               />
             </svg>
           </div>
@@ -160,7 +160,7 @@ export async function GET(req: Request) {
                   marginRight: Math.round(fontSize * 0.26),
                   marginBottom: Math.round(fontSize * 0.1),
                   fontWeight: w.bold ? 700 : 400,
-                  color: w.bold ? '#1E3A5F' : '#374151',
+                  color: w.bold ? '#0F766E' : '#1F2937',
                   letterSpacing: -0.5,
                 }}
               >

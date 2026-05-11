@@ -102,7 +102,7 @@ export default function Footer() {
               src="/logo.png"
               alt="Power BI Studio"
               width={140}
-              height={32}
+              height={42}
               className="h-6 w-auto opacity-70 transition-opacity group-hover:opacity-100"
             />
           </Link>
