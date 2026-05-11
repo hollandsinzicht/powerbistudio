@@ -13,6 +13,7 @@ const VERTICAL_LIST_IDS: Record<string, number | undefined> = {
   isv: process.env.BREVO_LIST_ISV ? parseInt(process.env.BREVO_LIST_ISV, 10) : undefined,
   'publieke-sector': process.env.BREVO_LIST_PUBLIEKE_SECTOR ? parseInt(process.env.BREVO_LIST_PUBLIEKE_SECTOR, 10) : undefined,
   vakgenoot: process.env.BREVO_LIST_VAKGENOTEN ? parseInt(process.env.BREVO_LIST_VAKGENOTEN, 10) : undefined,
+  hr: process.env.BREVO_LIST_HR ? parseInt(process.env.BREVO_LIST_HR, 10) : undefined,
 }
 
 interface SendEmailOptions {

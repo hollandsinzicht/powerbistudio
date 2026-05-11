@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { ArrowRight, CheckCircle2, Download } from "lucide-react";
 
-type LeadVertical = 'beslissers' | 'publieke-sector' | 'isv' | 'vakgenoot';
+type LeadVertical = 'beslissers' | 'publieke-sector' | 'isv' | 'vakgenoot' | 'hr';
 type FieldName = 'name' | 'email' | 'company';
 
 interface LeadCaptureFormProps {

@@ -1,5 +1,12 @@
 import { supabase } from './supabase'
+import type { LeadVertical } from './lead-store'
 
+/**
+ * Verticals waarvoor een nurture-sequence bestaat. Een Lead kan ook
+ * verticals hebben waarvoor (nog) geen sequence is gedefinieerd
+ * (bijv. 'hr' — HR-flow staat op de roadmap). Voor die leads slaat
+ * de cron-job het verzenden over.
+ */
 export type NurtureVertical = 'beslissers' | 'publieke-sector' | 'isv' | 'vakgenoot'
 
 export interface NurtureEmailDef {
@@ -21,7 +28,7 @@ const emailWrapper = (content: string) => `
   </p>
 </div>`
 
-export const NURTURE_SEQUENCES: Record<NurtureVertical, NurtureEmailDef[]> = {
+export const NURTURE_SEQUENCES: Partial<Record<LeadVertical, NurtureEmailDef[]>> = {
   'beslissers': [
     {
       sequenceNumber: 0, delayDays: 0,
