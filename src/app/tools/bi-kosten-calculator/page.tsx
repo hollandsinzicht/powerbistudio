@@ -140,7 +140,7 @@ export default function BiKostenCalculatorPage() {
                     <div className="border-t border-[var(--border)] pt-6">
                       <p className="text-sm font-medium mb-3">Ontvang het volledige rapport per e-mail:</p>
                       <LeadCaptureForm
-                        vertical="beslissers"
+                        vertical="hr"
                         source="calculator"
                         title=""
                         buttonText="Verstuur rapport"

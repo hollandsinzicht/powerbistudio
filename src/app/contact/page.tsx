@@ -12,6 +12,16 @@ import {
   Calendar as CalendarIcon,
   Server,
 } from 'lucide-react';
+import CalEmbed, { calConfigured } from '@/components/lead/cal-embed';
+
+// Koppeling instap-type → Cal.com event-slug. Maak in Cal.com event-types met
+// exact deze slugs aan (of pas ze hier aan). Werkt alleen als NEXT_PUBLIC_CAL_LINK
+// is gezet; anders valt alles terug op het formulier.
+const CAL_EVENT_SLUGS: Record<string, string> = {
+  'quick-scan': 'quick-scan',
+  verkennend: 'verkennend-gesprek',
+  hosting: 'dashportal-demo',
+};
 
 // Vier vaste opties — vermindering van 8 oude opties
 const AANVRAAG_TYPES = [
@@ -70,6 +80,8 @@ function ContactContent() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [bookingEvent, setBookingEvent] = useState('quick-scan');
+  const hasCal = calConfigured();
 
   useEffect(() => {
     const typeParam = searchParams.get('type');
@@ -151,13 +163,24 @@ function ContactContent() {
                   {voor}
                 </p>
                 <Link
-                  href={`#contact-form?type=${typeParam}`}
+                  href={
+                    hasCal && CAL_EVENT_SLUGS[typeParam]
+                      ? '#book'
+                      : `#contact-form?type=${typeParam}`
+                  }
                   onClick={(e) => {
                     e.preventDefault();
-                    setFormData((prev) => ({ ...prev, type: typeParam }));
-                    document
-                      .getElementById('contact-form')
-                      ?.scrollIntoView({ behavior: 'smooth' });
+                    if (hasCal && CAL_EVENT_SLUGS[typeParam]) {
+                      setBookingEvent(typeParam);
+                      document
+                        .getElementById('book')
+                        ?.scrollIntoView({ behavior: 'smooth' });
+                    } else {
+                      setFormData((prev) => ({ ...prev, type: typeParam }));
+                      document
+                        .getElementById('contact-form')
+                        ?.scrollIntoView({ behavior: 'smooth' });
+                    }
                   }}
                   className="inline-flex items-center gap-1 text-sm font-medium text-[var(--color-primary-700)] underline underline-offset-4 transition-colors hover:text-[var(--color-primary-900)]"
                 >
@@ -169,6 +192,55 @@ function ContactContent() {
           </div>
         </div>
       </section>
+
+      {/* ═══ DIRECT INPLANNEN (Cal.com) ═══ */}
+      {hasCal && (
+        <section
+          id="book"
+          className="border-t border-[var(--border)] bg-white py-16 md:py-20 scroll-mt-24"
+        >
+          <div className="container mx-auto max-w-5xl px-6 md:px-12">
+            <div className="mb-6 flex flex-col gap-2 md:mb-8">
+              <p className="eyebrow">Direct inplannen</p>
+              <h2 className="text-2xl">Kies een moment in mijn agenda</h2>
+              <p className="max-w-2xl text-sm leading-relaxed text-[var(--text-secondary)]">
+                Liever meteen een slot vastleggen dan wachten op een reactie? Kies
+                hieronder het type gesprek en prik direct een tijd. Je krijgt
+                automatisch een bevestiging.
+              </p>
+            </div>
+
+            <div className="mb-6 flex flex-wrap gap-2">
+              {INSTAP_OPTIES.filter((o) => CAL_EVENT_SLUGS[o.typeParam]).map(
+                ({ typeParam, titel }) => (
+                  <button
+                    key={typeParam}
+                    type="button"
+                    onClick={() => setBookingEvent(typeParam)}
+                    aria-pressed={bookingEvent === typeParam}
+                    className={`rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
+                      bookingEvent === typeParam
+                        ? 'border-[var(--color-accent-700)] bg-[var(--color-accent-100)] text-[var(--color-accent-700)]'
+                        : 'border-[var(--border)] bg-white text-[var(--text-secondary)] hover:border-[var(--color-accent-700)]'
+                    }`}
+                  >
+                    {titel}
+                  </button>
+                )
+              )}
+            </div>
+
+            <div className="rounded-lg border border-[var(--border)] bg-white p-2 md:p-4">
+              <CalEmbed event={CAL_EVENT_SLUGS[bookingEvent]} />
+            </div>
+
+            <p className="mt-4 text-xs text-[var(--text-secondary)]">
+              Komt het niet uit in de agenda? Gebruik dan het formulier hieronder —
+              ik reageer binnen één werkdag.
+            </p>
+          </div>
+        </section>
+      )}
 
       {/* ═══ FORMULIER + SIDEBAR ═══ */}
       <section

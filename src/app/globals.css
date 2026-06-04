@@ -55,9 +55,9 @@
   --text-primary:   var(--color-neutral-900);
   --text-secondary: var(--color-neutral-700);
 
-  /* Sector-kleuren — pagina's die deze nog gebruiken (/saas, /publieke-sector,
-   * homepage doelgroep-blokken) verdwijnen in latere branches. Tot die tijd
-   * mappen we ze op het nieuwe palet zodat oude pagina's niet visueel breken. */
+  /* Sector-kleuren — legacy accenttokens die nog door enkele UI-componenten
+   * worden gebruikt. Gemapt op het HR-palet zodat bestaande pagina's niet
+   * visueel breken. */
   --color-sector-zorg: var(--color-accent-700);
   --color-sector-saas: var(--color-primary-700);
   --color-sector-data: var(--color-action-600);

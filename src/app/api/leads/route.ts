@@ -3,12 +3,10 @@ import { createLead, getLeadByEmail } from '@/lib/lead-store';
 import { sendLeadConfirmationEmail, sendCalculatorResultEmail, upsertBrevoContact } from '@/lib/emails';
 import type { LeadVertical, LeadSource } from '@/lib/lead-store';
 
-const VALID_VERTICALS: LeadVertical[] = ['beslissers', 'publieke-sector', 'isv', 'vakgenoot', 'hr'];
-const VALID_SOURCES: LeadSource[] = ['calculator', 'checklist', 'architectuurgids', 'dax-fouten', 'contact', 'avg-checklist-hr'];
+const VALID_VERTICALS: LeadVertical[] = ['hr'];
+const VALID_SOURCES: LeadSource[] = ['calculator', 'dax-fouten', 'contact', 'avg-checklist-hr'];
 
 const RESOURCE_TITLES: Record<string, string> = {
-  checklist: 'Publieke Sector BI-Checklist',
-  architectuurgids: 'ISV Architectuurgids — 5 beslissingen vóór dag 1',
   'dax-fouten': '10 meest voorkomende DAX-fouten in productie-modellen',
   'avg-checklist-hr': 'AVG-checklist HR Power BI — 12 controlepunten',
 };
@@ -72,7 +70,7 @@ export async function POST(req: Request) {
         email,
         name,
         monthlyCost: metadata.monthlyCost as number,
-        recommendation: metadata.recommendation as string || 'Neem contact op voor een procesverbeterings-intake.',
+        recommendation: metadata.recommendation as string || 'Plan een HR Analytics Quick Scan voor een concrete actielijst.',
       });
     } else {
       await sendLeadConfirmationEmail({

@@ -9,10 +9,6 @@ const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://powerbistudio.nl'
 
 // Brevo contact list IDs per vertical
 const VERTICAL_LIST_IDS: Record<string, number | undefined> = {
-  beslissers: process.env.BREVO_LIST_BESLISSERS ? parseInt(process.env.BREVO_LIST_BESLISSERS, 10) : undefined,
-  isv: process.env.BREVO_LIST_ISV ? parseInt(process.env.BREVO_LIST_ISV, 10) : undefined,
-  'publieke-sector': process.env.BREVO_LIST_PUBLIEKE_SECTOR ? parseInt(process.env.BREVO_LIST_PUBLIEKE_SECTOR, 10) : undefined,
-  vakgenoot: process.env.BREVO_LIST_VAKGENOTEN ? parseInt(process.env.BREVO_LIST_VAKGENOTEN, 10) : undefined,
   hr: process.env.BREVO_LIST_HR ? parseInt(process.env.BREVO_LIST_HR, 10) : undefined,
 }
 
@@ -268,7 +264,7 @@ export async function sendCalculatorResultEmail(params: {
       </div>
       <p><strong>Aanbeveling:</strong> ${params.recommendation}</p>
       <p style="margin-top: 24px;">
-        <a href="${BASE_URL}/contact?type=procesverbetering" style="display: inline-block; background: #1E3A5F; color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: 500;">Plan een procesverbeterings-intake</a>
+        <a href="${BASE_URL}/contact?type=quick-scan" style="display: inline-block; background: #1E3A5F; color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: 500;">Plan een HR Analytics Quick Scan</a>
       </p>
       <hr style="border: none; border-top: 1px solid #E5E7EB; margin: 24px 0;" />
       <p style="color: #9CA3AF; font-size: 12px;">Jan Willem den Hollander — PowerBIStudio.nl</p>

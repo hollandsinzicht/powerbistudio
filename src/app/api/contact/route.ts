@@ -4,12 +4,10 @@ import { sendEmail } from '@/lib/emails';
 const CONTACT_TO = process.env.CONTACT_TO_EMAIL || 'info@powerbistudio.nl';
 
 const TYPE_LABELS: Record<string, string> = {
-    interim: 'Interim opdracht',
-    saas: 'Architectuurreview (ISV/SaaS)',
-    fabric: 'Fabric migratie / QuickScan',
-    copilot: 'Copilot Readiness Audit',
-    'publieke-sector': 'Power BI voor zorg & overheid',
-    dashportal: 'DashPortal',
+    'quick-scan': 'HR Analytics Quick Scan',
+    foundation: 'HR Analytics Foundation',
+    hosting: 'DashPortal HR (hosting)',
+    verkennend: 'Verkennend gesprek',
     anders: 'Iets anders',
 };
 

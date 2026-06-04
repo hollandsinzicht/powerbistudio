@@ -261,7 +261,7 @@ export default function DaxAssistant() {
                             </div>
                         </div>
                         <LeadCaptureForm
-                            vertical="vakgenoot"
+                            vertical="hr"
                             source="dax-fouten"
                             title=""
                             buttonText="Download gratis PDF"

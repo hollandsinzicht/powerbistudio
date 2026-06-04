@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import {
-  ArrowRight, FileSearch, BrainCircuit, Zap, ClipboardCheck, Building, Globe,
-  Calculator, Wrench, MessageSquare
+  ArrowRight, FileSearch, BrainCircuit, Zap, ClipboardCheck, Globe,
+  Calculator, Wrench, MessageSquare, Users
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import type { Category } from '@/lib/soro';
@@ -20,48 +20,31 @@ interface ScoredCTA { cta: CTAItem; keywords: WeightedKW[] }
 // --- Lead Magnet Pool (slot 1) ---
 const LEAD_MAGNETS: ScoredCTA[] = [
   {
-    cta: { title: 'BI-Kosten Calculator', description: 'Bereken wat slechte data jouw organisatie kost per maand.', href: '/tools/bi-kosten-calculator', icon: Calculator, color: '#B8963E' },
+    cta: { title: 'AVG-checklist HR-data', description: 'Wie mag welke personeelsdata zien? Borg RLS en AVG in 12 stappen.', href: '/avg-checklist-hr', icon: ClipboardCheck, color: '#0E7C66' },
     keywords: [
-      { term: 'kosten', weight: 3 }, { term: 'roi', weight: 3 }, { term: 'business case', weight: 3 },
-      { term: 'budget', weight: 2 }, { term: 'besparing', weight: 2 }, { term: 'cfo', weight: 3 },
-      { term: 'coo', weight: 3 }, { term: 'operationeel', weight: 2 }, { term: 'procesverbetering', weight: 2 },
-      { term: 'lean', weight: 2 }, { term: 'six sigma', weight: 2 }, { term: 'dmaic', weight: 2 },
+      { term: 'avg', weight: 3 }, { term: 'privacy', weight: 3 }, { term: 'gdpr', weight: 3 },
+      { term: 'rls', weight: 3 }, { term: 'row-level security', weight: 3 }, { term: 'autorisatie', weight: 3 },
+      { term: 'compliance', weight: 2 }, { term: 'toegang', weight: 2 },
     ],
   },
   {
-    cta: { title: 'BI-checklist publieke sector', description: '12 vragen voor een BI-aanbesteding. Gratis download.', href: '/resources/publieke-sector-checklist', icon: Building, color: '#0F6E56' },
-    keywords: [
-      { term: 'gemeente', weight: 3 }, { term: 'ggd', weight: 3 }, { term: 'overheid', weight: 3 },
-      { term: 'publieke sector', weight: 3 }, { term: 'aanbesteding', weight: 3 },
-      { term: 'veiligheidsregio', weight: 3 }, { term: 'jeugdzorg', weight: 3 }, { term: 'wmo', weight: 3 },
-    ],
-  },
-  {
-    cta: { title: 'ISV Architectuurgids', description: '5 beslissingen voor dag 1 van embedded Power BI.', href: '/resources/isv-architectuurgids', icon: Globe, color: '#534AB7' },
-    keywords: [
-      { term: 'isv', weight: 3 }, { term: 'saas', weight: 3 }, { term: 'embedded', weight: 3 },
-      { term: 'multi-tenant', weight: 3 }, { term: 'white-label', weight: 3 }, { term: 'white label', weight: 3 },
-      { term: 'cto', weight: 3 }, { term: 'softwarebedrijf', weight: 3 },
-    ],
-  },
-  {
-    cta: { title: 'DAX-fouten PDF', description: 'De 10 meest voorkomende DAX-fouten en hoe je ze voorkomt.', href: '/tools/dax-assistant#dax-fouten', icon: BrainCircuit, color: '#F59E0B' },
+    cta: { title: 'DAX-templates voor HR', description: 'Kant-en-klare measures voor verloop, verzuim en instroom.', href: '/templates/dax-hr', icon: BrainCircuit, color: '#13315C' },
     keywords: [
       { term: 'dax', weight: 3 }, { term: 'measure', weight: 2 }, { term: 'formule', weight: 2 },
-      { term: 'calculated column', weight: 3 }, { term: 'filter context', weight: 3 },
-      { term: 'star schema', weight: 2 }, { term: 'datamodel', weight: 2 },
+      { term: 'verloop', weight: 3 }, { term: 'verzuim', weight: 3 }, { term: 'instroom', weight: 2 },
+      { term: 'calculated column', weight: 2 }, { term: 'filter context', weight: 2 },
     ],
   },
   {
-    cta: { title: 'Report Auditor', description: 'AI-audit van je datamodel. Upload je .pbix en ontvang een actielijst.', href: '/tools/report-auditor', icon: FileSearch, color: '#1E3A5F' },
+    cta: { title: 'BI-Kosten Calculator', description: 'Bereken wat versnipperde HR-data jouw organisatie per maand kost.', href: '/tools/bi-kosten-calculator', icon: Calculator, color: '#B8963E' },
     keywords: [
-      { term: 'pbix', weight: 3 }, { term: 'audit', weight: 3 }, { term: 'performance', weight: 2 },
-      { term: 'optimalisatie', weight: 2 }, { term: 'traag', weight: 2 }, { term: 'langzaam', weight: 2 },
+      { term: 'kosten', weight: 3 }, { term: 'roi', weight: 3 }, { term: 'business case', weight: 3 },
+      { term: 'budget', weight: 2 }, { term: 'besparing', weight: 2 }, { term: 'handwerk', weight: 2 },
     ],
   },
   {
     // Fallback lead magnet
-    cta: { title: 'Readiness Scan', description: 'Waar staat jouw organisatie? Beantwoord 10 vragen.', href: '/tools/readiness-scan', icon: ClipboardCheck, color: '#1E3A5F' },
+    cta: { title: 'Readiness Scan', description: 'Hoe ver staat jouw HR-data? Beantwoord 10 vragen.', href: '/tools/readiness-scan', icon: FileSearch, color: '#1E3A5F' },
     keywords: [
       { term: 'beginnen', weight: 2 }, { term: 'starten', weight: 2 }, { term: 'volwassenheid', weight: 3 },
       { term: 'maturity', weight: 3 }, { term: 'roadmap', weight: 2 }, { term: 'overstappen', weight: 2 },
@@ -72,39 +55,35 @@ const LEAD_MAGNETS: ScoredCTA[] = [
 // --- Service CTA Pool (slot 2) ---
 const SERVICE_CTAS: ScoredCTA[] = [
   {
-    cta: { title: 'Procesverbetering', description: 'DMAIC + Power BI: de taal die CFOs en COOs spreken.', href: '/procesverbetering', icon: Wrench, color: '#B8963E' },
+    cta: { title: 'HR-Analytics', description: 'Verloop, verzuim en bezetting in \u00e9\u00e9n betrouwbaar dashboard.', href: '/hr-analytics', icon: Users, color: '#0E7C66' },
     keywords: [
-      { term: 'lean', weight: 3 }, { term: 'six sigma', weight: 3 }, { term: 'dmaic', weight: 3 },
-      { term: 'kpi', weight: 2 }, { term: 'operationeel', weight: 2 }, { term: 'bottleneck', weight: 3 },
-      { term: 'cfo', weight: 2 }, { term: 'coo', weight: 2 },
+      { term: 'hr', weight: 3 }, { term: 'personeel', weight: 3 }, { term: 'medewerker', weight: 2 },
+      { term: 'verloop', weight: 3 }, { term: 'verzuim', weight: 3 }, { term: 'bezetting', weight: 2 },
+      { term: 'instroom', weight: 2 }, { term: 'uitstroom', weight: 2 }, { term: 'afas', weight: 3 },
+      { term: 'visma', weight: 3 }, { term: 'nmbrs', weight: 3 },
     ],
   },
   {
-    cta: { title: 'Fabric QuickScan', description: 'Scope, planning en licentieadvies. \u20AC1.500 vast.', href: '/fabric-migratie', icon: Zap, color: '#D85A30' },
+    cta: { title: 'De methodiek', description: 'Betrouwbare HR-data: \u00e9\u00e9n bron, historie via SCD2, RLS op orde.', href: '/methodiek', icon: Wrench, color: '#13315C' },
     keywords: [
-      { term: 'fabric', weight: 3 }, { term: 'migratie', weight: 3 }, { term: 'migreren', weight: 3 },
-      { term: 'premium', weight: 2 }, { term: 'onelake', weight: 3 }, { term: 'licentie', weight: 2 },
+      { term: 'scd2', weight: 3 }, { term: 'historie', weight: 3 }, { term: 'datamodel', weight: 2 },
+      { term: 'star schema', weight: 2 }, { term: 'bronnen', weight: 2 }, { term: 'rls', weight: 2 },
+      { term: 'datakwaliteit', weight: 3 },
     ],
   },
   {
-    cta: { title: 'SaaS & Embedded', description: 'Power BI embedded in je product.', href: '/saas', icon: Globe, color: '#534AB7' },
+    cta: { title: 'DashPortal', description: 'Veilig HR-dashboards delen met managers \u2014 RLS per leidinggevende.', href: '/dashportal', icon: Globe, color: '#534AB7' },
     keywords: [
-      { term: 'saas', weight: 3 }, { term: 'embedded', weight: 3 }, { term: 'isv', weight: 3 },
-      { term: 'multi-tenant', weight: 3 }, { term: 'white-label', weight: 3 }, { term: 'klantportaal', weight: 3 },
+      { term: 'embedded', weight: 3 }, { term: 'portaal', weight: 3 }, { term: 'delen', weight: 2 },
+      { term: 'leidinggevende', weight: 3 }, { term: 'manager', weight: 2 }, { term: 'self-service', weight: 2 },
     ],
   },
   {
-    cta: { title: 'Publieke Sector BI', description: 'BI voor gemeenten, GGDs en veiligheidsregios.', href: '/publieke-sector', icon: Building, color: '#0F6E56' },
+    cta: { title: 'Quick Scan', description: 'In 1,5 dag inzicht in je HR-datamodel en een concrete actielijst.', href: '/quick-scan', icon: Zap, color: '#E07A2C' },
     keywords: [
-      { term: 'gemeente', weight: 3 }, { term: 'ggd', weight: 3 }, { term: 'overheid', weight: 3 },
-      { term: 'publieke sector', weight: 3 }, { term: 'avg', weight: 2 }, { term: 'privacy', weight: 2 },
-    ],
-  },
-  {
-    cta: { title: 'Copilot Readiness', description: 'Is jouw data klaar voor AI en Copilot?', href: '/copilot-readiness', icon: BrainCircuit, color: '#F59E0B' },
-    keywords: [
-      { term: 'copilot', weight: 3 }, { term: 'ai', weight: 2 }, { term: 'artificial intelligence', weight: 3 },
-      { term: 'openai', weight: 3 }, { term: 'gpt', weight: 3 },
+      { term: 'quick scan', weight: 3 }, { term: 'audit', weight: 3 }, { term: 'pbix', weight: 2 },
+      { term: 'performance', weight: 2 }, { term: 'traag', weight: 2 }, { term: 'langzaam', weight: 2 },
+      { term: 'optimalisatie', weight: 2 },
     ],
   },
   {
