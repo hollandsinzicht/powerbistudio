@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
-import { Sparkles, FileText, Plus, CheckCircle2, XCircle, PenLine, Eye, Send, Archive, Loader2, Clock, Link2, ArrowUp, ArrowDown, Image as ImageIcon, Linkedin, Copy, Check, Images, Download, Target, Upload } from "lucide-react";
+import { Sparkles, FileText, Plus, CheckCircle2, XCircle, PenLine, Eye, Send, Archive, Loader2, Clock, Link2, ArrowUp, ArrowDown, Image as ImageIcon, Linkedin, Copy, Check, Images, Download, Target, Upload, Megaphone, MessageSquare, Building2 } from "lucide-react";
 import {
   ALL_ARCHETYPES,
   ARCHETYPE_LABELS,
@@ -10,6 +10,12 @@ import {
   type ArticleType,
   type BlogArchetype,
 } from "@/lib/blog-archetypes";
+import {
+  ICP_STARTERS,
+  LINKEDIN_POSTS,
+  CONNECT_VARIANTEN,
+  OUTREACH_STAPPEN,
+} from "@/lib/acquisitie-data";
 
 type LinkedInStyle = "educatief" | "scherp" | "provocatief" | "storytelling";
 
@@ -46,7 +52,7 @@ function dateInputValue(iso: string | null): string {
 }
 
 export default function AdminDashboard() {
-  const [tab, setTab] = useState<"posts" | "ideas" | "new">("posts");
+  const [tab, setTab] = useState<"posts" | "ideas" | "new" | "acquisitie">("posts");
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [ideas, setIdeas] = useState<BlogIdea[]>([]);
   const [loading, setLoading] = useState(true);
@@ -73,6 +79,9 @@ export default function AdminDashboard() {
   const [linkedinResult, setLinkedinResult] = useState<{ postText: string; hashtags: string[] } | null>(null);
   const [linkedinLoading, setLinkedinLoading] = useState(false);
   const [linkedinCopied, setLinkedinCopied] = useState(false);
+
+  // Acquisitie-tab: welke kopieer-knop net is ingedrukt (id) — voor de "gekopieerd"-feedback.
+  const [acqCopied, setAcqCopied] = useState<string | null>(null);
 
   // Quote images modal state
   const [quoteImagesPost, setQuoteImagesPost] = useState<BlogPost | null>(null);
@@ -401,6 +410,17 @@ export default function AdminDashboard() {
     }
   };
 
+  // Acquisitie-tab: kopieer een tekstblok (post-body, outreach-bericht) naar klembord.
+  const handleAcqCopy = async (id: string, text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setAcqCopied(id);
+      setTimeout(() => setAcqCopied((cur) => (cur === id ? null : cur)), 2500);
+    } catch {
+      alert("Kopiëren mislukt — selecteer en kopieer handmatig.");
+    }
+  };
+
   // ===== Quote images (LinkedIn shareable PNGs) =====
   const openQuoteImagesModal = async (post: BlogPost) => {
     setQuoteImagesPost(post);
@@ -521,6 +541,9 @@ export default function AdminDashboard() {
         </button>
         <button onClick={() => setTab("new")} className={tabClass("new")}>
           <span className="flex items-center gap-2"><Plus size={16} /> Nieuw artikel</span>
+        </button>
+        <button onClick={() => setTab("acquisitie")} className={tabClass("acquisitie")}>
+          <span className="flex items-center gap-2"><Megaphone size={16} /> Acquisitie</span>
         </button>
         <Link href="/admin/seo" className="px-4 py-2 text-sm font-medium rounded-lg transition-colors text-[var(--text-secondary)] hover:bg-gray-100 inline-flex items-center gap-2">
           <Target size={16} /> SEO Dashboard
@@ -936,6 +959,119 @@ export default function AdminDashboard() {
               </div>
             );
           })()}
+
+          {/* ===== TAB: ACQUISITIE — ICP-lijst + LinkedIn-posts + outreach ===== */}
+          {tab === "acquisitie" && (
+            <div className="space-y-10">
+              <div>
+                <h2 className="text-xl font-semibold flex items-center gap-2">
+                  <Megaphone size={20} className="text-[var(--primary)]" /> Acquisitie
+                </h2>
+                <p className="text-sm text-[var(--text-secondary)] mt-1 max-w-2xl">
+                  Je outbound-motor op één plek: de ICP-starters om te benaderen, de
+                  6 LinkedIn-posts en de outreach-funnel. Kopieer een blok en plak het
+                  in LinkedIn. De bewerkbare werkkopieën blijven in{" "}
+                  <code className="text-xs">docs/icp-lijst.csv</code> en{" "}
+                  <code className="text-xs">docs/linkedin-posts-context.md</code>.
+                </p>
+              </div>
+
+              {/* ICP-starters */}
+              <section>
+                <h3 className="text-base font-semibold flex items-center gap-2 mb-3">
+                  <Building2 size={18} className="text-[var(--accent)]" /> ICP-starters ({ICP_STARTERS.length})
+                </h3>
+                <div className="overflow-x-auto rounded-lg border border-[var(--border)]">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="bg-[var(--surface)] text-left text-[var(--text-secondary)]">
+                        <th className="px-3 py-2 font-medium">Bedrijf</th>
+                        <th className="px-3 py-2 font-medium">Plaats</th>
+                        <th className="px-3 py-2 font-medium">FTE</th>
+                        <th className="px-3 py-2 font-medium">Functie</th>
+                        <th className="px-3 py-2 font-medium">Trigger</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {ICP_STARTERS.map((icp) => (
+                        <tr key={icp.bedrijf} className="border-t border-[var(--border)]">
+                          <td className="px-3 py-2 font-medium">{icp.bedrijf}</td>
+                          <td className="px-3 py-2 text-[var(--text-secondary)]">{icp.plaats}</td>
+                          <td className="px-3 py-2 text-[var(--text-secondary)]">{icp.fte}</td>
+                          <td className="px-3 py-2 text-[var(--text-secondary)]">{icp.functie}</td>
+                          <td className="px-3 py-2 text-[var(--text-secondary)]">{icp.trigger || "—"}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                <p className="text-xs text-[var(--text-secondary)] mt-2">
+                  Naam, LinkedIn-URL en salarissysteem bewust leeg — die verifieer je per account in Sales Navigator.
+                </p>
+              </section>
+
+              {/* LinkedIn-posts */}
+              <section>
+                <h3 className="text-base font-semibold flex items-center gap-2 mb-3">
+                  <Linkedin size={18} className="text-[#0A66C2]" /> LinkedIn-posts ({LINKEDIN_POSTS.length})
+                </h3>
+                <div className="grid gap-4 md:grid-cols-2">
+                  {LINKEDIN_POSTS.map((post) => {
+                    const id = `post-${post.week}-${post.dag}`;
+                    const full = `${post.body}\n\n${post.hashtags.join(" ")}`;
+                    return (
+                      <div key={id} className="rounded-lg border border-[var(--border)] bg-[var(--surface)] p-4 flex flex-col">
+                        <div className="flex items-center justify-between gap-2 mb-2">
+                          <span className="text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wide">
+                            Week {post.week} · {post.dag} · {post.style}
+                          </span>
+                          <button
+                            onClick={() => handleAcqCopy(id, full)}
+                            className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded border border-[var(--border)] hover:bg-gray-100 shrink-0"
+                            title="Kopieer post + hashtags"
+                          >
+                            {acqCopied === id ? <Check size={13} className="text-green-600" /> : <Copy size={13} />}
+                            {acqCopied === id ? "Gekopieerd" : "Kopieer"}
+                          </button>
+                        </div>
+                        <p className="text-sm font-medium mb-2">{post.thema}</p>
+                        <p className="text-sm text-[var(--text-secondary)] whitespace-pre-wrap flex-1">{post.body}</p>
+                        <p className="text-xs text-[#0A66C2] mt-3">{post.hashtags.join(" ")}</p>
+                      </div>
+                    );
+                  })}
+                </div>
+              </section>
+
+              {/* Outreach-funnel */}
+              <section>
+                <h3 className="text-base font-semibold flex items-center gap-2 mb-3">
+                  <MessageSquare size={18} className="text-[var(--accent)]" /> Outreach-funnel
+                </h3>
+                <div className="space-y-3">
+                  {[...CONNECT_VARIANTEN.map((b, i) => ({ ...b, id: `connect-${i}` })), ...OUTREACH_STAPPEN.map((b, i) => ({ ...b, id: `stap-${i}` }))].map((blok) => (
+                    <div key={blok.id} className="rounded-lg border border-[var(--border)] bg-[var(--surface)] p-4">
+                      <div className="flex items-center justify-between gap-2 mb-1">
+                        <span className="text-sm font-medium">{blok.label}</span>
+                        <button
+                          onClick={() => handleAcqCopy(blok.id, blok.tekst)}
+                          className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded border border-[var(--border)] hover:bg-gray-100 shrink-0"
+                          title="Kopieer bericht"
+                        >
+                          {acqCopied === blok.id ? <Check size={13} className="text-green-600" /> : <Copy size={13} />}
+                          {acqCopied === blok.id ? "Gekopieerd" : "Kopieer"}
+                        </button>
+                      </div>
+                      {blok.toelichting && (
+                        <p className="text-xs text-[var(--accent)] mb-2">{blok.toelichting}</p>
+                      )}
+                      <p className="text-sm text-[var(--text-secondary)] whitespace-pre-wrap">{blok.tekst}</p>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            </div>
+          )}
         </>
       )}
 
