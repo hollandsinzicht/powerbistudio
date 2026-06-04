@@ -231,7 +231,12 @@ function ContactContent() {
             </div>
 
             <div className="rounded-lg border border-[var(--border)] bg-white p-2 md:p-4">
-              <CalEmbed event={CAL_EVENT_SLUGS[bookingEvent]} />
+              {/* key op de event-slug forceert een verse mount bij tab-wissel,
+                  zodat Cal.com de nieuwe agenda rendert i.p.v. de eerste te behouden. */}
+              <CalEmbed
+                key={CAL_EVENT_SLUGS[bookingEvent]}
+                event={CAL_EVENT_SLUGS[bookingEvent]}
+              />
             </div>
 
             <p className="mt-4 text-xs text-[var(--text-secondary)]">

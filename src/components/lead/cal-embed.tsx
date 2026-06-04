@@ -70,6 +70,11 @@ export default function CalEmbed({ event, className }: CalEmbedProps) {
     if (!CAL_BASE) return;
     loadCalScript();
     const w = window as CalWindow;
+    // Maak de container leeg vóór (her)initialisatie. Cal.com rendert niet opnieuw
+    // in een element dat al een embed bevat; zonder dit blijft bij een event-wissel
+    // de eerste agenda staan.
+    const el = w.document.getElementById(elementId);
+    if (el) el.innerHTML = '';
     w.Cal!('inline', {
       elementOrSelector: `#${elementId}`,
       calLink: `${CAL_BASE}/${event}`,
