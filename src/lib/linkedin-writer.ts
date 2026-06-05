@@ -7,6 +7,83 @@ const client = new Anthropic({
 
 export type LinkedInStyle = 'educatief' | 'scherp' | 'provocatief' | 'storytelling'
 
+export type FunnelStage = 'tofu' | 'mofu' | 'bofu'
+
+export type PostCategory =
+  | '3-hr-problemen'
+  | 'klantcase'
+  | 'mythe-provocatie'
+  | 'persoonlijk-visie'
+
+export interface InterviewTurn {
+  vraag: string
+  antwoord: string
+}
+
+export interface RecentPostSummary {
+  category: string | null
+  funnel_stage: string | null
+  post_text: string
+}
+
+export interface PostFromInterviewInput {
+  funnelStage: FunnelStage
+  category: PostCategory
+  topic: string
+  style?: LinkedInStyle
+  interview: InterviewTurn[]
+  brandContext: BrandContext
+  recentPosts: RecentPostSummary[]
+}
+
+// Wat elke funnel-fase met de lezer moet doen. Stuurt toon en call-to-action.
+const FUNNEL_GUIDE: Record<FunnelStage, string> = {
+  tofu: `FUNNEL: TOFU (top of funnel) — herkenning.
+- Doel: de lezer zijn eigen probleem laten herkennen, zonder te verkopen.
+- Breed insteken op een pijn of misverstand rond HR-data. Geen aanbod, geen Quick Scan.
+- Call-to-action hooguit zacht: een vraag of een prikkel tot nadenken.`,
+
+  mofu: `FUNNEL: MOFU (middle of funnel) — verdieping.
+- Doel: laten zien hoe het beter kan; vertrouwen en autoriteit opbouwen.
+- Concreter: een aanpak, een keuze, een mini-case of een principe dat werkt.
+- Call-to-action: uitnodiging tot gesprek of meedenken, nog niet hard verkopen.`,
+
+  bofu: `FUNNEL: BOFU (bottom of funnel) — concreet aanbod.
+- Doel: de lezer die het probleem herkent een duidelijke volgende stap geven.
+- Mag de Quick Scan noemen als logische wedge (1,5 dag, vaste prijs, geen verplichting).
+- Call-to-action: concreet maar nuchter. Een DM-uitnodiging of "stuur me een bericht".`,
+}
+
+// Inhoudelijke invalshoek per categorie + de stijl die er standaard bij past.
+const CATEGORY_GUIDE: Record<PostCategory, string> = {
+  '3-hr-problemen': `CATEGORIE: 3 HR-data-problemen.
+- Rode draad: losse bronnen, geen historie (SCD2), rechten niet dichtgetimmerd (RLS/AVG).
+- Pak één of meer van deze problemen beet en maak ze concreet en herkenbaar.`,
+
+  klantcase: `CATEGORIE: klantcase / verhaal.
+- Vertel een concreet (anoniem) project: de situatie, de fout of het knelpunt, de aanpak, de les.
+- Gebruik alleen echte details uit de context. Verzin geen klantnamen of cijfers.`,
+
+  'mythe-provocatie': `CATEGORIE: mythe / provocatie.
+- Daag een gangbare aanname uit ("iedereen begint bij de dashboards — precies verkeerd om").
+- Scherp en onderbouwd, niet hatelijk. Geen aanvallen op personen of bedrijven.`,
+
+  'persoonlijk-visie': `CATEGORIE: persoonlijk / visie.
+- JW's eigen kijk: waarom hij dit werk doet, wat hij telkens terugziet, waar hij in gelooft.
+- Persoonlijk en stellig, maar zonder borstklopperij. Een mening, geen verkooppraatje.`,
+}
+
+const CATEGORY_DEFAULT_STYLE: Record<PostCategory, LinkedInStyle> = {
+  '3-hr-problemen': 'educatief',
+  klantcase: 'storytelling',
+  'mythe-provocatie': 'provocatief',
+  'persoonlijk-visie': 'scherp',
+}
+
+export function defaultStyleForCategory(category: PostCategory): LinkedInStyle {
+  return CATEGORY_DEFAULT_STYLE[category]
+}
+
 export interface LinkedInPostInput {
   title: string
   excerpt: string
@@ -48,7 +125,7 @@ const USD_TO_EUR = 0.92
  * Leest de werkelijke token-usage uit de response, berekent de kosten en logt
  * één regel serverside. Geeft undefined op het mock-pad (geen usage beschikbaar).
  */
-function summarizeUsage(response: Anthropic.Message, label: string): UsageInfo | undefined {
+export function summarizeUsage(response: Anthropic.Message, label: string): UsageInfo | undefined {
   const inputTokens = response.usage?.input_tokens
   const outputTokens = response.usage?.output_tokens
   if (typeof inputTokens !== 'number' || typeof outputTokens !== 'number') {
@@ -156,8 +233,10 @@ function buildSystemPrompt(opts: {
   brandContext?: BrandContext
   style: LinkedInStyle
   structuur: string
+  /** Extra sturing (bv. funnel- en categorie-richtlijnen), na de STYLE_GUIDE. */
+  extraGuides?: string[]
 }): string {
-  const { brandContext, style, structuur } = opts
+  const { brandContext, style, structuur, extraGuides } = opts
   const persona = brandContext?.persona?.trim() || FALLBACK_PERSONA
 
   const sections: string[] = [
@@ -174,6 +253,12 @@ function buildSystemPrompt(opts: {
   }
 
   sections.push(STYLE_GUIDE[style])
+
+  if (extraGuides) {
+    for (const guide of extraGuides) {
+      if (guide?.trim()) sections.push(guide.trim())
+    }
+  }
 
   if (brandContext?.schrijfstijl?.trim()) {
     sections.push(
@@ -289,6 +374,78 @@ Schrijf de post in de gevraagde stijl, vanuit het merkprofiel. Output alleen de 
   })
 
   const usage = summarizeUsage(response, 'free-post')
+  return { ...parseResponse(response, () => getMockFreePost(input.topic)), usage }
+}
+
+/** Vat de recente posts samen als anti-herhaling-context voor de prompt. */
+function summarizeRecentPosts(recentPosts: RecentPostSummary[]): string {
+  if (recentPosts.length === 0) return ''
+
+  const lines = recentPosts.map((p, i) => {
+    const label = [p.funnel_stage, p.category].filter(Boolean).join('/') || 'onbekend'
+    const snippet = p.post_text.replace(/\s+/g, ' ').trim().slice(0, 200)
+    return `${i + 1}. [${label}] ${snippet}…`
+  })
+
+  return `RECENTE POSTS (sluit hierop aan, herhaal niet letterlijk — kies een verse invalshoek):
+${lines.join('\n')}`
+}
+
+/**
+ * Genereert een LinkedIn post uit een kort adaptief vraaggesprek. Stuurt op
+ * funnel-fase + categorie en krijgt de recente posts mee zodat de reeks logisch
+ * doorloopt en zichzelf niet herhaalt.
+ */
+export async function generatePostFromInterview(
+  input: PostFromInterviewInput
+): Promise<GeneratedLinkedInPost> {
+  const style = input.style ?? CATEGORY_DEFAULT_STYLE[input.category]
+
+  if (!process.env.ANTHROPIC_API_KEY) {
+    return getMockFreePost(input.topic)
+  }
+
+  const ctaBlock = input.brandContext.assets?.trim()
+    ? `- Sluit eventueel af met een passende call-to-action uit deze assets (alleen als het natuurlijk past):\n${input.brandContext.assets.trim()}`
+    : `- Geen verzonnen links of CTA's toevoegen.`
+
+  const structuur = `- Hook (eerste 2-3 zinnen)
+- Body (2-4 korte alinea's), gevoed door het vraaggesprek hieronder
+- Lege regel
+${ctaBlock}
+- GEEN verwijzing naar een blogartikel of artikel-URL (deze post staat los van een blog).`
+
+  const systemPrompt = buildSystemPrompt({
+    brandContext: input.brandContext,
+    style,
+    structuur,
+    extraGuides: [FUNNEL_GUIDE[input.funnelStage], CATEGORY_GUIDE[input.category]],
+  })
+
+  const interviewBlock = input.interview
+    .map((turn, i) => `V${i + 1}: ${turn.vraag}\nA${i + 1}: ${turn.antwoord}`)
+    .join('\n\n')
+
+  const recentBlock = summarizeRecentPosts(input.recentPosts)
+
+  const userMessage = `Schrijf een vrije LinkedIn post op basis van een kort vraaggesprek.
+
+Onderwerp: ${input.topic}
+
+VRAAGGESPREK (de antwoorden van Jan Willem — dit is de inhoudelijke bron, verwerk het in zijn woorden):
+${interviewBlock}
+${recentBlock ? `\n${recentBlock}\n` : ''}
+Schrijf de post in de gevraagde stijl, vanuit het merkprofiel, passend bij de funnel-fase en categorie. Output alleen de JSON.`
+
+  const response = await client.messages.create({
+    model: 'claude-sonnet-4-20250514',
+    max_tokens: 1500,
+    temperature: 0.9,
+    system: systemPrompt,
+    messages: [{ role: 'user', content: userMessage }],
+  })
+
+  const usage = summarizeUsage(response, 'post-interview')
   return { ...parseResponse(response, () => getMockFreePost(input.topic)), usage }
 }
 
