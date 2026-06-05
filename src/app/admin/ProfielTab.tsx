@@ -58,7 +58,11 @@ export default function ProfielTab() {
   const [angle, setAngle] = useState("");
   const [freeStyle, setFreeStyle] = useState<LinkedInStyle>("educatief");
   const [freeLoading, setFreeLoading] = useState(false);
-  const [freeResult, setFreeResult] = useState<{ postText: string; hashtags: string[] } | null>(null);
+  const [freeResult, setFreeResult] = useState<{
+    postText: string;
+    hashtags: string[];
+    usage?: { inputTokens: number; outputTokens: number; costUsd: number; costEur: number };
+  } | null>(null);
   const [freeCopied, setFreeCopied] = useState(false);
 
   const fetchProfile = useCallback(async () => {
@@ -154,7 +158,7 @@ export default function ProfielTab() {
       });
       if (res.ok) {
         const data = await res.json();
-        setFreeResult({ postText: data.postText || "", hashtags: data.hashtags || [] });
+        setFreeResult({ postText: data.postText || "", hashtags: data.hashtags || [], usage: data.usage });
       } else {
         const data = await res.json().catch(() => ({}));
         alert(`Genereren mislukt: ${data.error || res.statusText}`);
@@ -405,9 +409,14 @@ export default function ProfielTab() {
 
             {freeResult && (
               <div className="space-y-3 pt-3 border-t border-[var(--border)]">
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between gap-2">
                   <label className="text-sm font-medium text-[var(--text-secondary)]">Resultaat</label>
-                  <span className="text-[10px] text-[var(--text-secondary)]">{freeResult.postText.length} tekens</span>
+                  <span className="text-[10px] text-[var(--text-secondary)] text-right">
+                    {freeResult.usage && (
+                      <>≈ €{freeResult.usage.costEur.toFixed(3).replace('.', ',')} · {freeResult.usage.inputTokens.toLocaleString('nl-NL')} in / {freeResult.usage.outputTokens.toLocaleString('nl-NL')} out · </>
+                    )}
+                    {freeResult.postText.length} tekens
+                  </span>
                 </div>
                 <div className="bg-[var(--surface)] border border-[var(--border)] rounded-lg p-4 whitespace-pre-wrap text-sm leading-relaxed text-[var(--text-primary)]">
                   {freeResult.postText}

@@ -52,6 +52,7 @@ export async function POST(req: Request) {
       success: true,
       postText: result.postText,
       hashtags: result.hashtags,
+      usage: result.usage,
     })
   } catch (error) {
     console.error('Free LinkedIn post error:', error)

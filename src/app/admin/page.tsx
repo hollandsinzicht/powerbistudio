@@ -77,7 +77,11 @@ export default function AdminDashboard() {
   const [linkedinPost, setLinkedinPost] = useState<BlogPost | null>(null);
   const [linkedinStyle, setLinkedinStyle] = useState<LinkedInStyle>("educatief");
   const [linkedinExtraContext, setLinkedinExtraContext] = useState("");
-  const [linkedinResult, setLinkedinResult] = useState<{ postText: string; hashtags: string[] } | null>(null);
+  const [linkedinResult, setLinkedinResult] = useState<{
+    postText: string;
+    hashtags: string[];
+    usage?: { inputTokens: number; outputTokens: number; costUsd: number; costEur: number };
+  } | null>(null);
   const [linkedinLoading, setLinkedinLoading] = useState(false);
   const [linkedinCopied, setLinkedinCopied] = useState(false);
 
@@ -357,7 +361,7 @@ export default function AdminDashboard() {
       });
       if (res.ok) {
         const data = await res.json();
-        setLinkedinResult({ postText: data.postText, hashtags: data.hashtags });
+        setLinkedinResult({ postText: data.postText, hashtags: data.hashtags, usage: data.usage });
       } else {
         const data = await res.json().catch(() => ({}));
         alert(`LinkedIn post genereren mislukt: ${data.error || res.statusText}`);
@@ -1149,9 +1153,14 @@ export default function AdminDashboard() {
               {/* Resultaat */}
               {linkedinResult && (
                 <div className="space-y-3 pt-3 border-t border-[var(--border)]">
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between gap-2">
                     <label className="text-sm font-medium text-[var(--text-secondary)]">Resultaat</label>
-                    <span className="text-[10px] text-[var(--text-secondary)]">{linkedinResult.postText.length} tekens</span>
+                    <span className="text-[10px] text-[var(--text-secondary)] text-right">
+                      {linkedinResult.usage && (
+                        <>≈ €{linkedinResult.usage.costEur.toFixed(3).replace('.', ',')} · {linkedinResult.usage.inputTokens.toLocaleString('nl-NL')} in / {linkedinResult.usage.outputTokens.toLocaleString('nl-NL')} out · </>
+                      )}
+                      {linkedinResult.postText.length} tekens
+                    </span>
                   </div>
                   <div className="bg-[var(--surface)] border border-[var(--border)] rounded-lg p-4 whitespace-pre-wrap text-sm leading-relaxed text-[var(--text-primary)]">
                     {linkedinResult.postText}

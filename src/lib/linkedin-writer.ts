@@ -25,9 +25,46 @@ export interface FreeLinkedInPostInput {
   brandContext: BrandContext
 }
 
+export interface UsageInfo {
+  inputTokens: number
+  outputTokens: number
+  costUsd: number
+  costEur: number
+}
+
 export interface GeneratedLinkedInPost {
   postText: string
   hashtags: string[]
+  /** Echte token-usage uit de Anthropic-response. Ontbreekt op het mock-pad. */
+  usage?: UsageInfo
+}
+
+// Prijzen Claude Sonnet 4 (per 1M tokens). USD→EUR is een benadering.
+const PRICE_INPUT_PER_MTOK_USD = 3
+const PRICE_OUTPUT_PER_MTOK_USD = 15
+const USD_TO_EUR = 0.92
+
+/**
+ * Leest de werkelijke token-usage uit de response, berekent de kosten en logt
+ * één regel serverside. Geeft undefined op het mock-pad (geen usage beschikbaar).
+ */
+function summarizeUsage(response: Anthropic.Message, label: string): UsageInfo | undefined {
+  const inputTokens = response.usage?.input_tokens
+  const outputTokens = response.usage?.output_tokens
+  if (typeof inputTokens !== 'number' || typeof outputTokens !== 'number') {
+    return undefined
+  }
+
+  const costUsd =
+    (inputTokens / 1_000_000) * PRICE_INPUT_PER_MTOK_USD +
+    (outputTokens / 1_000_000) * PRICE_OUTPUT_PER_MTOK_USD
+  const costEur = costUsd * USD_TO_EUR
+
+  console.log(
+    `[linkedin-usage] ${label} · ${inputTokens} in / ${outputTokens} out · ≈ €${costEur.toFixed(4)}`
+  )
+
+  return { inputTokens, outputTokens, costUsd, costEur }
 }
 
 const STYLE_GUIDE: Record<LinkedInStyle, string> = {
@@ -205,7 +242,8 @@ Schrijf nu een LinkedIn post in de gevraagde stijl. Output alleen de JSON.`
     messages: [{ role: 'user', content: userMessage }],
   })
 
-  return parseResponse(response, () => getMockPost(input.title, input.excerpt, input.slug))
+  const usage = summarizeUsage(response, 'blog-post')
+  return { ...parseResponse(response, () => getMockPost(input.title, input.excerpt, input.slug)), usage }
 }
 
 /**
@@ -250,7 +288,8 @@ Schrijf de post in de gevraagde stijl, vanuit het merkprofiel. Output alleen de 
     messages: [{ role: 'user', content: userMessage }],
   })
 
-  return parseResponse(response, () => getMockFreePost(input.topic))
+  const usage = summarizeUsage(response, 'free-post')
+  return { ...parseResponse(response, () => getMockFreePost(input.topic)), usage }
 }
 
 function parseResponse(
