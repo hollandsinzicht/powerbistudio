@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server'
-import { getPostById } from '@/lib/blog-store'
-import { generateLinkedInPost, type LinkedInStyle } from '@/lib/linkedin-writer'
+import { generateFreeLinkedInPost, type LinkedInStyle } from '@/lib/linkedin-writer'
 import { getBrandAnswers } from '@/lib/brand-profile-store'
 import { buildBrandContext } from '@/lib/brand-context'
 
@@ -22,14 +21,14 @@ export async function POST(req: Request) {
 
   try {
     const body = await req.json()
-    const { postId, style, extraContext } = body as {
-      postId?: string
+    const { topic, angle, style } = body as {
+      topic?: string
+      angle?: string
       style?: LinkedInStyle
-      extraContext?: string
     }
 
-    if (!postId) {
-      return NextResponse.json({ error: 'postId is verplicht' }, { status: 400 })
+    if (!topic || !topic.trim()) {
+      return NextResponse.json({ error: 'onderwerp is verplicht' }, { status: 400 })
     }
 
     if (!style || !VALID_STYLES.includes(style)) {
@@ -39,21 +38,13 @@ export async function POST(req: Request) {
       )
     }
 
-    const post = await getPostById(postId)
-    if (!post) {
-      return NextResponse.json({ error: 'Post niet gevonden' }, { status: 404 })
-    }
-
     // Injecteer het door JW opgebouwde merkprofiel; leeg → FALLBACK_PERSONA.
     const brandContext = buildBrandContext(await getBrandAnswers())
 
-    const result = await generateLinkedInPost({
-      title: post.title,
-      excerpt: post.excerpt,
-      content: post.content,
-      slug: post.slug,
+    const result = await generateFreeLinkedInPost({
+      topic: topic.trim(),
+      angle: angle?.trim() || undefined,
       style,
-      extraContext: extraContext?.trim() || undefined,
       brandContext,
     })
 
@@ -63,7 +54,7 @@ export async function POST(req: Request) {
       hashtags: result.hashtags,
     })
   } catch (error) {
-    console.error('LinkedIn generation error:', error)
+    console.error('Free LinkedIn post error:', error)
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Er ging iets mis' },
       { status: 500 }

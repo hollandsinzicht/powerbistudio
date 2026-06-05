@@ -1,4 +1,5 @@
 import Anthropic from '@anthropic-ai/sdk'
+import { FALLBACK_PERSONA, type BrandContext } from './brand-context'
 
 const client = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY || '',
@@ -13,16 +14,21 @@ export interface LinkedInPostInput {
   slug: string
   style: LinkedInStyle
   extraContext?: string
+  /** Door JW opgebouwd merkprofiel. Ontbreekt → FALLBACK_PERSONA wordt gebruikt. */
+  brandContext?: BrandContext
+}
+
+export interface FreeLinkedInPostInput {
+  topic: string
+  angle?: string
+  style: LinkedInStyle
+  brandContext: BrandContext
 }
 
 export interface GeneratedLinkedInPost {
   postText: string
   hashtags: string[]
 }
-
-const SITE_CONTEXT = `
-Jan Willem den Hollander is Power BI architect met 15 jaar ervaring, Lean Six Sigma Black Belt. Hij werkt(e) voor o.a. GGDGHOR, Lyreco, Technische Unie en Vattenfall. Hij schrijft op PowerBIStudio.nl over Power BI, DAX, Microsoft Fabric, datamodellering, governance en BI strategie.
-`.trim()
 
 const STYLE_GUIDE: Record<LinkedInStyle, string> = {
   educatief: `STIJL: educatief.
@@ -56,23 +62,8 @@ Doel: trek de lezer een mini-verhaal in en eindig met de les.
 - Verwijs naar het artikel als de "lange versie" of "het hele verhaal"`,
 }
 
-export async function generateLinkedInPost(input: LinkedInPostInput): Promise<GeneratedLinkedInPost> {
-  if (!process.env.ANTHROPIC_API_KEY) {
-    return getMockPost(input)
-  }
-
-  const blogUrl = `https://www.powerbistudio.nl/blog/${input.slug}`
-
-  // Strip HTML uit content voor schone context, max 2000 chars
-  const cleanContent = input.content
-    .replace(/<[^>]*>/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim()
-    .slice(0, 2000)
-
-  const systemPrompt = `Je schrijft LinkedIn posts in het Nederlands voor Jan Willem den Hollander, op basis van een blogartikel dat hij heeft gepubliceerd.
-
-ALGEMENE REGELS — STRIKT NALEVEN:
+// Generieke schrijfregels die voor elke post gelden (los van persoon/stijl).
+const BASE_RULES = `ALGEMENE REGELS — STRIKT NALEVEN:
 - Schrijf in de ik-vorm of je-vorm. Persoonlijk, niet corporate.
 - LEES JE TEKST HARDOP. Klinkt het als hoe Jan Willem met een collega praat? Zo niet → herschrijven.
 - VERMIJD AI-TAAL ABSOLUUT:
@@ -100,31 +91,96 @@ HOOFDLETTERS — STRIKT:
   - FOUT: "Tijdens de Fabric Migratie"
   - GOED: "Tijdens de Fabric-migratie"
 - GEEN Title Case in welk onderdeel dan ook
-- Samengesteld met merknaam: koppelteken (Power BI-rapport, Fabric-migratie, DAX-formule)
+- Samengesteld met merknaam: koppelteken (Power BI-rapport, Fabric-migratie, DAX-formule)`
 
-STRUCTUUR:
-- Hook (eerste 2-3 zinnen)
-- Body (2-4 korte alinea's)
-- Lege regel
-- Link naar het artikel: "${blogUrl}"
-- (de hashtags worden los teruggegeven, NIET in postText opnemen)
-
-CONTEXT OVER DE PERSOON:
-${SITE_CONTEXT}
-
-${STYLE_GUIDE[input.style]}
-
-OUTPUT — alleen valide JSON, geen markdown fences, geen uitleg eromheen:
+const OUTPUT_RULES = `OUTPUT — alleen valide JSON, geen markdown fences, geen uitleg eromheen:
 {
-  "postText": "De volledige LinkedIn post inclusief witregels, eindigend met een lege regel + de link naar het artikel",
+  "postText": "De volledige LinkedIn post inclusief witregels",
   "hashtags": ["#hashtag1", "#hashtag2", "#hashtag3"]
 }
 
 De hashtags:
 - 3 tot 4 stuks
-- Direct relevant voor het blogonderwerp
-- Mix van breed (#PowerBI, #DataAnalytics) en specifiek (#FabricMigration, #DAX)
-- Zonder spaties, CamelCase indien meerdere woorden (bv. #PowerBI niet #powerbi)`
+- Direct relevant voor het onderwerp
+- Mix van breed (#PowerBI, #DataAnalytics) en specifiek (#HRAnalytics, #Verzuim)
+- Zonder spaties, CamelCase indien meerdere woorden (bv. #PowerBI niet #powerbi)
+- NIET in postText opnemen`
+
+const INTEGRITY_RULE = `INTEGRITEIT — ABSOLUUT:
+- Verzin GEEN cijfers, klantnamen, resultaten of personen.
+- Gebruik alleen feiten uit de meegegeven context. Twijfel je? Laat het weg.`
+
+/**
+ * Bouwt het systeem-prompt op uit het merkprofiel. JW's eigen ingevulde
+ * stijl/kaders/boodschap winnen van de generieke defaults; ontbreken ze, dan
+ * vallen we terug op de STYLE_GUIDE + FALLBACK_PERSONA.
+ */
+function buildSystemPrompt(opts: {
+  brandContext?: BrandContext
+  style: LinkedInStyle
+  structuur: string
+}): string {
+  const { brandContext, style, structuur } = opts
+  const persona = brandContext?.persona?.trim() || FALLBACK_PERSONA
+
+  const sections: string[] = [
+    `Je schrijft LinkedIn posts in het Nederlands voor Jan Willem den Hollander.`,
+    `WIE IS JAN WILLEM (persona):\n${persona}`,
+  ]
+
+  if (brandContext?.doelgroep?.trim()) {
+    sections.push(`DOELGROEP — voor wie schrijf je:\n${brandContext.doelgroep.trim()}`)
+  }
+
+  if (brandContext?.boodschap?.trim()) {
+    sections.push(`KERNBOODSCHAP — moet doorklinken:\n${brandContext.boodschap.trim()}`)
+  }
+
+  sections.push(STYLE_GUIDE[style])
+
+  if (brandContext?.schrijfstijl?.trim()) {
+    sections.push(
+      `SCHRIJFSTIJL VAN JAN WILLEM (dit wint van de generieke stijlregels hierboven):\n${brandContext.schrijfstijl.trim()}`
+    )
+  }
+
+  sections.push(BASE_RULES)
+
+  if (brandContext?.kaders?.trim()) {
+    sections.push(`KADERS — STRIKT NALEVEN:\n${brandContext.kaders.trim()}`)
+  }
+
+  sections.push(INTEGRITY_RULE)
+  sections.push(`STRUCTUUR:\n${structuur}`)
+  sections.push(OUTPUT_RULES)
+
+  return sections.join('\n\n')
+}
+
+export async function generateLinkedInPost(input: LinkedInPostInput): Promise<GeneratedLinkedInPost> {
+  if (!process.env.ANTHROPIC_API_KEY) {
+    return getMockPost(input.title, input.excerpt, input.slug)
+  }
+
+  const blogUrl = `https://www.powerbistudio.nl/blog/${input.slug}`
+
+  // Strip HTML uit content voor schone context, max 2000 chars
+  const cleanContent = input.content
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, 2000)
+
+  const structuur = `- Hook (eerste 2-3 zinnen)
+- Body (2-4 korte alinea's)
+- Lege regel
+- Link naar het artikel: "${blogUrl}"`
+
+  const systemPrompt = buildSystemPrompt({
+    brandContext: input.brandContext,
+    style: input.style,
+    structuur,
+  })
 
   const userMessage = `Blogartikel:
 
@@ -149,8 +205,60 @@ Schrijf nu een LinkedIn post in de gevraagde stijl. Output alleen de JSON.`
     messages: [{ role: 'user', content: userMessage }],
   })
 
+  return parseResponse(response, () => getMockPost(input.title, input.excerpt, input.slug))
+}
+
+/**
+ * Vrije-post generator: schrijft een LinkedIn post vanuit het merkprofiel op
+ * basis van een onderwerp + invalshoek, zonder dat er een blogartikel nodig is.
+ */
+export async function generateFreeLinkedInPost(
+  input: FreeLinkedInPostInput
+): Promise<GeneratedLinkedInPost> {
+  if (!process.env.ANTHROPIC_API_KEY) {
+    return getMockFreePost(input.topic)
+  }
+
+  const ctaBlock = input.brandContext.assets?.trim()
+    ? `- Sluit eventueel af met een passende call-to-action uit deze assets (alleen als het natuurlijk past):\n${input.brandContext.assets.trim()}`
+    : `- Geen verzonnen links of CTA's toevoegen.`
+
+  const structuur = `- Hook (eerste 2-3 zinnen)
+- Body (2-4 korte alinea's)
+- Lege regel
+${ctaBlock}
+- GEEN verwijzing naar een blogartikel of artikel-URL (deze post staat los van een blog).`
+
+  const systemPrompt = buildSystemPrompt({
+    brandContext: input.brandContext,
+    style: input.style,
+    structuur,
+  })
+
+  const userMessage = `Schrijf een vrije LinkedIn post (niet gebaseerd op een blogartikel).
+
+Onderwerp: ${input.topic}
+${input.angle ? `\nInvalshoek: ${input.angle}` : ''}
+
+Schrijf de post in de gevraagde stijl, vanuit het merkprofiel. Output alleen de JSON.`
+
+  const response = await client.messages.create({
+    model: 'claude-sonnet-4-20250514',
+    max_tokens: 1500,
+    temperature: 0.9,
+    system: systemPrompt,
+    messages: [{ role: 'user', content: userMessage }],
+  })
+
+  return parseResponse(response, () => getMockFreePost(input.topic))
+}
+
+function parseResponse(
+  response: Anthropic.Message,
+  fallback: () => GeneratedLinkedInPost
+): GeneratedLinkedInPost {
   const text = response.content[0]
-  if (text.type !== 'text') return getMockPost(input)
+  if (text.type !== 'text') return fallback()
 
   try {
     const cleaned = text.text.replace(/```json?\n?/g, '').replace(/```/g, '').trim()
@@ -161,13 +269,20 @@ Schrijf nu een LinkedIn post in de gevraagde stijl. Output alleen de JSON.`
     }
   } catch {
     console.error('Failed to parse LinkedIn post response:', text.text)
-    return getMockPost(input)
+    return fallback()
   }
 }
 
-function getMockPost(input: LinkedInPostInput): GeneratedLinkedInPost {
+function getMockPost(title: string, excerpt: string, slug: string): GeneratedLinkedInPost {
   return {
-    postText: `[Mock LinkedIn post — ANTHROPIC_API_KEY niet ingesteld]\n\nNieuw artikel: ${input.title}\n\n${input.excerpt}\n\nhttps://www.powerbistudio.nl/blog/${input.slug}`,
-    hashtags: ['#PowerBI', '#DataAnalytics', '#BI'],
+    postText: `[Mock LinkedIn post — ANTHROPIC_API_KEY niet ingesteld]\n\nNieuw artikel: ${title}\n\n${excerpt}\n\nhttps://www.powerbistudio.nl/blog/${slug}`,
+    hashtags: ['#PowerBI', '#DataAnalytics', '#HRAnalytics'],
+  }
+}
+
+function getMockFreePost(topic: string): GeneratedLinkedInPost {
+  return {
+    postText: `[Mock LinkedIn post — ANTHROPIC_API_KEY niet ingesteld]\n\nOnderwerp: ${topic}\n\nHier zou een vrije LinkedIn post staan, geschreven vanuit het merkprofiel.`,
+    hashtags: ['#PowerBI', '#DataAnalytics', '#HRAnalytics'],
   }
 }

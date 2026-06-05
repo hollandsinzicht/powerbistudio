@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
-import { Sparkles, FileText, Plus, CheckCircle2, XCircle, PenLine, Eye, Send, Archive, Loader2, Clock, Link2, ArrowUp, ArrowDown, Image as ImageIcon, Linkedin, Copy, Check, Images, Download, Target, Upload, Megaphone, MessageSquare, Building2 } from "lucide-react";
+import { Sparkles, FileText, Plus, CheckCircle2, XCircle, PenLine, Eye, Send, Archive, Loader2, Clock, Link2, ArrowUp, ArrowDown, Image as ImageIcon, Linkedin, Copy, Check, Images, Download, Target, Upload, Megaphone, MessageSquare, Building2, UserCircle } from "lucide-react";
+import ProfielTab from "./ProfielTab";
 import {
   ALL_ARCHETYPES,
   ARCHETYPE_LABELS,
@@ -52,7 +53,7 @@ function dateInputValue(iso: string | null): string {
 }
 
 export default function AdminDashboard() {
-  const [tab, setTab] = useState<"posts" | "ideas" | "new" | "acquisitie">("posts");
+  const [tab, setTab] = useState<"posts" | "ideas" | "new" | "acquisitie" | "profiel">("posts");
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [ideas, setIdeas] = useState<BlogIdea[]>([]);
   const [loading, setLoading] = useState(true);
@@ -544,6 +545,9 @@ export default function AdminDashboard() {
         </button>
         <button onClick={() => setTab("acquisitie")} className={tabClass("acquisitie")}>
           <span className="flex items-center gap-2"><Megaphone size={16} /> Acquisitie</span>
+        </button>
+        <button onClick={() => setTab("profiel")} className={tabClass("profiel")}>
+          <span className="flex items-center gap-2"><UserCircle size={16} /> Profiel</span>
         </button>
         <Link href="/admin/seo" className="px-4 py-2 text-sm font-medium rounded-lg transition-colors text-[var(--text-secondary)] hover:bg-gray-100 inline-flex items-center gap-2">
           <Target size={16} /> SEO Dashboard
@@ -1072,6 +1076,9 @@ export default function AdminDashboard() {
               </section>
             </div>
           )}
+
+          {/* ===== TAB: PROFIEL — MERKPROFIEL / KENNISBOUWER ===== */}
+          {tab === "profiel" && <ProfielTab />}
         </>
       )}
 
