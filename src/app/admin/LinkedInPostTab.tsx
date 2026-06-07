@@ -9,18 +9,17 @@ import {
   MessageSquare,
   ArrowRight,
   RotateCcw,
+  Lightbulb,
+  Wand2,
+  Building2,
 } from "lucide-react";
+import { BRANDS, DEFAULT_BRAND_ID, type BrandId } from "@/lib/brands";
 
 function getToken() {
   return localStorage.getItem("admin_token") || "";
 }
 
 type FunnelStage = "tofu" | "mofu" | "bofu";
-type PostCategory =
-  | "3-hr-problemen"
-  | "klantcase"
-  | "mythe-provocatie"
-  | "persoonlijk-visie";
 
 interface InterviewTurn {
   vraag: string;
@@ -34,17 +33,18 @@ interface UsageInfo {
   costEur: number;
 }
 
+interface PostIdea {
+  topic: string;
+  hook: string;
+  categoryId: string;
+  funnelStage: FunnelStage;
+  rationale: string;
+}
+
 const FUNNELS: { value: FunnelStage; label: string; hint: string }[] = [
   { value: "tofu", label: "TOFU", hint: "Herkenning, geen aanbod" },
   { value: "mofu", label: "MOFU", hint: "Verdieping, vertrouwen" },
   { value: "bofu", label: "BOFU", hint: "Concreet aanbod" },
-];
-
-const CATEGORIES: { value: PostCategory; label: string }[] = [
-  { value: "3-hr-problemen", label: "3 HR-data-problemen" },
-  { value: "klantcase", label: "Klantcase / verhaal" },
-  { value: "mythe-provocatie", label: "Mythe / provocatie" },
-  { value: "persoonlijk-visie", label: "Persoonlijk / visie" },
 ];
 
 type Step = "opzet" | "gesprek" | "klaar";
@@ -52,10 +52,18 @@ type Step = "opzet" | "gesprek" | "klaar";
 export default function LinkedInPostTab() {
   const [step, setStep] = useState<Step>("opzet");
 
+  // Bedrijf — bepaalt welke categorieën en positionering gelden.
+  const [brand, setBrand] = useState<BrandId>(DEFAULT_BRAND_ID);
+  const categories = BRANDS[brand].categories;
+
   // Opzet
   const [funnelStage, setFunnelStage] = useState<FunnelStage | null>(null);
-  const [category, setCategory] = useState<PostCategory | null>(null);
+  const [category, setCategory] = useState<string | null>(null);
   const [topic, setTopic] = useState("");
+
+  // Ideeën — de generator reikt concrete invalshoeken aan.
+  const [ideas, setIdeas] = useState<PostIdea[]>([]);
+  const [loadingIdeas, setLoadingIdeas] = useState(false);
 
   // Gesprek
   const [interview, setInterview] = useState<InterviewTurn[]>([]);
@@ -63,6 +71,7 @@ export default function LinkedInPostTab() {
   const [answers, setAnswers] = useState<string[]>([]);
   const [lastBatch, setLastBatch] = useState(false);
   const [loadingQuestions, setLoadingQuestions] = useState(false);
+  const [drafting, setDrafting] = useState(false);
 
   // Resultaat
   const [generating, setGenerating] = useState(false);
@@ -73,6 +82,55 @@ export default function LinkedInPostTab() {
   } | null>(null);
   const [copied, setCopied] = useState(false);
 
+  // Bij wisselen van bedrijf: categorie resetten (categorieën verschillen per
+  // brand) en eventuele ideeën opschonen zodat ze bij het nieuwe bedrijf passen.
+  const handleBrandChange = (next: BrandId) => {
+    if (next === brand) return;
+    setBrand(next);
+    setCategory(null);
+    setIdeas([]);
+  };
+
+  // Vraagt de generator om 4-5 concrete post-ideeën, geput uit het merkprofiel
+  // en de recente posts. Optionele filters (funnel/categorie) gaan mee als ze
+  // al gekozen zijn; anders varieert de generator vrij.
+  const fetchIdeas = async () => {
+    setLoadingIdeas(true);
+    try {
+      const res = await fetch("/api/admin/blog/post-ideas", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-admin-token": getToken() },
+        body: JSON.stringify({
+          brand,
+          funnelStage: funnelStage || undefined,
+          categoryId: category || undefined,
+        }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setIdeas(Array.isArray(data.ideas) ? data.ideas : []);
+      } else {
+        const data = await res.json().catch(() => ({}));
+        alert(`Ideeën ophalen mislukt: ${data.error || res.statusText}`);
+      }
+    } catch (e) {
+      console.error(e);
+      alert("Netwerkfout bij het ophalen van ideeën.");
+    } finally {
+      setLoadingIdeas(false);
+    }
+  };
+
+  // Klik op een idee → onderwerp invullen en funnel/categorie meezetten.
+  const applyIdea = (idea: PostIdea) => {
+    setTopic(idea.topic);
+    setFunnelStage(idea.funnelStage);
+    if (categories.some((c) => c.id === idea.categoryId)) {
+      setCategory(idea.categoryId);
+    }
+    setIdeas([]);
+  };
+
   // Haalt de volgende vragen op (opening of vervolg) op basis van de tot nu toe
   // verzamelde antwoorden. answersSoFar=[] → de AI geeft 2-3 openingsvragen.
   const fetchQuestions = async (answersSoFar: InterviewTurn[]) => {
@@ -81,7 +139,13 @@ export default function LinkedInPostTab() {
       const res = await fetch("/api/admin/blog/post-interview", {
         method: "POST",
         headers: { "Content-Type": "application/json", "x-admin-token": getToken() },
-        body: JSON.stringify({ funnelStage, category, topic: topic.trim(), answers: answersSoFar }),
+        body: JSON.stringify({
+          brand,
+          funnelStage,
+          categoryId: category,
+          topic: topic.trim(),
+          answers: answersSoFar,
+        }),
       });
       if (res.ok) {
         const data = await res.json();
@@ -116,6 +180,42 @@ export default function LinkedInPostTab() {
     await fetchQuestions([]);
   };
 
+  // Laat de generator concept-antwoorden uit het merkprofiel voorstellen voor de
+  // huidige vragen, zodat JW alleen nog hoeft te redigeren.
+  const handleDraftAnswers = async () => {
+    if (questions.length === 0) return;
+    setDrafting(true);
+    try {
+      const res = await fetch("/api/admin/blog/post-interview", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-admin-token": getToken() },
+        body: JSON.stringify({
+          brand,
+          funnelStage,
+          categoryId: category,
+          topic: topic.trim(),
+          draftAnswers: true,
+          questions,
+        }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        const drafts: string[] = Array.isArray(data.drafts) ? data.drafts : [];
+        if (drafts.length > 0) {
+          setAnswers(questions.map((_, i) => drafts[i] || ""));
+        }
+      } else {
+        const data = await res.json().catch(() => ({}));
+        alert(`Concept-antwoorden mislukt: ${data.error || res.statusText}`);
+      }
+    } catch (e) {
+      console.error(e);
+      alert("Netwerkfout bij het voorstellen van antwoorden.");
+    } finally {
+      setDrafting(false);
+    }
+  };
+
   const handleNext = async () => {
     if (answers.some((a) => !a.trim())) {
       alert("Beantwoord alle vragen voordat je verdergaat.");
@@ -142,7 +242,13 @@ export default function LinkedInPostTab() {
       const res = await fetch("/api/admin/blog/post-from-interview", {
         method: "POST",
         headers: { "Content-Type": "application/json", "x-admin-token": getToken() },
-        body: JSON.stringify({ funnelStage, category, topic: topic.trim(), interview }),
+        body: JSON.stringify({
+          brand,
+          funnelStage,
+          categoryId: category,
+          topic: topic.trim(),
+          interview,
+        }),
       });
       if (res.ok) {
         const data = await res.json();
@@ -176,6 +282,7 @@ export default function LinkedInPostTab() {
     setFunnelStage(null);
     setCategory(null);
     setTopic("");
+    setIdeas([]);
     setInterview([]);
     setQuestions([]);
     setAnswers([]);
@@ -199,6 +306,29 @@ export default function LinkedInPostTab() {
       {/* ===== Stap 1: Opzet ===== */}
       {step === "opzet" && (
         <div className="space-y-5">
+          {/* Bedrijf kiezen */}
+          <div>
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2 flex items-center gap-1.5">
+              <Building2 size={14} /> Bedrijf
+            </label>
+            <div className="grid grid-cols-2 gap-2">
+              {Object.values(BRANDS).map((b) => (
+                <button
+                  key={b.id}
+                  onClick={() => handleBrandChange(b.id)}
+                  className={`text-left p-2.5 rounded-lg border text-sm transition-all ${
+                    brand === b.id
+                      ? "border-[var(--accent)] bg-[rgba(245,158,11,0.05)]"
+                      : "border-[var(--border)] hover:border-[var(--text-secondary)]"
+                  }`}
+                >
+                  <div className="font-semibold">{b.label}</div>
+                  <div className="text-[11px] text-[var(--text-secondary)] mt-0.5">{b.website}</div>
+                </button>
+              ))}
+            </div>
+          </div>
+
           <div>
             <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
               Funnel-fase
@@ -226,12 +356,12 @@ export default function LinkedInPostTab() {
               Categorie
             </label>
             <div className="grid grid-cols-2 gap-2">
-              {CATEGORIES.map((c) => (
+              {categories.map((c) => (
                 <button
-                  key={c.value}
-                  onClick={() => setCategory(c.value)}
+                  key={c.id}
+                  onClick={() => setCategory(c.id)}
                   className={`text-left p-2.5 rounded-lg border text-sm font-medium transition-all ${
-                    category === c.value
+                    category === c.id
                       ? "border-[var(--accent)] bg-[rgba(245,158,11,0.05)]"
                       : "border-[var(--border)] hover:border-[var(--text-secondary)]"
                   }`}
@@ -243,9 +373,22 @@ export default function LinkedInPostTab() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
-              Onderwerp
-            </label>
+            <div className="flex items-center justify-between gap-2 mb-1">
+              <label className="block text-sm font-medium text-[var(--text-secondary)]">
+                Onderwerp
+              </label>
+              <button
+                onClick={fetchIdeas}
+                disabled={loadingIdeas}
+                className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 border border-[var(--border)] rounded-lg hover:border-[var(--accent)] disabled:opacity-50"
+              >
+                {loadingIdeas ? (
+                  <><Loader2 size={13} className="animate-spin" /> Ideeën...</>
+                ) : (
+                  <><Lightbulb size={13} /> Geef me ideeën</>
+                )}
+              </button>
+            </div>
             <input
               value={topic}
               onChange={(e) => setTopic(e.target.value)}
@@ -253,6 +396,38 @@ export default function LinkedInPostTab() {
               className="w-full bg-[var(--surface)] border border-[var(--border)] rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-[var(--accent)]"
             />
           </div>
+
+          {/* Ideeën-kaartjes */}
+          {ideas.length > 0 && (
+            <div className="space-y-2">
+              <div className="text-xs text-[var(--text-secondary)]">
+                Klik een idee om het over te nemen:
+              </div>
+              {ideas.map((idea, i) => {
+                const cat = categories.find((c) => c.id === idea.categoryId);
+                return (
+                  <button
+                    key={i}
+                    onClick={() => applyIdea(idea)}
+                    className="block w-full text-left p-3 rounded-lg border border-[var(--border)] hover:border-[var(--accent)] transition-all"
+                  >
+                    <div className="text-sm font-medium text-[var(--text-primary)]">{idea.hook}</div>
+                    <div className="text-xs text-[var(--text-secondary)] mt-1">{idea.rationale}</div>
+                    <div className="flex flex-wrap gap-1.5 mt-2">
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-[rgba(245,158,11,0.1)] text-[var(--accent)] font-medium uppercase">
+                        {idea.funnelStage}
+                      </span>
+                      {cat && (
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-[var(--surface)] border border-[var(--border)] text-[var(--text-secondary)] font-medium">
+                          {cat.label}
+                        </span>
+                      )}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          )}
 
           <button
             onClick={handleStart}
@@ -271,9 +446,22 @@ export default function LinkedInPostTab() {
       {/* ===== Stap 2: Gesprek ===== */}
       {step === "gesprek" && (
         <div className="space-y-5">
-          <div className="text-xs text-[var(--text-secondary)]">
-            {interview.length > 0 && <span>{interview.length} beantwoord · </span>}
-            {lastBatch ? "Laatste vraag" : "Beantwoord en ga verder"}
+          <div className="flex items-center justify-between gap-2">
+            <div className="text-xs text-[var(--text-secondary)]">
+              {interview.length > 0 && <span>{interview.length} beantwoord · </span>}
+              {lastBatch ? "Laatste vraag" : "Beantwoord en ga verder"}
+            </div>
+            <button
+              onClick={handleDraftAnswers}
+              disabled={drafting || loadingQuestions}
+              className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 border border-[var(--border)] rounded-lg hover:border-[var(--accent)] disabled:opacity-50"
+            >
+              {drafting ? (
+                <><Loader2 size={13} className="animate-spin" /> Invullen...</>
+              ) : (
+                <><Wand2 size={13} /> Vul antwoorden voor mij in</>
+              )}
+            </button>
           </div>
 
           {questions.map((q, i) => (

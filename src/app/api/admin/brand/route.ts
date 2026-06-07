@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { BRAND_SCHEMA, kennispuntById } from '@/lib/brand-profile-schema'
 import { getBrandAnswers, upsertBrandAnswer } from '@/lib/brand-profile-store'
+import { getBrand } from '@/lib/brands'
 
 export const maxDuration = 60
 export const dynamic = 'force-dynamic'
@@ -47,7 +48,8 @@ export async function GET(req: Request) {
   }
 
   try {
-    const answers = await getBrandAnswers()
+    const brand = getBrand(new URL(req.url).searchParams.get('brand') || undefined).id
+    const answers = await getBrandAnswers(brand)
     const progress = computeProgress(answers)
 
     return NextResponse.json({
@@ -71,7 +73,11 @@ export async function PUT(req: Request) {
 
   try {
     const body = await req.json()
-    const { key, value } = body as { key?: string; value?: string }
+    const { key, value, brand: brandInput } = body as {
+      key?: string
+      value?: string
+      brand?: string
+    }
 
     if (!key || !kennispuntById(key)) {
       return NextResponse.json(
@@ -80,10 +86,11 @@ export async function PUT(req: Request) {
       )
     }
 
-    await upsertBrandAnswer(key, typeof value === 'string' ? value : '')
+    const brand = getBrand(brandInput).id
+    await upsertBrandAnswer(brand, key, typeof value === 'string' ? value : '')
 
     // Geef bijgewerkte voortgang terug zodat de UI direct kan updaten.
-    const answers = await getBrandAnswers()
+    const answers = await getBrandAnswers(brand)
     const progress = computeProgress(answers)
 
     return NextResponse.json({ success: true, progress })

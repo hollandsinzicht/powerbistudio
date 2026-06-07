@@ -4,11 +4,12 @@ import {
   kennispuntIdsByRole,
   type BrandPromptRole,
 } from './brand-profile-schema'
+import { getBrand, type BrandConfig } from './brands'
 
 // Assembleert de losse kennispunt-antwoorden tot tekstblokken per promptrol.
 // Als JW het persona-blok (nog) niet heeft ingevuld, valt de generator terug
-// op FALLBACK_PERSONA: feitelijke, vaststaande positionering — GEEN verzonnen
-// cijfers, klanten of personen.
+// op brand.fallbackPersona: feitelijke, vaststaande positionering per bedrijf
+// — GEEN verzonnen cijfers, klanten of personen (zie brands.ts).
 
 export interface BrandContext {
   persona: string
@@ -20,17 +21,9 @@ export interface BrandContext {
   isEmpty: boolean
 }
 
-// Feitelijke HR-analytics positionering (afgeleid van acquisitie-data.ts).
-// Vervangt de oude, stale SITE_CONTEXT ("Power BI architect met 15 jaar...").
-export const FALLBACK_PERSONA = `
-Jan Willem den Hollander is de oprichter van Power BI Studio en gespecialiseerd in HR-analytics voor de Nederlandse mid-market (organisaties van circa 250 tot 2.000 medewerkers, vaak met AFAS, Visma of Nmbrs als salarissysteem).
-
-Hij helpt HR-afdelingen om van losse bronnen en handmatig Excel-werk naar één betrouwbaar datamodel te gaan: verzuim, verloop, formatie en bezetting op basis van data waarop je echt kunt sturen — inclusief historie (langzaam veranderende dimensies), row-level security en AVG-bewuste inrichting.
-
-De instap is een Quick Scan: een kortlopend, vastgeprijsd traject waarin de HR-datasituatie in kaart wordt gebracht en de eerste betrouwbare inzichten worden opgeleverd.
-
-Toon: nuchter, technisch onderbouwd, recht door zee. Geen hype, geen loze beloftes.
-`.trim()
+// Backwards-compatibele export: paden zonder expliciete brand (bv. blogposts)
+// zijn altijd Power BI Studio en lezen de persona uit de brand-registry.
+export const FALLBACK_PERSONA = getBrand('power-bi-studio').fallbackPersona
 
 function joinAnswers(answers: BrandAnswers, role: BrandPromptRole): string {
   const ids = kennispuntIdsByRole(role)
@@ -45,7 +38,10 @@ function joinAnswers(answers: BrandAnswers, role: BrandPromptRole): string {
   return blocks.join('\n')
 }
 
-export function buildBrandContext(answers: BrandAnswers): BrandContext {
+export function buildBrandContext(
+  answers: BrandAnswers,
+  brand: BrandConfig = getBrand('power-bi-studio')
+): BrandContext {
   const persona = joinAnswers(answers, 'persona')
   const boodschap = joinAnswers(answers, 'boodschap')
   const doelgroep = joinAnswers(answers, 'doelgroep')
@@ -62,7 +58,7 @@ export function buildBrandContext(answers: BrandAnswers): BrandContext {
     !assets
 
   return {
-    persona: persona || FALLBACK_PERSONA,
+    persona: persona || brand.fallbackPersona,
     boodschap,
     doelgroep,
     schrijfstijl,

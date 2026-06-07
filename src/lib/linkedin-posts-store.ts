@@ -1,5 +1,6 @@
 import { supabase } from './supabase'
 import { SEED_POSTS } from './linkedin-posts-seed'
+import { DEFAULT_BRAND_ID, type BrandId } from './brands'
 
 // Persistentie van het postgeheugen. De generator leest de recente posts om de
 // funnel (TOFU/MOFU/BOFU) en categorieën logisch te laten doorlopen en herhaling
@@ -13,6 +14,7 @@ export interface InterviewTurn {
 export interface LinkedInPostRecord {
   id: string
   created_at: string
+  brand: string
   post_text: string
   hashtags: string[]
   funnel_stage: string | null
@@ -25,6 +27,7 @@ export interface LinkedInPostRecord {
 }
 
 export interface SavePostInput {
+  brand: BrandId
   postText: string
   hashtags: string[]
   funnelStage: string
@@ -34,11 +37,18 @@ export interface SavePostInput {
   interview: InterviewTurn[]
 }
 
-/** Leest de meest recente posts (seeds + gegenereerd) voor de geheugen-context. */
-export async function getRecentPosts(limit = 8): Promise<LinkedInPostRecord[]> {
+/**
+ * Leest de meest recente posts (seeds + gegenereerd) voor de geheugen-context,
+ * gefilterd op brand zodat anti-herhaling per bedrijf werkt.
+ */
+export async function getRecentPosts(
+  brand: BrandId = DEFAULT_BRAND_ID,
+  limit = 8
+): Promise<LinkedInPostRecord[]> {
   const { data, error } = await supabase
     .from('linkedin_posts')
     .select('*')
+    .eq('brand', brand)
     .order('created_at', { ascending: false })
     .limit(limit)
 
@@ -49,6 +59,7 @@ export async function getRecentPosts(limit = 8): Promise<LinkedInPostRecord[]> {
 /** Slaat een nieuw gegenereerde post op als onderdeel van het geheugen. */
 export async function savePost(input: SavePostInput): Promise<void> {
   const { error } = await supabase.from('linkedin_posts').insert({
+    brand: input.brand,
     post_text: input.postText,
     hashtags: input.hashtags,
     funnel_stage: input.funnelStage,
@@ -68,6 +79,7 @@ export async function savePost(input: SavePostInput): Promise<void> {
  */
 export async function ensureSeedPosts(): Promise<void> {
   const rows = SEED_POSTS.map((p) => ({
+    brand: p.brand,
     post_text: p.postText,
     hashtags: p.hashtags,
     funnel_stage: p.funnelStage,

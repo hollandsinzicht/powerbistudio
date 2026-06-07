@@ -3,10 +3,10 @@ import {
   generatePostFromInterview,
   defaultStyleForCategory,
   type FunnelStage,
-  type PostCategory,
   type LinkedInStyle,
   type InterviewTurn,
 } from '@/lib/linkedin-writer'
+import { getBrand, getBrandCategory } from '@/lib/brands'
 import { getBrandAnswers } from '@/lib/brand-profile-store'
 import { buildBrandContext } from '@/lib/brand-context'
 import { ensureSeedPosts, getRecentPosts, savePost } from '@/lib/linkedin-posts-store'
@@ -21,17 +21,12 @@ function checkAuth(req: Request): boolean {
 }
 
 const VALID_FUNNELS: FunnelStage[] = ['tofu', 'mofu', 'bofu']
-const VALID_CATEGORIES: PostCategory[] = [
-  '3-hr-problemen',
-  'klantcase',
-  'mythe-provocatie',
-  'persoonlijk-visie',
-]
 const VALID_STYLES: LinkedInStyle[] = ['educatief', 'scherp', 'provocatief', 'storytelling']
 
 interface PostFromInterviewBody {
+  brand?: string
   funnelStage?: FunnelStage
-  category?: PostCategory
+  categoryId?: string
   topic?: string
   style?: LinkedInStyle
   interview?: InterviewTurn[]
@@ -44,7 +39,7 @@ export async function POST(req: Request) {
 
   try {
     const body = (await req.json()) as PostFromInterviewBody
-    const { funnelStage, category, topic } = body
+    const { funnelStage, categoryId, topic } = body
     const interview = Array.isArray(body.interview) ? body.interview : []
 
     if (!funnelStage || !VALID_FUNNELS.includes(funnelStage)) {
@@ -53,9 +48,18 @@ export async function POST(req: Request) {
         { status: 400 }
       )
     }
-    if (!category || !VALID_CATEGORIES.includes(category)) {
+
+    // Brand bepalen (valt terug op power-bi-studio) en categorie valideren tegen
+    // de brand-registry i.p.v. een vaste union.
+    const brand = getBrand(body.brand)
+    const category = categoryId ? getBrandCategory(brand, categoryId) : undefined
+    if (!category) {
       return NextResponse.json(
-        { error: `category is verplicht en moet één van: ${VALID_CATEGORIES.join(', ')}` },
+        {
+          error: `categoryId is verplicht en moet één van: ${brand.categories
+            .map((c) => c.id)
+            .join(', ')}`,
+        },
         { status: 400 }
       )
     }
@@ -67,24 +71,25 @@ export async function POST(req: Request) {
     const style =
       body.style && VALID_STYLES.includes(body.style)
         ? body.style
-        : defaultStyleForCategory(category)
+        : defaultStyleForCategory(brand, category.id)
 
     // Postgeheugen: zorg dat de seeds er staan, lees daarna de recente posts als
-    // anti-herhaling-context voor de funnel/categorie-doorloop.
+    // anti-herhaling-context voor de funnel/categorie-doorloop (per brand).
     await ensureSeedPosts()
-    const recent = await getRecentPosts(8)
+    const recent = await getRecentPosts(brand.id, 8)
     const recentPosts = recent.map((p) => ({
       category: p.category,
       funnel_stage: p.funnel_stage,
       post_text: p.post_text,
     }))
 
-    // Injecteer het door JW opgebouwde merkprofiel; leeg → FALLBACK_PERSONA.
-    const brandContext = buildBrandContext(await getBrandAnswers())
+    // Injecteer het door JW opgebouwde merkprofiel; leeg → brand.fallbackPersona.
+    const brandContext = buildBrandContext(await getBrandAnswers(brand.id), brand)
 
     const result = await generatePostFromInterview({
+      brand,
       funnelStage,
-      category,
+      categoryId: category.id,
       topic: topic.trim(),
       style,
       interview,
@@ -94,10 +99,11 @@ export async function POST(req: Request) {
 
     // Bewaar de nieuwe post in het geheugen, zodat de volgende generatie erop voortbouwt.
     await savePost({
+      brand: brand.id,
       postText: result.postText,
       hashtags: result.hashtags,
       funnelStage,
-      category,
+      category: category.id,
       style,
       topic: topic.trim(),
       interview,

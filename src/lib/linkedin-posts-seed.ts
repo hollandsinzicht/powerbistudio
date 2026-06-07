@@ -1,12 +1,18 @@
 import type { FunnelStage, PostCategory } from './linkedin-writer'
+import type { BrandId } from './brands'
 
 // De 6 bestaande posts uit docs/linkedin-posts-context.md, verbatim als
 // startinventaris voor het postgeheugen. ensureSeedPosts() upsert deze één keer
 // (onConflict seed_key) zodat de generator vanaf post 1 weet wat er al staat en
 // niet in herhaling valt. Op afstand geschreven — nog niet in JW's eigen stem.
+//
+// Alle bestaande seeds horen bij Power BI Studio. Performance by Design start
+// (voorlopig) zonder seeds — die brand bouwt zijn geheugen op vanaf de eerste
+// gegenereerde post.
 
 export interface SeedPost {
   seedKey: string
+  brand: BrandId
   funnelStage: FunnelStage
   category: PostCategory
   style: string
@@ -18,6 +24,7 @@ export interface SeedPost {
 export const SEED_POSTS: SeedPost[] = [
   {
     seedKey: 'seed-w1-ma',
+    brand: 'power-bi-studio',
     funnelStage: 'tofu',
     category: '3-hr-problemen',
     style: 'educatief',
@@ -37,6 +44,7 @@ Begin bij het rechtenmodel en de historie. De dashboards komen daarna vanzelf.`,
   },
   {
     seedKey: 'seed-w1-wo',
+    brand: 'power-bi-studio',
     funnelStage: 'mofu',
     category: 'klantcase',
     style: 'storytelling',
@@ -56,6 +64,7 @@ De les die ik telkens terugzie: multi-entiteit security moet je één keer goed 
   },
   {
     seedKey: 'seed-w1-vr',
+    brand: 'power-bi-studio',
     funnelStage: 'tofu',
     category: 'mythe-provocatie',
     style: 'scherp',
@@ -77,6 +86,7 @@ Excel is een rekenmachine. Geen rapportageplatform.`,
   },
   {
     seedKey: 'seed-w2-ma',
+    brand: 'power-bi-studio',
     funnelStage: 'mofu',
     category: 'mythe-provocatie',
     style: 'provocatief',
@@ -96,6 +106,7 @@ Een dashboard maken kan iedereen. Een dashboard maken dat AVG-proof is, is het e
   },
   {
     seedKey: 'seed-w2-wo',
+    brand: 'power-bi-studio',
     funnelStage: 'mofu',
     category: '3-hr-problemen',
     style: 'educatief',
@@ -117,6 +128,7 @@ En personeelsbeleid gaat over de film.`,
   },
   {
     seedKey: 'seed-w2-vr',
+    brand: 'power-bi-studio',
     funnelStage: 'bofu',
     category: 'klantcase',
     style: 'storytelling',

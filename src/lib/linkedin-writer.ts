@@ -1,5 +1,15 @@
 import Anthropic from '@anthropic-ai/sdk'
-import { FALLBACK_PERSONA, type BrandContext } from './brand-context'
+import { type BrandContext } from './brand-context'
+import {
+  BRANDS,
+  DEFAULT_BRAND_ID,
+  getBrandCategory,
+  type BrandConfig,
+} from './brands'
+
+// Default-persona voor paden zonder expliciete brand (bv. blogposts): die zijn
+// altijd Power BI Studio. Brand-bewuste paden zetten de persona via brandContext.
+const FALLBACK_PERSONA = BRANDS[DEFAULT_BRAND_ID].fallbackPersona
 
 const client = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY || '',
@@ -9,11 +19,9 @@ export type LinkedInStyle = 'educatief' | 'scherp' | 'provocatief' | 'storytelli
 
 export type FunnelStage = 'tofu' | 'mofu' | 'bofu'
 
-export type PostCategory =
-  | '3-hr-problemen'
-  | 'klantcase'
-  | 'mythe-provocatie'
-  | 'persoonlijk-visie'
+// Categorie-id (vrije string). Welke ids geldig zijn, hangt af van de gekozen
+// brand en wordt gevalideerd via BrandConfig.categories (zie brands.ts).
+export type PostCategory = string
 
 export interface InterviewTurn {
   vraag: string
@@ -27,8 +35,9 @@ export interface RecentPostSummary {
 }
 
 export interface PostFromInterviewInput {
+  brand: BrandConfig
   funnelStage: FunnelStage
-  category: PostCategory
+  categoryId: string
   topic: string
   style?: LinkedInStyle
   interview: InterviewTurn[]
@@ -36,52 +45,16 @@ export interface PostFromInterviewInput {
   recentPosts: RecentPostSummary[]
 }
 
-// Wat elke funnel-fase met de lezer moet doen. Stuurt toon en call-to-action.
-const FUNNEL_GUIDE: Record<FunnelStage, string> = {
-  tofu: `FUNNEL: TOFU (top of funnel) — herkenning.
-- Doel: de lezer zijn eigen probleem laten herkennen, zonder te verkopen.
-- Breed insteken op een pijn of misverstand rond HR-data. Geen aanbod, geen Quick Scan.
-- Call-to-action hooguit zacht: een vraag of een prikkel tot nadenken.`,
+// Funnel-gidsen en categorie-gidsen + standaardstijlen zijn verhuisd naar
+// brands.ts (per brand). Lees ze via BrandConfig.funnelGuide en
+// BrandConfig.categories (zie brands.ts).
 
-  mofu: `FUNNEL: MOFU (middle of funnel) — verdieping.
-- Doel: laten zien hoe het beter kan; vertrouwen en autoriteit opbouwen.
-- Concreter: een aanpak, een keuze, een mini-case of een principe dat werkt.
-- Call-to-action: uitnodiging tot gesprek of meedenken, nog niet hard verkopen.`,
-
-  bofu: `FUNNEL: BOFU (bottom of funnel) — concreet aanbod.
-- Doel: de lezer die het probleem herkent een duidelijke volgende stap geven.
-- Mag de Quick Scan noemen als logische wedge (1,5 dag, vaste prijs, geen verplichting).
-- Call-to-action: concreet maar nuchter. Een DM-uitnodiging of "stuur me een bericht".`,
-}
-
-// Inhoudelijke invalshoek per categorie + de stijl die er standaard bij past.
-const CATEGORY_GUIDE: Record<PostCategory, string> = {
-  '3-hr-problemen': `CATEGORIE: 3 HR-data-problemen.
-- Rode draad: losse bronnen, geen historie (SCD2), rechten niet dichtgetimmerd (RLS/AVG).
-- Pak één of meer van deze problemen beet en maak ze concreet en herkenbaar.`,
-
-  klantcase: `CATEGORIE: klantcase / verhaal.
-- Vertel een concreet (anoniem) project: de situatie, de fout of het knelpunt, de aanpak, de les.
-- Gebruik alleen echte details uit de context. Verzin geen klantnamen of cijfers.`,
-
-  'mythe-provocatie': `CATEGORIE: mythe / provocatie.
-- Daag een gangbare aanname uit ("iedereen begint bij de dashboards — precies verkeerd om").
-- Scherp en onderbouwd, niet hatelijk. Geen aanvallen op personen of bedrijven.`,
-
-  'persoonlijk-visie': `CATEGORIE: persoonlijk / visie.
-- JW's eigen kijk: waarom hij dit werk doet, wat hij telkens terugziet, waar hij in gelooft.
-- Persoonlijk en stellig, maar zonder borstklopperij. Een mening, geen verkooppraatje.`,
-}
-
-const CATEGORY_DEFAULT_STYLE: Record<PostCategory, LinkedInStyle> = {
-  '3-hr-problemen': 'educatief',
-  klantcase: 'storytelling',
-  'mythe-provocatie': 'provocatief',
-  'persoonlijk-visie': 'scherp',
-}
-
-export function defaultStyleForCategory(category: PostCategory): LinkedInStyle {
-  return CATEGORY_DEFAULT_STYLE[category]
+/** Standaardstijl voor een categorie binnen een brand; valt terug op 'educatief'. */
+export function defaultStyleForCategory(
+  brand: BrandConfig,
+  categoryId: string
+): LinkedInStyle {
+  return getBrandCategory(brand, categoryId)?.defaultStyle ?? 'educatief'
 }
 
 export interface LinkedInPostInput {
@@ -399,7 +372,8 @@ ${lines.join('\n')}`
 export async function generatePostFromInterview(
   input: PostFromInterviewInput
 ): Promise<GeneratedLinkedInPost> {
-  const style = input.style ?? CATEGORY_DEFAULT_STYLE[input.category]
+  const category = getBrandCategory(input.brand, input.categoryId)
+  const style = input.style ?? category?.defaultStyle ?? 'educatief'
 
   if (!process.env.ANTHROPIC_API_KEY) {
     return getMockFreePost(input.topic)
@@ -419,7 +393,7 @@ ${ctaBlock}
     brandContext: input.brandContext,
     style,
     structuur,
-    extraGuides: [FUNNEL_GUIDE[input.funnelStage], CATEGORY_GUIDE[input.category]],
+    extraGuides: [input.brand.funnelGuide[input.funnelStage], category?.guide ?? ''],
   })
 
   const interviewBlock = input.interview
