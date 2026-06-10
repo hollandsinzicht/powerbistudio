@@ -204,7 +204,13 @@ export default function DaxAssistant() {
                                 <div
                                     className="dax-result text-sm md:text-base text-[var(--text-secondary)] whitespace-pre-wrap leading-relaxed"
                                     dangerouslySetInnerHTML={{
+                                        // Eerst HTML-escapen (neutraliseert eventuele <script>/HTML
+                                        // in de model-output of via prompt-injection), dáárna pas de
+                                        // markdown-markers omzetten naar opmaak.
                                         __html: result
+                                            .replace(/[&<>"']/g, (ch: string) =>
+                                                ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch] as string)
+                                            )
                                             // Simple regex highlight for the codeblock
                                             .replace(/```(?:dax)?\n([\s\S]*?)```/g,
                                                 '<div class="my-6 bg-gray-50 p-4 rounded-lg font-mono text-sm border border-[var(--border)] overflow-x-auto text-[#1E3A5F]"><pre><code>$1</code></pre></div>'

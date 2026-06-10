@@ -170,9 +170,10 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Foto — 40% op desktop, hidden op mobile */}
-            <div className="hidden md:col-span-2 md:flex md:flex-col md:items-end">
-              <div className="relative w-full max-w-sm overflow-hidden rounded-lg border border-[var(--border)]">
+            {/* Foto — 40% op desktop. Ook op mobiel tonen (compacter, gecentreerd):
+                "één specialist" is de USP, dus het gezicht hoort er ook klein bij. */}
+            <div className="flex flex-col items-center md:col-span-2 md:items-end">
+              <div className="relative w-full max-w-[14rem] overflow-hidden rounded-lg border border-[var(--border)] sm:max-w-xs md:max-w-sm">
                 <Image
                   src="/team/jan-willem.jpg"
                   alt="Jan Willem den Hollander, HR analytics-specialist"
