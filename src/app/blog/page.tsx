@@ -9,6 +9,7 @@ export const metadata: Metadata = {
     title: 'Blog \u2014 HR Analytics, Power BI, AVG-compliance | PowerBIStudio',
     description:
         'Artikelen over HR analytics in Power BI, AVG-compliance, datamodellering en de bron-zilver-goud-methodiek.',
+    alternates: { canonical: 'https://www.powerbistudio.nl/blog' },
 };
 
 type SearchParams = Promise<{ categorie?: string | string[] }>;
