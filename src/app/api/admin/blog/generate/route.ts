@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { generateBlogIdeas, generateBlogPost, suggestInternalLinks } from '@/lib/blog-writer'
+import { generateBlogIdeas, generateBlogPost, suggestInternalLinks, applyLinkSuggestion } from '@/lib/blog-writer'
 import { generateBlogImage } from '@/lib/blog-image-generator'
 import { createIdea, getIdeaById, updateIdeaStatus, createPost, updatePost, getPublishedPosts, getPostById } from '@/lib/blog-store'
 import { isValidArchetype, type BlogArchetype } from '@/lib/blog-archetypes'
@@ -164,9 +164,14 @@ export async function POST(req: Request) {
           if (suggestions.length > 0) {
             let updatedContent = existingPost.content
             for (const s of suggestions) {
-              if (updatedContent.includes(s.elementToFind)) {
-                updatedContent = updatedContent.replace(s.elementToFind, s.replacement)
-              }
+              // applyLinkSuggestion slaat vindplaatsen binnen tags/hrefs en
+              // bestaande ankers over — een kale .replace() veroorzaakte de
+              // geneste-anker-corruptie van juni 2026.
+              updatedContent = applyLinkSuggestion(
+                updatedContent,
+                s.elementToFind,
+                s.replacement
+              )
             }
             if (updatedContent !== existingPost.content) {
               await updatePost(existingPost.id, { content: updatedContent })

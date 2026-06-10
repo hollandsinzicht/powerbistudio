@@ -330,6 +330,51 @@ Context over de site: ${SITE_CONTEXT}`,
 
 // ===== INTERNE LINKS UPDATEN IN BESTAANDE POSTS =====
 
+/**
+ * Past één link-suggestie toe op een veilige plek in de content.
+ *
+ * Een naïeve content.replace(find, replacement) pakt de EERSTE vindplaats —
+ * ook als die binnen een href-attribuut valt (slugs bevatten dezelfde
+ * trefwoorden!) of binnen de tekst van een bestaande link. Dat veroorzaakte
+ * de geneste-anker-corruptie in 45 artikelen (hersteld juni 2026 via
+ * scripts/audit-blog-links.ts).
+ *
+ * Deze functie zoekt de eerste vindplaats die:
+ *   1. NIET binnen een HTML-tag ligt (dus niet in een href of ander attribuut)
+ *   2. NIET binnen een bestaand <a>…</a>-element ligt (geen anker-in-anker)
+ *
+ * Geen veilige plek gevonden → content ongewijzigd terug.
+ */
+export function applyLinkSuggestion(
+  content: string,
+  find: string,
+  replacement: string
+): string {
+  let searchFrom = 0
+  while (true) {
+    const idx = content.indexOf(find, searchFrom)
+    if (idx === -1) return content
+    searchFrom = idx + 1
+
+    // Binnen een tag? Dan is de laatste '<' vóór idx recenter dan de laatste '>'.
+    const lastOpen = content.lastIndexOf('<', idx - 1)
+    const lastClose = content.lastIndexOf('>', idx - 1)
+    if (lastOpen > lastClose) continue
+
+    // Binnen een bestaand anker? Dan is de laatste '<a'-opening recenter dan
+    // de laatste '</a>'-sluiting.
+    const prefix = content.slice(0, idx)
+    const anchorOpens = [...prefix.matchAll(/<a[\s>]/gi)]
+    const lastAnchorOpen = anchorOpens.length
+      ? anchorOpens[anchorOpens.length - 1].index
+      : -1
+    const lastAnchorClose = prefix.toLowerCase().lastIndexOf('</a>')
+    if (lastAnchorOpen > lastAnchorClose) continue
+
+    return content.slice(0, idx) + replacement + content.slice(idx + find.length)
+  }
+}
+
 export async function suggestInternalLinks(params: {
   postTitle: string
   postContent: string
