@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createLead, getLeadByEmail } from '@/lib/lead-store';
 import { sendLeadConfirmationEmail, sendCalculatorResultEmail, upsertBrevoContact } from '@/lib/emails';
+import { checkRateLimit } from '@/lib/security';
 import type { LeadVertical, LeadSource } from '@/lib/lead-store';
 
 const VALID_VERTICALS: LeadVertical[] = ['hr'];
@@ -13,6 +14,14 @@ const RESOURCE_TITLES: Record<string, string> = {
 
 export async function POST(req: Request) {
   try {
+    const limit = checkRateLimit(req, 'leads', 5, 60_000);
+    if (!limit.ok) {
+      return NextResponse.json(
+        { error: 'Te veel verzoeken. Probeer het zo opnieuw.' },
+        { status: 429, headers: { 'Retry-After': String(limit.retryAfter) } }
+      );
+    }
+
     const body = await req.json();
     const { email, name, company, vertical, source, downloadUrl, metadata } = body;
 

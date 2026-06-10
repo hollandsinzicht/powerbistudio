@@ -1,5 +1,15 @@
+import { unstable_cache } from 'next/cache'
 import { supabase } from './supabase'
 import type { ArticleType, BlogArchetype } from './blog-archetypes'
+
+/**
+ * Cache-tag voor alle published-post reads. De Supabase-client doet niet
+ * mee aan Next's fetch-cache, dus zonder unstable_cache raakt elke render
+ * de database. We cachen daarom 1 uur (eventual consistency): nieuwe of
+ * bijgewerkte posts verschijnen uiterlijk binnen een uur op publieke
+ * pagina's. De dagelijkse publish-cron (06:00) valt ruim binnen dat venster.
+ */
+const BLOG_POSTS_TAG = 'blog-posts'
 
 export interface BlogPost {
   id: string
@@ -38,16 +48,20 @@ export interface BlogIdea {
 
 // ===== POSTS =====
 
-export async function getPublishedPosts(): Promise<BlogPost[]> {
-  const { data, error } = await supabase
-    .from('blog_posts')
-    .select('*')
-    .eq('status', 'published')
-    .order('published_at', { ascending: false })
+export const getPublishedPosts = unstable_cache(
+  async (): Promise<BlogPost[]> => {
+    const { data, error } = await supabase
+      .from('blog_posts')
+      .select('*')
+      .eq('status', 'published')
+      .order('published_at', { ascending: false })
 
-  if (error) throw new Error(`Failed to get posts: ${error.message}`)
-  return data || []
-}
+    if (error) throw new Error(`Failed to get posts: ${error.message}`)
+    return data || []
+  },
+  ['published-posts'],
+  { tags: [BLOG_POSTS_TAG], revalidate: 3600 }
+)
 
 export async function getAllPosts(): Promise<BlogPost[]> {
   const { data, error } = await supabase
@@ -59,17 +73,21 @@ export async function getAllPosts(): Promise<BlogPost[]> {
   return data || []
 }
 
-export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
-  const { data, error } = await supabase
-    .from('blog_posts')
-    .select('*')
-    .eq('slug', slug)
-    .eq('status', 'published')
-    .maybeSingle()
+export const getPostBySlug = unstable_cache(
+  async (slug: string): Promise<BlogPost | null> => {
+    const { data, error } = await supabase
+      .from('blog_posts')
+      .select('*')
+      .eq('slug', slug)
+      .eq('status', 'published')
+      .maybeSingle()
 
-  if (error) throw new Error(`Failed to get post: ${error.message}`)
-  return data
-}
+    if (error) throw new Error(`Failed to get post: ${error.message}`)
+    return data
+  },
+  ['published-post-by-slug'],
+  { tags: [BLOG_POSTS_TAG], revalidate: 3600 }
+)
 
 export async function getPostById(id: string): Promise<BlogPost | null> {
   const { data, error } = await supabase
@@ -87,17 +105,21 @@ export async function getPostById(id: string): Promise<BlogPost | null> {
  * Voor pillars: getPublishedPostsByType('pillar').
  * Voor reguliere blogs: getPublishedPostsByType('blog').
  */
-export async function getPublishedPostsByType(type: ArticleType): Promise<BlogPost[]> {
-  const { data, error } = await supabase
-    .from('blog_posts')
-    .select('*')
-    .eq('status', 'published')
-    .eq('article_type', type)
-    .order('published_at', { ascending: false })
+export const getPublishedPostsByType = unstable_cache(
+  async (type: ArticleType): Promise<BlogPost[]> => {
+    const { data, error } = await supabase
+      .from('blog_posts')
+      .select('*')
+      .eq('status', 'published')
+      .eq('article_type', type)
+      .order('published_at', { ascending: false })
 
-  if (error) throw new Error(`Failed to get posts by type: ${error.message}`)
-  return data || []
-}
+    if (error) throw new Error(`Failed to get posts by type: ${error.message}`)
+    return data || []
+  },
+  ['published-posts-by-type'],
+  { tags: [BLOG_POSTS_TAG], revalidate: 3600 }
+)
 
 /**
  * Haal published posts op aan de hand van een lijst UUIDs en bewaar de
@@ -105,23 +127,27 @@ export async function getPublishedPostsByType(type: ArticleType): Promise<BlogPo
  * auteurs-volgorde te tonen. Posts die niet (meer) gepubliceerd zijn worden
  * stilzwijgend overgeslagen.
  */
-export async function getPostsByIds(ids: string[]): Promise<BlogPost[]> {
-  if (ids.length === 0) return []
-  const { data, error } = await supabase
-    .from('blog_posts')
-    .select('*')
-    .in('id', ids)
-    .eq('status', 'published')
+export const getPostsByIds = unstable_cache(
+  async (ids: string[]): Promise<BlogPost[]> => {
+    if (ids.length === 0) return []
+    const { data, error } = await supabase
+      .from('blog_posts')
+      .select('*')
+      .in('id', ids)
+      .eq('status', 'published')
 
-  if (error) throw new Error(`Failed to get posts by ids: ${error.message}`)
-  if (!data) return []
+    if (error) throw new Error(`Failed to get posts by ids: ${error.message}`)
+    if (!data) return []
 
-  // Behoud input-volgorde
-  const byId = new Map(data.map((p) => [p.id, p]))
-  return ids
-    .map((id) => byId.get(id))
-    .filter((p): p is BlogPost => p !== undefined)
-}
+    // Behoud input-volgorde
+    const byId = new Map(data.map((p) => [p.id, p]))
+    return ids
+      .map((id) => byId.get(id))
+      .filter((p): p is BlogPost => p !== undefined)
+  },
+  ['published-posts-by-ids'],
+  { tags: [BLOG_POSTS_TAG], revalidate: 3600 }
+)
 
 export async function createPost(post: {
   slug: string

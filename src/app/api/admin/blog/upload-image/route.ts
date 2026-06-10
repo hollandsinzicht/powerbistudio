@@ -16,7 +16,7 @@ const EXT_BY_MIME: Record<string, string> = {
 }
 const BUCKET = 'blog-images'
 
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin'
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD /* fail-closed: geen 'admin'-fallback */
 
 function checkAuth(req: Request): boolean {
   const auth = req.headers.get('x-admin-token')

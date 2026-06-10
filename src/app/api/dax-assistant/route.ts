@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
+import { checkRateLimit } from '@/lib/security';
 
 const anthropic = new Anthropic({
     apiKey: process.env.ANTHROPIC_API_KEY || '',
@@ -20,6 +21,15 @@ Regels:
 
 export async function POST(req: Request) {
     try {
+        // Strakke limiet: deze route kost Anthropic-tokens per aanroep.
+        const limit = checkRateLimit(req, 'dax-assistant', 8, 60_000);
+        if (!limit.ok) {
+            return NextResponse.json(
+                { error: 'Te veel verzoeken. Probeer het zo opnieuw.' },
+                { status: 429, headers: { 'Retry-After': String(limit.retryAfter) } }
+            );
+        }
+
         const { message, context, mode } = await req.json();
 
         if (!message) {

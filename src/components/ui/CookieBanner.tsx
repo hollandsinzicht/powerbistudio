@@ -77,16 +77,20 @@ export default function CookieBanner() {
         </Link>
         .
       </p>
+      {/* Gelijk visueel gewicht: bij een privacy-first merk is een luide
+       * oranje "accepteren" tegenover een gedempte weigerknop een dark pattern.
+       * Beide knoppen krijgen daarom dezelfde maat en marine-stijl, zodat de
+       * bezoeker een vrije keuze maakt. */}
       <div className="flex flex-wrap gap-2">
         <button
           onClick={() => setConsent('granted')}
-          className="inline-flex items-center justify-center rounded-md bg-[var(--color-action-600)] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[var(--color-action-700)]"
+          className="inline-flex flex-1 items-center justify-center rounded-md bg-[var(--color-primary-900)] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[var(--color-primary-800)]"
         >
           Accepteren
         </button>
         <button
           onClick={() => setConsent('denied')}
-          className="inline-flex items-center justify-center rounded-md border border-[var(--border)] px-4 py-2 text-sm font-medium text-[var(--text-secondary)] transition-colors hover:border-[var(--color-primary-900)] hover:text-[var(--text-primary)]"
+          className="inline-flex flex-1 items-center justify-center rounded-md border border-[var(--color-primary-900)] px-4 py-2 text-sm font-semibold text-[var(--color-primary-900)] transition-colors hover:bg-[var(--color-neutral-100)]"
         >
           Liever niet
         </button>

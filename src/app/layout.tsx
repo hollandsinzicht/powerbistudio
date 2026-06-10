@@ -179,7 +179,15 @@ export default function RootLayout({
         <Script id="google-analytics" strategy="afterInteractive">
           {`
             gtag('js', new Date());
-            gtag('config', 'G-YHED8H8DHL', { anonymize_ip: true });
+            gtag('config', 'G-YHED8H8DHL', {
+              anonymize_ip: true,
+              // Sluit Google Signals & advertentie-personalisatie uit. Zonder
+              // dit laadt gtag.js — bij een gelinkt Google Ads-account — een
+              // remarketing-ping naar googlesyndication.com, wat botst met de
+              // "geen cross-site-tracking"-belofte in de cookie-banner.
+              allow_google_signals: false,
+              allow_ad_personalization_signals: false,
+            });
           `}
         </Script>
         {/* Facebook/Meta Pixel verwijderd in feat/seo-metadata —

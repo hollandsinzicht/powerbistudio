@@ -111,6 +111,8 @@ export default function LeadCaptureForm({
             type="text"
             name="name"
             placeholder="Naam"
+            aria-label="Naam"
+            autoComplete="name"
             value={formData.name}
             onChange={handleChange}
             className={`${inputClass} ${compact ? 'sm:flex-1' : ''}`}
@@ -121,6 +123,8 @@ export default function LeadCaptureForm({
             type="email"
             name="email"
             placeholder="E-mailadres *"
+            aria-label="E-mailadres"
+            autoComplete="email"
             value={formData.email}
             onChange={handleChange}
             required
@@ -132,6 +136,8 @@ export default function LeadCaptureForm({
             type="text"
             name="company"
             placeholder="Organisatie (optioneel)"
+            aria-label="Organisatie"
+            autoComplete="organization"
             value={formData.company}
             onChange={handleChange}
             className={inputClass}

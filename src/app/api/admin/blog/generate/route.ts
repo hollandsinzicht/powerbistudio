@@ -10,7 +10,7 @@ import { isValidArchetype, type BlogArchetype } from '@/lib/blog-archetypes'
 export const maxDuration = 300
 export const dynamic = 'force-dynamic'
 
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin'
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD /* fail-closed: geen 'admin'-fallback */
 
 function checkAuth(req: Request): boolean {
   const auth = req.headers.get('x-admin-token')

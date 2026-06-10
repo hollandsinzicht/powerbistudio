@@ -14,7 +14,7 @@ import { ensureSeedPosts, getRecentPosts, savePost } from '@/lib/linkedin-posts-
 export const maxDuration = 60
 export const dynamic = 'force-dynamic'
 
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin'
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD /* fail-closed: geen 'admin'-fallback */
 
 function checkAuth(req: Request): boolean {
   return req.headers.get('x-admin-token') === ADMIN_PASSWORD

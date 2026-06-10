@@ -1,7 +1,16 @@
 import { NextResponse } from 'next/server';
+import { checkRateLimit } from '@/lib/security';
 
 export async function POST(req: Request) {
     try {
+        const limit = checkRateLimit(req, 'readiness-scan', 20, 60_000);
+        if (!limit.ok) {
+            return NextResponse.json(
+                { error: 'Te veel verzoeken. Probeer het zo opnieuw.' },
+                { status: 429, headers: { 'Retry-After': String(limit.retryAfter) } }
+            );
+        }
+
         const body = await req.json();
         const { answers } = body;
 
