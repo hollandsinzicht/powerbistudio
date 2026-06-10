@@ -80,12 +80,12 @@ export default function OverPage() {
       />
 
       {/* ═══ HERO ═══ */}
-      <section className="border-b border-[var(--border)] bg-white">
+      <section className="border-b border-[var(--color-neutral-200)] bg-white">
         <div className="container mx-auto px-6 md:px-12">
           <div className="grid grid-cols-1 items-center gap-10 py-20 md:grid-cols-2 md:gap-16 md:py-28">
             {/* Foto + beschikbaarheidsbadge */}
             <div className="flex flex-col items-center md:items-start">
-              <div className="relative w-64 overflow-hidden rounded-lg border border-[var(--border)] md:w-80">
+              <div className="relative w-64 overflow-hidden rounded-lg border border-[var(--color-neutral-200)] md:w-80">
                 <Image
                   src="/team/jan-willem.jpg"
                   alt="Jan Willem den Hollander, HR analytics-specialist"
@@ -95,7 +95,7 @@ export default function OverPage() {
                   className="aspect-[4/5] w-full object-cover"
                 />
               </div>
-              <span className="mt-3 inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-white px-3 py-1.5 text-xs font-medium text-[var(--text-secondary)]">
+              <span className="mt-3 inline-flex items-center gap-2 rounded-full border border-[var(--color-neutral-200)] bg-white px-3 py-1.5 text-xs font-medium text-[var(--color-neutral-700)]">
                 <span className="inline-block h-2 w-2 rounded-full bg-[var(--color-success)]" />
                 Beschikbaar voor HR-trajecten Q2-Q3 2026
               </span>
@@ -118,7 +118,7 @@ export default function OverPage() {
       </section>
 
       {/* ═══ STATS ═══ */}
-      <section className="border-b border-[var(--border)] bg-[var(--color-neutral-50)] py-12">
+      <section className="border-b border-[var(--color-neutral-200)] bg-[var(--color-neutral-50)] py-12">
         <div className="container mx-auto px-6 md:px-12">
           <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
             <StatBlok value="15 jaar" label="Power BI-ervaring" />
@@ -135,7 +135,7 @@ export default function OverPage() {
           <div className="mx-auto grid max-w-6xl grid-cols-1 gap-16 lg:grid-cols-3">
             <div className="lg:col-span-2">
               <h2 className="mb-8">Het verhaal van de studio</h2>
-              <div className="space-y-6 text-base leading-relaxed text-[var(--text-secondary)]">
+              <div className="space-y-6 text-base leading-relaxed text-[var(--color-neutral-700)]">
                 <p>
                   Ik werk al 15 jaar in business intelligence. Power BI, DAX, SQL,
                   Python, Azure, Fabric. Ik heb gewerkt voor GGDGHOR, Lyreco,
@@ -180,13 +180,13 @@ export default function OverPage() {
 
             {/* Sidebar — technische stack + beschikbaarheid */}
             <aside className="space-y-6">
-              <div className="rounded-lg border border-[var(--border)] bg-white p-6">
+              <div className="rounded-lg border border-[var(--color-neutral-200)] bg-white p-6">
                 <h3 className="mb-4 text-base">Technische stack</h3>
                 <div className="flex flex-wrap gap-2">
                   {SKILLS.map((skill) => (
                     <span
                       key={skill}
-                      className="rounded-md border border-[var(--border)] bg-[var(--color-neutral-50)] px-2.5 py-1 text-xs text-[var(--text-secondary)]"
+                      className="rounded-md border border-[var(--color-neutral-200)] bg-[var(--color-neutral-50)] px-2.5 py-1 text-xs text-[var(--color-neutral-700)]"
                     >
                       {skill}
                     </span>
@@ -194,14 +194,14 @@ export default function OverPage() {
                 </div>
               </div>
 
-              <div className="rounded-lg border border-[var(--border)] border-l-[3px] border-l-[var(--color-accent-700)] bg-white p-6">
+              <div className="rounded-lg border border-[var(--color-neutral-200)] border-l-[3px] border-l-[var(--color-accent-700)] bg-white p-6">
                 <h3 className="mb-3 text-base">Beschikbaar voor</h3>
-                <ul className="space-y-2 text-sm leading-relaxed text-[var(--text-secondary)]">
+                <ul className="space-y-2 text-sm leading-relaxed text-[var(--color-neutral-700)]">
                   <li>HR Analytics Quick Scans (€1.950)</li>
                   <li>Foundation-trajecten (vaste prijs)</li>
                   <li>DashPortal HR Hosting (vanaf €1.250/mnd)</li>
                 </ul>
-                <p className="mt-4 border-t border-[var(--border)] pt-4 text-xs text-[var(--text-secondary)]">
+                <p className="mt-4 border-t border-[var(--color-neutral-200)] pt-4 text-xs text-[var(--color-neutral-700)]">
                   Geen losse interim-uren of generiek Power BI-werk.
                 </p>
               </div>
@@ -210,7 +210,7 @@ export default function OverPage() {
                 href="https://www.linkedin.com/in/jan-willem-den-hollander/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block rounded-lg border border-[var(--border)] bg-white p-4 text-sm text-[var(--text-primary)] transition-colors hover:border-[var(--color-primary-700)]"
+                className="block rounded-lg border border-[var(--color-neutral-200)] bg-white p-4 text-sm text-[var(--color-neutral-900)] transition-colors hover:border-[var(--color-primary-700)]"
               >
                 LinkedIn-profiel →
               </Link>
@@ -220,7 +220,7 @@ export default function OverPage() {
       </section>
 
       {/* ═══ CTA ═══ */}
-      <section className="border-t border-[var(--border)] bg-[var(--color-neutral-50)] py-20 md:py-24">
+      <section className="border-t border-[var(--color-neutral-200)] bg-[var(--color-neutral-50)] py-20 md:py-24">
         <div className="container mx-auto max-w-2xl px-6 text-center md:px-12">
           <h2 className="mb-4">Laten we kennismaken</h2>
           <p className="lead mx-auto mb-8">

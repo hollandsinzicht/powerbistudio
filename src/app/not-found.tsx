@@ -34,9 +34,9 @@ export default function NotFound() {
             <li key={s.href}>
               <Link
                 href={s.href}
-                className="group flex items-center justify-between rounded-md border border-[var(--border)] bg-[var(--color-neutral-50)] px-4 py-3 text-sm transition-colors hover:border-[var(--color-accent-700)]/40 hover:bg-white"
+                className="group flex items-center justify-between rounded-md border border-[var(--color-neutral-200)] bg-[var(--color-neutral-50)] px-4 py-3 text-sm transition-colors hover:border-[var(--color-accent-700)]/40 hover:bg-white"
               >
-                <span className="font-medium text-[var(--text-primary)]">
+                <span className="font-medium text-[var(--color-neutral-900)]">
                   {s.label}
                 </span>
                 <ArrowRight
@@ -48,7 +48,7 @@ export default function NotFound() {
           ))}
         </ul>
 
-        <p className="text-sm text-[var(--text-secondary)]">
+        <p className="text-sm text-[var(--color-neutral-700)]">
           Niets gevonden wat je zocht?{' '}
           <Link
             href="/contact?type=verkennend"

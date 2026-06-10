@@ -297,7 +297,7 @@ export default function LinkedInPostTab() {
           <MessageSquare size={18} className="text-[#0A66C2]" />
           LinkedIn-post via vraaggesprek
         </h3>
-        <p className="text-sm text-[var(--text-secondary)]">
+        <p className="text-sm text-[var(--color-neutral-700)]">
           Een kort adaptief gesprek voedt de generator. De post bouwt voort op je
           eerdere posts, zodat de funnel logisch doorloopt en niets zich herhaalt.
         </p>
@@ -308,7 +308,7 @@ export default function LinkedInPostTab() {
         <div className="space-y-5">
           {/* Bedrijf kiezen */}
           <div>
-            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2 flex items-center gap-1.5">
+            <label className="block text-sm font-medium text-[var(--color-neutral-700)] mb-2 flex items-center gap-1.5">
               <Building2 size={14} /> Bedrijf
             </label>
             <div className="grid grid-cols-2 gap-2">
@@ -318,19 +318,19 @@ export default function LinkedInPostTab() {
                   onClick={() => handleBrandChange(b.id)}
                   className={`text-left p-2.5 rounded-lg border text-sm transition-all ${
                     brand === b.id
-                      ? "border-[var(--accent)] bg-[rgba(245,158,11,0.05)]"
-                      : "border-[var(--border)] hover:border-[var(--text-secondary)]"
+                      ? "border-[var(--color-action-600)] bg-[rgba(245,158,11,0.05)]"
+                      : "border-[var(--color-neutral-200)] hover:border-[var(--color-neutral-700)]"
                   }`}
                 >
                   <div className="font-semibold">{b.label}</div>
-                  <div className="text-[11px] text-[var(--text-secondary)] mt-0.5">{b.website}</div>
+                  <div className="text-[11px] text-[var(--color-neutral-700)] mt-0.5">{b.website}</div>
                 </button>
               ))}
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
+            <label className="block text-sm font-medium text-[var(--color-neutral-700)] mb-2">
               Funnel-fase
             </label>
             <div className="grid grid-cols-3 gap-2">
@@ -340,19 +340,19 @@ export default function LinkedInPostTab() {
                   onClick={() => setFunnelStage(f.value)}
                   className={`text-left p-2.5 rounded-lg border text-sm transition-all ${
                     funnelStage === f.value
-                      ? "border-[var(--accent)] bg-[rgba(245,158,11,0.05)]"
-                      : "border-[var(--border)] hover:border-[var(--text-secondary)]"
+                      ? "border-[var(--color-action-600)] bg-[rgba(245,158,11,0.05)]"
+                      : "border-[var(--color-neutral-200)] hover:border-[var(--color-neutral-700)]"
                   }`}
                 >
                   <div className="font-semibold">{f.label}</div>
-                  <div className="text-[11px] text-[var(--text-secondary)] mt-0.5">{f.hint}</div>
+                  <div className="text-[11px] text-[var(--color-neutral-700)] mt-0.5">{f.hint}</div>
                 </button>
               ))}
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
+            <label className="block text-sm font-medium text-[var(--color-neutral-700)] mb-2">
               Categorie
             </label>
             <div className="grid grid-cols-2 gap-2">
@@ -362,8 +362,8 @@ export default function LinkedInPostTab() {
                   onClick={() => setCategory(c.id)}
                   className={`text-left p-2.5 rounded-lg border text-sm font-medium transition-all ${
                     category === c.id
-                      ? "border-[var(--accent)] bg-[rgba(245,158,11,0.05)]"
-                      : "border-[var(--border)] hover:border-[var(--text-secondary)]"
+                      ? "border-[var(--color-action-600)] bg-[rgba(245,158,11,0.05)]"
+                      : "border-[var(--color-neutral-200)] hover:border-[var(--color-neutral-700)]"
                   }`}
                 >
                   {c.label}
@@ -374,13 +374,13 @@ export default function LinkedInPostTab() {
 
           <div>
             <div className="flex items-center justify-between gap-2 mb-1">
-              <label className="block text-sm font-medium text-[var(--text-secondary)]">
+              <label className="block text-sm font-medium text-[var(--color-neutral-700)]">
                 Onderwerp
               </label>
               <button
                 onClick={fetchIdeas}
                 disabled={loadingIdeas}
-                className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 border border-[var(--border)] rounded-lg hover:border-[var(--accent)] disabled:opacity-50"
+                className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 border border-[var(--color-neutral-200)] rounded-lg hover:border-[var(--color-action-600)] disabled:opacity-50"
               >
                 {loadingIdeas ? (
                   <><Loader2 size={13} className="animate-spin" /> Ideeën...</>
@@ -393,14 +393,14 @@ export default function LinkedInPostTab() {
               value={topic}
               onChange={(e) => setTopic(e.target.value)}
               placeholder="Bijv. waarom verzuimcijfers vaak misleiden"
-              className="w-full bg-[var(--surface)] border border-[var(--border)] rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-[var(--accent)]"
+              className="w-full bg-[var(--color-white)] border border-[var(--color-neutral-200)] rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-[var(--color-action-600)]"
             />
           </div>
 
           {/* Ideeën-kaartjes */}
           {ideas.length > 0 && (
             <div className="space-y-2">
-              <div className="text-xs text-[var(--text-secondary)]">
+              <div className="text-xs text-[var(--color-neutral-700)]">
                 Klik een idee om het over te nemen:
               </div>
               {ideas.map((idea, i) => {
@@ -409,16 +409,16 @@ export default function LinkedInPostTab() {
                   <button
                     key={i}
                     onClick={() => applyIdea(idea)}
-                    className="block w-full text-left p-3 rounded-lg border border-[var(--border)] hover:border-[var(--accent)] transition-all"
+                    className="block w-full text-left p-3 rounded-lg border border-[var(--color-neutral-200)] hover:border-[var(--color-action-600)] transition-all"
                   >
-                    <div className="text-sm font-medium text-[var(--text-primary)]">{idea.hook}</div>
-                    <div className="text-xs text-[var(--text-secondary)] mt-1">{idea.rationale}</div>
+                    <div className="text-sm font-medium text-[var(--color-neutral-900)]">{idea.hook}</div>
+                    <div className="text-xs text-[var(--color-neutral-700)] mt-1">{idea.rationale}</div>
                     <div className="flex flex-wrap gap-1.5 mt-2">
-                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-[rgba(245,158,11,0.1)] text-[var(--accent)] font-medium uppercase">
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-[rgba(245,158,11,0.1)] text-[var(--color-action-600)] font-medium uppercase">
                         {idea.funnelStage}
                       </span>
                       {cat && (
-                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-[var(--surface)] border border-[var(--border)] text-[var(--text-secondary)] font-medium">
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-[var(--color-white)] border border-[var(--color-neutral-200)] text-[var(--color-neutral-700)] font-medium">
                           {cat.label}
                         </span>
                       )}
@@ -447,14 +447,14 @@ export default function LinkedInPostTab() {
       {step === "gesprek" && (
         <div className="space-y-5">
           <div className="flex items-center justify-between gap-2">
-            <div className="text-xs text-[var(--text-secondary)]">
+            <div className="text-xs text-[var(--color-neutral-700)]">
               {interview.length > 0 && <span>{interview.length} beantwoord · </span>}
               {lastBatch ? "Laatste vraag" : "Beantwoord en ga verder"}
             </div>
             <button
               onClick={handleDraftAnswers}
               disabled={drafting || loadingQuestions}
-              className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 border border-[var(--border)] rounded-lg hover:border-[var(--accent)] disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 border border-[var(--color-neutral-200)] rounded-lg hover:border-[var(--color-action-600)] disabled:opacity-50"
             >
               {drafting ? (
                 <><Loader2 size={13} className="animate-spin" /> Invullen...</>
@@ -466,7 +466,7 @@ export default function LinkedInPostTab() {
 
           {questions.map((q, i) => (
             <div key={i}>
-              <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">
+              <label className="block text-sm font-medium text-[var(--color-neutral-900)] mb-1">
                 {q}
               </label>
               <textarea
@@ -480,7 +480,7 @@ export default function LinkedInPostTab() {
                 }
                 placeholder="Jouw antwoord in eigen woorden..."
                 rows={3}
-                className="w-full bg-[var(--surface)] border border-[var(--border)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[var(--accent)]"
+                className="w-full bg-[var(--color-white)] border border-[var(--color-neutral-200)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[var(--color-action-600)]"
               />
             </div>
           ))}
@@ -501,7 +501,7 @@ export default function LinkedInPostTab() {
             </button>
             <button
               onClick={handleReset}
-              className="inline-flex items-center gap-2 text-sm px-3 py-1.5 border border-[var(--border)] rounded-lg hover:border-[var(--accent)]"
+              className="inline-flex items-center gap-2 text-sm px-3 py-1.5 border border-[var(--color-neutral-200)] rounded-lg hover:border-[var(--color-action-600)]"
             >
               <RotateCcw size={14} /> Opnieuw
             </button>
@@ -512,12 +512,12 @@ export default function LinkedInPostTab() {
       {/* ===== Stap 3: Genereren / Resultaat ===== */}
       {step === "klaar" && (
         <div className="space-y-5">
-          <div className="rounded-lg border border-[var(--border)] bg-[var(--surface)] p-4 space-y-3">
-            <div className="text-sm font-semibold text-[var(--text-primary)]">Gesprek ({interview.length})</div>
+          <div className="rounded-lg border border-[var(--color-neutral-200)] bg-[var(--color-white)] p-4 space-y-3">
+            <div className="text-sm font-semibold text-[var(--color-neutral-900)]">Gesprek ({interview.length})</div>
             {interview.map((t, i) => (
               <div key={i} className="text-xs">
-                <div className="font-medium text-[var(--text-secondary)]">{t.vraag}</div>
-                <div className="text-[var(--text-primary)] mt-0.5 whitespace-pre-wrap">{t.antwoord}</div>
+                <div className="font-medium text-[var(--color-neutral-700)]">{t.vraag}</div>
+                <div className="text-[var(--color-neutral-900)] mt-0.5 whitespace-pre-wrap">{t.antwoord}</div>
               </div>
             ))}
           </div>
@@ -537,7 +537,7 @@ export default function LinkedInPostTab() {
               </button>
               <button
                 onClick={handleReset}
-                className="inline-flex items-center gap-2 text-sm px-3 py-1.5 border border-[var(--border)] rounded-lg hover:border-[var(--accent)]"
+                className="inline-flex items-center gap-2 text-sm px-3 py-1.5 border border-[var(--color-neutral-200)] rounded-lg hover:border-[var(--color-action-600)]"
               >
                 <RotateCcw size={14} /> Opnieuw
               </button>
@@ -545,17 +545,17 @@ export default function LinkedInPostTab() {
           )}
 
           {result && (
-            <div className="space-y-3 pt-3 border-t border-[var(--border)]">
+            <div className="space-y-3 pt-3 border-t border-[var(--color-neutral-200)]">
               <div className="flex items-center justify-between gap-2">
-                <label className="text-sm font-medium text-[var(--text-secondary)]">Resultaat</label>
-                <span className="text-[10px] text-[var(--text-secondary)] text-right">
+                <label className="text-sm font-medium text-[var(--color-neutral-700)]">Resultaat</label>
+                <span className="text-[10px] text-[var(--color-neutral-700)] text-right">
                   {result.usage && (
                     <>≈ €{result.usage.costEur.toFixed(3).replace(".", ",")} · {result.usage.inputTokens.toLocaleString("nl-NL")} in / {result.usage.outputTokens.toLocaleString("nl-NL")} out · </>
                   )}
                   {result.postText.length} tekens
                 </span>
               </div>
-              <div className="bg-[var(--surface)] border border-[var(--border)] rounded-lg p-4 whitespace-pre-wrap text-sm leading-relaxed text-[var(--text-primary)]">
+              <div className="bg-[var(--color-white)] border border-[var(--color-neutral-200)] rounded-lg p-4 whitespace-pre-wrap text-sm leading-relaxed text-[var(--color-neutral-900)]">
                 {result.postText}
               </div>
               <div className="flex flex-wrap gap-2">
@@ -575,13 +575,13 @@ export default function LinkedInPostTab() {
                 <button
                   onClick={handleGenerate}
                   disabled={generating}
-                  className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium border border-[var(--border)] rounded-lg hover:border-[var(--accent)] disabled:opacity-50"
+                  className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium border border-[var(--color-neutral-200)] rounded-lg hover:border-[var(--color-action-600)] disabled:opacity-50"
                 >
                   <Sparkles size={15} /> Probeer opnieuw
                 </button>
                 <button
                   onClick={handleReset}
-                  className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium border border-[var(--border)] rounded-lg hover:border-[var(--accent)]"
+                  className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium border border-[var(--color-neutral-200)] rounded-lg hover:border-[var(--color-action-600)]"
                 >
                   <RotateCcw size={15} /> Nieuw gesprek
                 </button>

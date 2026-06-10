@@ -192,19 +192,19 @@ export default function AdminSeoPage() {
   }
 
   const tabClass = (t: string) =>
-    `px-4 py-2 text-sm font-medium rounded-lg transition-colors whitespace-nowrap ${tab === t ? "bg-[var(--primary)] text-white" : "text-[var(--text-secondary)] hover:bg-gray-100"}`;
+    `px-4 py-2 text-sm font-medium rounded-lg transition-colors whitespace-nowrap ${tab === t ? "bg-[var(--color-primary-900)] text-white" : "text-[var(--color-neutral-700)] hover:bg-gray-100"}`;
 
   return (
-    <div className="min-h-screen bg-[var(--background)] pt-24 pb-16">
+    <div className="min-h-screen bg-[var(--color-neutral-50)] pt-24 pb-16">
       <div className="container mx-auto px-6 max-w-7xl">
-        <Link href="/admin" className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] inline-flex items-center gap-2 mb-6 text-sm transition-colors">
+        <Link href="/admin" className="text-[var(--color-neutral-700)] hover:text-[var(--color-neutral-900)] inline-flex items-center gap-2 mb-6 text-sm transition-colors">
           <ArrowLeft size={16} /> Terug naar admin
         </Link>
 
         <div className="flex flex-wrap items-start justify-between gap-4 mb-8">
           <div>
             <h1 className="text-3xl md:text-4xl font-display font-bold mb-2">SEO Dashboard</h1>
-            <p className="text-[var(--text-secondary)] text-sm">
+            <p className="text-[var(--color-neutral-700)] text-sm">
               Keyword-dichtheid over alle gepubliceerde artikelen + gap-analyse tegen de doelgroep-universe (CIO, CEO, IT-manager, Data-manager, PBI-dev).
             </p>
           </div>
@@ -221,21 +221,21 @@ export default function AdminSeoPage() {
         {/* Summary stats */}
         {overview && (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            <div className="glass-card rounded-xl p-4">
-              <div className="text-2xl font-display font-bold text-[var(--primary)]">{overview.totalPublished}</div>
-              <div className="text-xs text-[var(--text-secondary)]">Gepubliceerde artikelen</div>
+            <div className="bg-white shadow-sm border border-[var(--color-neutral-200)] rounded-xl p-4">
+              <div className="text-2xl font-display font-bold text-[var(--color-primary-900)]">{overview.totalPublished}</div>
+              <div className="text-xs text-[var(--color-neutral-700)]">Gepubliceerde artikelen</div>
             </div>
-            <div className="glass-card rounded-xl p-4">
+            <div className="bg-white shadow-sm border border-[var(--color-neutral-200)] rounded-xl p-4">
               <div className="text-2xl font-display font-bold text-red-600">{overview.summary.fullyUncovered}</div>
-              <div className="text-xs text-[var(--text-secondary)]">Termen niet gedekt (0 art.)</div>
+              <div className="text-xs text-[var(--color-neutral-700)]">Termen niet gedekt (0 art.)</div>
             </div>
-            <div className="glass-card rounded-xl p-4">
+            <div className="bg-white shadow-sm border border-[var(--color-neutral-200)] rounded-xl p-4">
               <div className="text-2xl font-display font-bold text-amber-600">{overview.summary.thinlyCovered}</div>
-              <div className="text-xs text-[var(--text-secondary)]">Dun gedekt (1-2 art.)</div>
+              <div className="text-xs text-[var(--color-neutral-700)]">Dun gedekt (1-2 art.)</div>
             </div>
-            <div className="glass-card rounded-xl p-4">
+            <div className="bg-white shadow-sm border border-[var(--color-neutral-200)] rounded-xl p-4">
               <div className="text-2xl font-display font-bold text-emerald-600">{overview.summary.wellCovered}</div>
-              <div className="text-xs text-[var(--text-secondary)]">Goed gedekt (≥3 art.)</div>
+              <div className="text-xs text-[var(--color-neutral-700)]">Goed gedekt (≥3 art.)</div>
             </div>
           </div>
         )}
@@ -257,9 +257,9 @@ export default function AdminSeoPage() {
         </div>
 
         {loading ? (
-          <div className="text-center py-20 text-[var(--text-secondary)]">Analyse loopt...</div>
+          <div className="text-center py-20 text-[var(--color-neutral-700)]">Analyse loopt...</div>
         ) : !overview ? (
-          <div className="glass-card rounded-xl p-6 border border-red-200 bg-red-50 text-red-700 flex items-center gap-3">
+          <div className="bg-white shadow-sm border border-[var(--color-neutral-200)] rounded-xl p-6 border border-red-200 bg-red-50 text-red-700 flex items-center gap-3">
             <AlertCircle size={20} />
             <div>Kon SEO-data niet laden. Check admin-token en Supabase-config.</div>
           </div>
@@ -267,18 +267,18 @@ export default function AdminSeoPage() {
           <>
             {/* ── Filter bar (density + opportunities) ── */}
             {(tab === "opportunities" || tab === "density") && (
-              <div className="glass-card rounded-xl p-4 mb-6 flex flex-wrap gap-3 items-center text-sm">
+              <div className="bg-white shadow-sm border border-[var(--color-neutral-200)] rounded-xl p-4 mb-6 flex flex-wrap gap-3 items-center text-sm">
                 <input
                   type="text"
                   placeholder="Zoek term..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="flex-1 min-w-[200px] bg-[var(--surface)] border border-[var(--border)] rounded-lg px-3 py-2"
+                  className="flex-1 min-w-[200px] bg-[var(--color-white)] border border-[var(--color-neutral-200)] rounded-lg px-3 py-2"
                 />
                 <select
                   value={personaFilter}
                   onChange={(e) => setPersonaFilter(e.target.value)}
-                  className="bg-[var(--surface)] border border-[var(--border)] rounded-lg px-3 py-2"
+                  className="bg-[var(--color-white)] border border-[var(--color-neutral-200)] rounded-lg px-3 py-2"
                 >
                   <option value="all">Alle persona&apos;s</option>
                   {allPersonas.map((p) => (
@@ -288,22 +288,22 @@ export default function AdminSeoPage() {
                 <select
                   value={themeFilter}
                   onChange={(e) => setThemeFilter(e.target.value)}
-                  className="bg-[var(--surface)] border border-[var(--border)] rounded-lg px-3 py-2"
+                  className="bg-[var(--color-white)] border border-[var(--color-neutral-200)] rounded-lg px-3 py-2"
                 >
                   <option value="all">Alle thema&apos;s</option>
                   {allThemes.map((t) => (
                     <option key={t} value={t}>{t}</option>
                   ))}
                 </select>
-                <span className="text-xs text-[var(--text-secondary)]">{filteredKeywords.length} termen</span>
+                <span className="text-xs text-[var(--color-neutral-700)]">{filteredKeywords.length} termen</span>
               </div>
             )}
 
             {/* ── Opportunities tab ── */}
             {tab === "opportunities" && (
-              <div className="glass-card rounded-xl overflow-hidden">
+              <div className="bg-white shadow-sm border border-[var(--color-neutral-200)] rounded-xl overflow-hidden">
                 <table className="w-full text-sm">
-                  <thead className="bg-gray-50 border-b border-[var(--border)] text-left">
+                  <thead className="bg-gray-50 border-b border-[var(--color-neutral-200)] text-left">
                     <tr>
                       <th className="px-4 py-3 font-medium">Zoekterm</th>
                       <th className="px-4 py-3 font-medium">Persona&apos;s</th>
@@ -319,36 +319,36 @@ export default function AdminSeoPage() {
                       .filter((k) => k.opportunityScore > 0)
                       .slice(0, 100)
                       .map((k) => (
-                        <tr key={k.term} className="border-b border-[var(--border)] hover:bg-gray-50">
+                        <tr key={k.term} className="border-b border-[var(--color-neutral-200)] hover:bg-gray-50">
                           <td className="px-4 py-3">
-                            <div className="font-medium text-[var(--text-primary)]">{k.term}</div>
+                            <div className="font-medium text-[var(--color-neutral-900)]">{k.term}</div>
                             {k.aliases.length > 0 && (
-                              <div className="text-xs text-[var(--text-secondary)]">+ {k.aliases.slice(0, 3).join(", ")}</div>
+                              <div className="text-xs text-[var(--color-neutral-700)]">+ {k.aliases.slice(0, 3).join(", ")}</div>
                             )}
                           </td>
                           <td className="px-4 py-3">
                             <div className="flex flex-wrap gap-1">
                               {k.personas.map((p) => (
-                                <span key={p} className="bg-gray-100 text-[var(--text-secondary)] px-2 py-0.5 rounded text-xs">{p}</span>
+                                <span key={p} className="bg-gray-100 text-[var(--color-neutral-700)] px-2 py-0.5 rounded text-xs">{p}</span>
                               ))}
                             </div>
                           </td>
-                          <td className="px-4 py-3 text-[var(--text-secondary)]">{k.theme}</td>
+                          <td className="px-4 py-3 text-[var(--color-neutral-700)]">{k.theme}</td>
                           <td className={`px-4 py-3 text-center font-semibold ${k.articleCount === 0 ? "text-red-600" : k.articleCount < 3 ? "text-amber-600" : "text-emerald-600"}`}>
                             {k.articleCount}
                           </td>
                           <td className="px-4 py-3 text-center text-xs">{priorityLabel(k.priority)}</td>
                           <td className="px-4 py-3 text-center">
-                            <span className="inline-flex items-center gap-1 bg-[var(--primary)] text-white px-2 py-0.5 rounded text-xs font-semibold">
+                            <span className="inline-flex items-center gap-1 bg-[var(--color-primary-900)] text-white px-2 py-0.5 rounded text-xs font-semibold">
                               <TrendingUp size={12} /> {k.opportunityScore}
                             </span>
                           </td>
-                          <td className="px-4 py-3 text-xs text-[var(--text-secondary)]">{k.sources.join(", ")}</td>
+                          <td className="px-4 py-3 text-xs text-[var(--color-neutral-700)]">{k.sources.join(", ")}</td>
                         </tr>
                       ))}
                     {filteredKeywords.filter((k) => k.opportunityScore > 0).length === 0 && (
                       <tr>
-                        <td colSpan={7} className="px-4 py-12 text-center text-[var(--text-secondary)]">
+                        <td colSpan={7} className="px-4 py-12 text-center text-[var(--color-neutral-700)]">
                           Geen open kansen voor deze filter — dekking is goed! 🎯
                         </td>
                       </tr>
@@ -362,16 +362,16 @@ export default function AdminSeoPage() {
             {tab === "density" && (
               <div className="space-y-3">
                 {filteredKeywords.map((k) => (
-                  <details key={k.term} className="glass-card rounded-xl">
+                  <details key={k.term} className="bg-white shadow-sm border border-[var(--color-neutral-200)] rounded-xl">
                     <summary className="px-4 py-3 cursor-pointer flex items-center gap-4 flex-wrap">
                       <span className="font-medium flex-1">{k.term}</span>
-                      <span className="text-xs text-[var(--text-secondary)]">{k.theme}</span>
+                      <span className="text-xs text-[var(--color-neutral-700)]">{k.theme}</span>
                       <span className={`text-sm font-semibold ${k.articleCount === 0 ? "text-red-600" : k.articleCount < 3 ? "text-amber-600" : "text-emerald-600"}`}>
                         {k.articleCount} art. · {k.totalOccurrences} mentions
                       </span>
                     </summary>
-                    <div className="px-4 pb-4 border-t border-[var(--border)] pt-3">
-                      <div className="text-xs text-[var(--text-secondary)] mb-3">
+                    <div className="px-4 pb-4 border-t border-[var(--color-neutral-200)] pt-3">
+                      <div className="text-xs text-[var(--color-neutral-700)] mb-3">
                         Aliases: {k.aliases.join(", ") || "geen"} · Persona&apos;s: {k.personas.join(", ")} · Bronnen: {k.sources.join(", ")}
                       </div>
                       {k.hits.length === 0 ? (
@@ -380,11 +380,11 @@ export default function AdminSeoPage() {
                         <ul className="space-y-2 text-sm">
                           {k.hits.map((h) => (
                             <li key={h.postId} className="flex items-center gap-3">
-                              <span className="bg-[var(--primary)] text-white px-2 py-0.5 rounded text-xs font-mono min-w-[3rem] text-center">{h.count}x</span>
-                              <Link href={`/blog/${h.slug}`} target="_blank" className="text-[var(--primary)] hover:underline flex-1">
+                              <span className="bg-[var(--color-primary-900)] text-white px-2 py-0.5 rounded text-xs font-mono min-w-[3rem] text-center">{h.count}x</span>
+                              <Link href={`/blog/${h.slug}`} target="_blank" className="text-[var(--color-primary-900)] hover:underline flex-1">
                                 {h.title}
                               </Link>
-                              <span className="text-xs text-[var(--text-secondary)]">{h.matchedTerms.join(", ")}</span>
+                              <span className="text-xs text-[var(--color-neutral-700)]">{h.matchedTerms.join(", ")}</span>
                             </li>
                           ))}
                         </ul>
@@ -399,26 +399,26 @@ export default function AdminSeoPage() {
             {tab === "personas" && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {overview.personaCoverage.map((pc) => (
-                  <div key={pc.persona} className="glass-card rounded-xl p-6">
+                  <div key={pc.persona} className="bg-white shadow-sm border border-[var(--color-neutral-200)] rounded-xl p-6">
                     <div className="flex items-center justify-between mb-3">
                       <h3 className="font-display font-bold text-lg">{pc.persona}</h3>
                       <span className={`px-2 py-1 rounded text-xs font-semibold border ${coverageColor(pc.coveragePct)}`}>
                         {pc.coveragePct}% dekking
                       </span>
                     </div>
-                    <div className="text-sm text-[var(--text-secondary)] mb-4">
+                    <div className="text-sm text-[var(--color-neutral-700)] mb-4">
                       {pc.coveredKeywords} van {pc.totalKeywords} relevante zoektermen zijn minstens in 1 artikel behandeld.
                     </div>
                     {pc.topGaps.length > 0 && (
                       <>
-                        <div className="text-xs font-medium text-[var(--text-secondary)] mb-2 uppercase tracking-wider">
+                        <div className="text-xs font-medium text-[var(--color-neutral-700)] mb-2 uppercase tracking-wider">
                           Top 5 gaps (niet gedekt)
                         </div>
                         <ul className="space-y-1.5">
                           {pc.topGaps.map((g) => (
                             <li key={g.term} className="text-sm flex items-center justify-between">
                               <span>{g.term}</span>
-                              <span className="text-xs text-[var(--text-secondary)]">prio {g.priority}</span>
+                              <span className="text-xs text-[var(--color-neutral-700)]">prio {g.priority}</span>
                             </li>
                           ))}
                         </ul>
@@ -432,13 +432,13 @@ export default function AdminSeoPage() {
             {/* ── AI suggest tab ── */}
             {tab === "suggest" && (
               <div className="space-y-6">
-                <div className="glass-card rounded-xl p-6 flex flex-wrap gap-3 items-center">
-                  <label className="text-sm text-[var(--text-secondary)]">
+                <div className="bg-white shadow-sm border border-[var(--color-neutral-200)] rounded-xl p-6 flex flex-wrap gap-3 items-center">
+                  <label className="text-sm text-[var(--color-neutral-700)]">
                     Focus op persona:
                     <select
                       value={suggestPersona}
                       onChange={(e) => setSuggestPersona(e.target.value)}
-                      className="ml-2 bg-[var(--surface)] border border-[var(--border)] rounded-lg px-3 py-2"
+                      className="ml-2 bg-[var(--color-white)] border border-[var(--color-neutral-200)] rounded-lg px-3 py-2"
                     >
                       <option value="">Alle persona&apos;s</option>
                       {allPersonas.map((p) => (
@@ -454,13 +454,13 @@ export default function AdminSeoPage() {
                     {suggestLoading ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />}
                     Genereer suggesties (Claude)
                   </button>
-                  <span className="text-xs text-[var(--text-secondary)]">
+                  <span className="text-xs text-[var(--color-neutral-700)]">
                     Claude brainstormt zoekterm-kansen op basis van huidige dekking + wat er leeft op Reddit/X/LinkedIn.
                   </span>
                 </div>
 
                 {suggestError && (
-                  <div className="glass-card rounded-xl p-4 border border-red-200 bg-red-50 text-red-700 text-sm">
+                  <div className="bg-white shadow-sm border border-[var(--color-neutral-200)] rounded-xl p-4 border border-red-200 bg-red-50 text-red-700 text-sm">
                     {suggestError}
                   </div>
                 )}
@@ -468,7 +468,7 @@ export default function AdminSeoPage() {
                 {suggestions.length > 0 && (
                   <div className="space-y-3">
                     {suggestions.map((s, i) => (
-                      <div key={i} className="glass-card rounded-xl p-5">
+                      <div key={i} className="bg-white shadow-sm border border-[var(--color-neutral-200)] rounded-xl p-5">
                         <div className="flex items-start justify-between gap-4 mb-2">
                           <h3 className="font-display font-bold flex-1">{s.suggestedTitle}</h3>
                           <button
@@ -478,15 +478,15 @@ export default function AdminSeoPage() {
                             → Naar onderwerpen
                           </button>
                         </div>
-                        <div className="text-sm text-[var(--text-secondary)] mb-3">
+                        <div className="text-sm text-[var(--color-neutral-700)] mb-3">
                           Zoekterm: <strong>{s.term}</strong>
                         </div>
                         <p className="text-sm leading-relaxed mb-3">{s.rationale}</p>
                         <div className="flex flex-wrap gap-1.5 text-xs">
-                          <span className="bg-[rgba(30,58,95,0.1)] text-[var(--primary)] px-2 py-0.5 rounded">{s.persona}</span>
-                          <span className="bg-gray-100 text-[var(--text-secondary)] px-2 py-0.5 rounded">{s.theme}</span>
+                          <span className="bg-[rgba(30,58,95,0.1)] text-[var(--color-primary-900)] px-2 py-0.5 rounded">{s.persona}</span>
+                          <span className="bg-gray-100 text-[var(--color-neutral-700)] px-2 py-0.5 rounded">{s.theme}</span>
                           {s.sources.map((src) => (
-                            <span key={src} className="bg-[rgba(245,158,11,0.1)] text-[var(--accent)] px-2 py-0.5 rounded">{src}</span>
+                            <span key={src} className="bg-[rgba(245,158,11,0.1)] text-[var(--color-action-600)] px-2 py-0.5 rounded">{src}</span>
                           ))}
                         </div>
                       </div>

@@ -39,7 +39,7 @@ export default function Navbar() {
     <header
       className={`fixed top-0 z-50 w-full border-b transition-all duration-300 ${
         isScrolled
-          ? 'border-[var(--border)] bg-white/95 py-3 backdrop-blur-md'
+          ? 'border-[var(--color-neutral-200)] bg-white/95 py-3 backdrop-blur-md'
           : 'border-transparent bg-transparent py-5'
       }`}
     >
@@ -67,7 +67,7 @@ export default function Navbar() {
                     className={`transition-colors hover:text-[var(--color-primary-900)] ${
                       active
                         ? 'text-[var(--color-primary-900)]'
-                        : 'text-[var(--text-secondary)]'
+                        : 'text-[var(--color-neutral-700)]'
                     }`}
                   >
                     {link.name}
@@ -86,7 +86,7 @@ export default function Navbar() {
 
         {/* Mobile Menu Toggle */}
         <button
-          className="text-[var(--text-secondary)] transition-colors hover:text-[var(--color-primary-900)] md:hidden"
+          className="text-[var(--color-neutral-700)] transition-colors hover:text-[var(--color-primary-900)] md:hidden"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           aria-label="Menu"
           aria-expanded={isMobileMenuOpen}
@@ -97,7 +97,7 @@ export default function Navbar() {
 
       {/* Mobile Nav */}
       {isMobileMenuOpen && (
-        <div className="absolute left-0 top-full flex w-full flex-col gap-4 border-b border-[var(--border)] bg-white px-6 py-4 shadow-lg md:hidden">
+        <div className="absolute left-0 top-full flex w-full flex-col gap-4 border-b border-[var(--color-neutral-200)] bg-white px-6 py-4 shadow-lg md:hidden">
           <ul className="flex flex-col gap-4">
             {NAV_LINKS.map((link) => {
               const active = pathname === link.href;
@@ -108,7 +108,7 @@ export default function Navbar() {
                     className={`block text-base font-medium transition-colors ${
                       active
                         ? 'text-[var(--color-primary-900)]'
-                        : 'text-[var(--text-secondary)]'
+                        : 'text-[var(--color-neutral-700)]'
                     }`}
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
@@ -118,7 +118,7 @@ export default function Navbar() {
               );
             })}
           </ul>
-          <div className="border-t border-[var(--border)] pt-3">
+          <div className="border-t border-[var(--color-neutral-200)] pt-3">
             <Link
               href={PRIMARY_CTA.href}
               className="block w-full rounded-md bg-[var(--color-action-600)] px-5 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-[var(--color-action-700)]"

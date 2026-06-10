@@ -216,7 +216,7 @@ export default function ReadinessScanPage() {
 
   return (
     <>
-      <section className="border-b border-[var(--border)] bg-white">
+      <section className="border-b border-[var(--color-neutral-200)] bg-white">
         <div className="container mx-auto max-w-3xl px-6 py-16 md:px-12 md:py-20">
           <p className="eyebrow mb-4">HR Analytics Readiness Scan</p>
           <h1 className="mb-4">Hoe volwassen is jullie HR-rapportage in Power BI?</h1>
@@ -231,9 +231,9 @@ export default function ReadinessScanPage() {
       <section className="py-12 md:py-16">
         <div className="container mx-auto max-w-2xl px-6 md:px-12">
           {!klaar && huidigeVraag && (
-            <div className="rounded-lg border border-[var(--border)] bg-white p-6 md:p-8">
+            <div className="rounded-lg border border-[var(--color-neutral-200)] bg-white p-6 md:p-8">
               <div className="mb-6 flex items-center justify-between">
-                <p className="text-sm font-semibold text-[var(--text-secondary)]">
+                <p className="text-sm font-semibold text-[var(--color-neutral-700)]">
                   Vraag {stap + 1} van {VRAGEN.length}
                 </p>
                 <div className="h-1 w-32 overflow-hidden rounded-full bg-[var(--color-neutral-100)]">
@@ -256,7 +256,7 @@ export default function ReadinessScanPage() {
                       className={`flex w-full items-start gap-3 rounded-md border p-3 text-left text-sm transition-colors ${
                         geselecteerd
                           ? 'border-[var(--color-accent-700)] bg-[var(--color-accent-100)]/50'
-                          : 'border-[var(--border)] hover:border-[var(--color-accent-700)]/40 hover:bg-[var(--color-neutral-50)]'
+                          : 'border-[var(--color-neutral-200)] hover:border-[var(--color-accent-700)]/40 hover:bg-[var(--color-neutral-50)]'
                       }`}
                     >
                       <span
@@ -280,7 +280,7 @@ export default function ReadinessScanPage() {
                 <button
                   onClick={handleVorige}
                   disabled={stap === 0}
-                  className="inline-flex items-center gap-2 text-sm text-[var(--text-secondary)] disabled:opacity-30"
+                  className="inline-flex items-center gap-2 text-sm text-[var(--color-neutral-700)] disabled:opacity-30"
                 >
                   <ArrowLeft className="h-4 w-4" /> Vorige
                 </button>
@@ -297,7 +297,7 @@ export default function ReadinessScanPage() {
           )}
 
           {klaar && resultaat && (
-            <div className="rounded-lg border border-[var(--border)] bg-white p-6 md:p-8">
+            <div className="rounded-lg border border-[var(--color-neutral-200)] bg-white p-6 md:p-8">
               <div className="mb-6 flex items-center gap-3">
                 <ShieldCheck
                   className="h-8 w-8"
@@ -338,14 +338,14 @@ export default function ReadinessScanPage() {
                 </Link>
                 <button
                   onClick={handleReset}
-                  className="inline-flex items-center gap-2 rounded-md border border-[var(--border)] px-5 py-2.5 text-[0.9375rem] font-medium text-[var(--text-secondary)] transition-colors hover:border-[var(--color-primary-700)] hover:text-[var(--color-primary-900)]"
+                  className="inline-flex items-center gap-2 rounded-md border border-[var(--color-neutral-200)] px-5 py-2.5 text-[0.9375rem] font-medium text-[var(--color-neutral-700)] transition-colors hover:border-[var(--color-primary-700)] hover:text-[var(--color-primary-900)]"
                 >
                   <RotateCcw className="h-4 w-4" />
                   Opnieuw scannen
                 </button>
               </div>
 
-              <div className="mt-8 border-t border-[var(--border)] pt-6">
+              <div className="mt-8 border-t border-[var(--color-neutral-200)] pt-6">
                 <AgentSignature agentId="nova" />
               </div>
             </div>

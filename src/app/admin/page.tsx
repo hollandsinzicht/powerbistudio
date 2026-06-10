@@ -533,7 +533,7 @@ export default function AdminDashboard() {
   const activeIdeasCount = ideas.filter((i) => i.status === "suggested" || i.status === "approved").length;
 
   const tabClass = (t: string) =>
-    `px-4 py-2 text-sm font-medium rounded-lg transition-colors ${tab === t ? "bg-[var(--primary)] text-white" : "text-[var(--text-secondary)] hover:bg-gray-100"}`;
+    `px-4 py-2 text-sm font-medium rounded-lg transition-colors ${tab === t ? "bg-[var(--color-primary-900)] text-white" : "text-[var(--color-neutral-700)] hover:bg-gray-100"}`;
 
   return (
     <>
@@ -557,20 +557,20 @@ export default function AdminDashboard() {
         <button onClick={() => setTab("linkedin")} className={tabClass("linkedin")}>
           <span className="flex items-center gap-2"><Linkedin size={16} /> LinkedIn</span>
         </button>
-        <Link href="/admin/seo" className="px-4 py-2 text-sm font-medium rounded-lg transition-colors text-[var(--text-secondary)] hover:bg-gray-100 inline-flex items-center gap-2">
+        <Link href="/admin/seo" className="px-4 py-2 text-sm font-medium rounded-lg transition-colors text-[var(--color-neutral-700)] hover:bg-gray-100 inline-flex items-center gap-2">
           <Target size={16} /> SEO Dashboard
         </Link>
       </div>
 
       {generating && (
-        <div className="mb-6 p-4 rounded-lg bg-[rgba(245,158,11,0.05)] border border-[var(--accent)] flex items-center gap-3">
-          <Loader2 size={18} className="text-[var(--accent)] animate-spin" />
-          <span className="text-sm text-[var(--text-secondary)]">AI is bezig met genereren... dit kan 30-60 seconden duren.</span>
+        <div className="mb-6 p-4 rounded-lg bg-[rgba(245,158,11,0.05)] border border-[var(--color-action-600)] flex items-center gap-3">
+          <Loader2 size={18} className="text-[var(--color-action-600)] animate-spin" />
+          <span className="text-sm text-[var(--color-neutral-700)]">AI is bezig met genereren... dit kan 30-60 seconden duren.</span>
         </div>
       )}
 
       {loading ? (
-        <div className="text-center py-20 text-[var(--text-secondary)]">Laden...</div>
+        <div className="text-center py-20 text-[var(--color-neutral-700)]">Laden...</div>
       ) : (
         <>
           {/* ===== TAB: ARTIKELEN — UNIFIED TABEL ===== */}
@@ -580,7 +580,7 @@ export default function AdminDashboard() {
                 <div className="flex gap-2">
                   {["all", "draft", "scheduled", "published", "archived"].map((s) => (
                     <button key={s} onClick={() => setStatusFilter(s)}
-                      className={`px-3 py-1.5 text-xs font-medium rounded-full border transition-colors ${statusFilter === s ? "bg-[var(--primary)] text-white border-[var(--primary)]" : "bg-[var(--surface)] text-[var(--text-secondary)] border-[var(--border)]"}`}>
+                      className={`px-3 py-1.5 text-xs font-medium rounded-full border transition-colors ${statusFilter === s ? "bg-[var(--color-primary-900)] text-white border-[var(--color-primary-900)]" : "bg-[var(--color-white)] text-[var(--color-neutral-700)] border-[var(--color-neutral-200)]"}`}>
                       {s === "all" ? "Alle" : s}
                     </button>
                   ))}
@@ -588,7 +588,7 @@ export default function AdminDashboard() {
                 <button
                   onClick={handlePublishDue}
                   disabled={generating}
-                  className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-[var(--text-secondary)] border border-[var(--border)] rounded-full hover:border-[var(--accent)] hover:text-[var(--accent)] disabled:opacity-50 transition-colors"
+                  className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-[var(--color-neutral-700)] border border-[var(--color-neutral-200)] rounded-full hover:border-[var(--color-action-600)] hover:text-[var(--color-action-600)] disabled:opacity-50 transition-colors"
                   title="Publiceer alle scheduled posts waarvan de datum al verlopen is"
                 >
                   <Send size={13} /> Publiceer achterstallige
@@ -605,14 +605,14 @@ export default function AdminDashboard() {
                   const canMoveDown = scheduledIndex >= 0 && scheduledIndex < scheduledPosts.length - 1;
 
                   return (
-                    <div key={post.id} className={`glass-card rounded-lg p-3 border border-[var(--border)] flex items-center gap-3 transition-opacity ${actionId === post.id ? "opacity-50 pointer-events-none" : ""}`}>
+                    <div key={post.id} className={`bg-white shadow-sm rounded-lg p-3 border border-[var(--color-neutral-200)] flex items-center gap-3 transition-opacity ${actionId === post.id ? "opacity-50 pointer-events-none" : ""}`}>
                       {/* Reorder arrows (alleen voor scheduled) */}
                       {post.status === "scheduled" && (
                         <div className="flex flex-col shrink-0">
                           <button
                             onClick={() => canMoveUp && handleSwapDates(post.id, scheduledPosts[scheduledIndex - 1].id)}
                             disabled={!canMoveUp}
-                            className="p-0.5 text-[var(--text-secondary)] hover:text-[var(--primary)] disabled:opacity-20 disabled:cursor-not-allowed"
+                            className="p-0.5 text-[var(--color-neutral-700)] hover:text-[var(--color-primary-900)] disabled:opacity-20 disabled:cursor-not-allowed"
                             title="Eerder"
                           >
                             <ArrowUp size={14} />
@@ -620,7 +620,7 @@ export default function AdminDashboard() {
                           <button
                             onClick={() => canMoveDown && handleSwapDates(post.id, scheduledPosts[scheduledIndex + 1].id)}
                             disabled={!canMoveDown}
-                            className="p-0.5 text-[var(--text-secondary)] hover:text-[var(--primary)] disabled:opacity-20 disabled:cursor-not-allowed"
+                            className="p-0.5 text-[var(--color-neutral-700)] hover:text-[var(--color-primary-900)] disabled:opacity-20 disabled:cursor-not-allowed"
                             title="Later"
                           >
                             <ArrowDown size={14} />
@@ -635,7 +635,7 @@ export default function AdminDashboard() {
                           <img src={post.image} alt="" className="w-full h-full object-cover" />
                         </div>
                       ) : (
-                        <div className="w-14 h-9 rounded shrink-0 bg-gray-100 flex items-center justify-center text-[var(--text-secondary)]">
+                        <div className="w-14 h-9 rounded shrink-0 bg-gray-100 flex items-center justify-center text-[var(--color-neutral-700)]">
                           <FileText size={14} />
                         </div>
                       )}
@@ -649,9 +649,9 @@ export default function AdminDashboard() {
                             post.status === "scheduled" ? "bg-blue-100 text-blue-700" :
                             "bg-gray-100 text-gray-500"
                           }`}>{post.status}</span>
-                          {post.ai_generated && <span className="text-[10px] text-[var(--accent)]">AI</span>}
+                          {post.ai_generated && <span className="text-[10px] text-[var(--color-action-600)]">AI</span>}
                           {post.article_type === "pillar" && (
-                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[var(--accent)] text-white uppercase tracking-wider" title="Pillar-gids (hub-and-spoke)">
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[var(--color-action-600)] text-white uppercase tracking-wider" title="Pillar-gids (hub-and-spoke)">
                               Gids
                             </span>
                           )}
@@ -672,30 +672,30 @@ export default function AdminDashboard() {
                             value={dateInputValue(post.scheduled_for)}
                             onChange={(e) => handleDateChange(post.id, e.target.value)}
                             min={new Date().toISOString().split("T")[0]}
-                            className="bg-[var(--surface)] border border-[var(--border)] rounded px-2 py-1 text-xs focus:outline-none focus:border-[var(--accent)]"
+                            className="bg-[var(--color-white)] border border-[var(--color-neutral-200)] rounded px-2 py-1 text-xs focus:outline-none focus:border-[var(--color-action-600)]"
                           />
                         ) : post.status === "published" ? (
-                          <span className="text-[10px] text-[var(--text-secondary)] flex items-center gap-1">
+                          <span className="text-[10px] text-[var(--color-neutral-700)] flex items-center gap-1">
                             <Clock size={10} /> {formatDate(post.published_at)}
                           </span>
                         ) : (
-                          <span className="text-[10px] text-[var(--text-secondary)]">{formatDate(post.created_at)}</span>
+                          <span className="text-[10px] text-[var(--color-neutral-700)]">{formatDate(post.created_at)}</span>
                         )}
                       </div>
 
                       {/* Acties */}
                       <div className="flex items-center gap-0.5 shrink-0">
-                        {actionId === post.id && <Loader2 size={15} className="animate-spin text-[var(--accent)]" />}
+                        {actionId === post.id && <Loader2 size={15} className="animate-spin text-[var(--color-action-600)]" />}
                         {post.status === "published" && (
                           <>
-                            <a href={`/blog/${post.slug}`} target="_blank" className="p-2 text-[var(--text-secondary)] hover:text-[var(--primary)]" title="Bekijk"><Eye size={15} /></a>
-                            <button onClick={() => openLinkedinModal(post)} className="p-2 text-[var(--text-secondary)] hover:text-[#0A66C2]" title="Genereer LinkedIn post"><Linkedin size={15} /></button>
-                            <button onClick={() => openQuoteImagesModal(post)} className="p-2 text-[var(--text-secondary)] hover:text-[#0A66C2]" title="Genereer 4 quote images voor LinkedIn"><Images size={15} /></button>
-                            <button onClick={() => handleUpdateLinks(post.id)} disabled={generating} className="p-2 text-[var(--text-secondary)] hover:text-blue-500" title="Update interne links"><Link2 size={15} /></button>
+                            <a href={`/blog/${post.slug}`} target="_blank" className="p-2 text-[var(--color-neutral-700)] hover:text-[var(--color-primary-900)]" title="Bekijk"><Eye size={15} /></a>
+                            <button onClick={() => openLinkedinModal(post)} className="p-2 text-[var(--color-neutral-700)] hover:text-[#0A66C2]" title="Genereer LinkedIn post"><Linkedin size={15} /></button>
+                            <button onClick={() => openQuoteImagesModal(post)} className="p-2 text-[var(--color-neutral-700)] hover:text-[#0A66C2]" title="Genereer 4 quote images voor LinkedIn"><Images size={15} /></button>
+                            <button onClick={() => handleUpdateLinks(post.id)} disabled={generating} className="p-2 text-[var(--color-neutral-700)] hover:text-blue-500" title="Update interne links"><Link2 size={15} /></button>
                           </>
                         )}
                         {post.status !== "archived" && (
-                          <button onClick={() => handleRegenerateImage(post.id)} disabled={generating} className="p-2 text-[var(--text-secondary)] hover:text-purple-500" title={post.image ? "Image opnieuw genereren" : "Image genereren"}><ImageIcon size={15} /></button>
+                          <button onClick={() => handleRegenerateImage(post.id)} disabled={generating} className="p-2 text-[var(--color-neutral-700)] hover:text-purple-500" title={post.image ? "Image opnieuw genereren" : "Image genereren"}><ImageIcon size={15} /></button>
                         )}
                         {post.status !== "archived" && (
                           <>
@@ -713,25 +713,25 @@ export default function AdminDashboard() {
                             <button
                               onClick={() => triggerUpload(post.id)}
                               disabled={generating}
-                              className="p-2 text-[var(--text-secondary)] hover:text-emerald-500"
+                              className="p-2 text-[var(--color-neutral-700)] hover:text-emerald-500"
                               title="Upload eigen afbeelding (JPG/PNG/WEBP, max 10MB)"
                             >
                               <Upload size={15} />
                             </button>
                           </>
                         )}
-                        <Link href={`/admin/edit/${post.id}`} className="p-2 text-[var(--text-secondary)] hover:text-[var(--primary)]" title="Bewerk"><PenLine size={15} /></Link>
+                        <Link href={`/admin/edit/${post.id}`} className="p-2 text-[var(--color-neutral-700)] hover:text-[var(--color-primary-900)]" title="Bewerk"><PenLine size={15} /></Link>
                         {(post.status === "draft" || post.status === "scheduled") && (
                           <button onClick={() => handlePostAction(post.id, "publish")} disabled={actionId === post.id} className="p-2 text-green-500 hover:text-green-700 disabled:opacity-50" title="Nu publiceren"><Send size={15} /></button>
                         )}
                         {post.status !== "archived" && (
-                          <button onClick={() => handlePostAction(post.id, "archive")} disabled={actionId === post.id} className="p-2 text-[var(--text-secondary)] hover:text-red-500 disabled:opacity-50" title="Archiveer"><Archive size={15} /></button>
+                          <button onClick={() => handlePostAction(post.id, "archive")} disabled={actionId === post.id} className="p-2 text-[var(--color-neutral-700)] hover:text-red-500 disabled:opacity-50" title="Archiveer"><Archive size={15} /></button>
                         )}
                       </div>
                     </div>
                   );
                 })}
-                {filteredPosts.length === 0 && <p className="text-center py-12 text-[var(--text-secondary)] text-sm">Geen artikelen gevonden.</p>}
+                {filteredPosts.length === 0 && <p className="text-center py-12 text-[var(--color-neutral-700)] text-sm">Geen artikelen gevonden.</p>}
               </div>
             </>
           )}
@@ -745,7 +745,7 @@ export default function AdminDashboard() {
             return (
               <>
                 <div className="mb-6">
-                  <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
+                  <label className="block text-sm font-medium text-[var(--color-neutral-700)] mb-2">
                     Keywords of thema&apos;s (optioneel)
                   </label>
                   <textarea
@@ -753,7 +753,7 @@ export default function AdminDashboard() {
                     onChange={(e) => setSeedKeywords(e.target.value)}
                     placeholder="Bijv: fabric kosten, dax performance, gemeente bi aanbesteding, copilot semantic model"
                     rows={2}
-                    className="w-full bg-[var(--surface)] border border-[var(--border)] rounded-lg px-4 py-3 text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)] transition-colors text-sm mb-3"
+                    className="w-full bg-[var(--color-white)] border border-[var(--color-neutral-200)] rounded-lg px-4 py-3 text-[var(--color-neutral-900)] focus:outline-none focus:border-[var(--color-action-600)] transition-colors text-sm mb-3"
                   />
                   <div className="flex flex-wrap gap-2">
                     <button onClick={handleGenerateIdeas} disabled={generating} className="btn-primary inline-flex items-center gap-2 text-sm disabled:opacity-50">
@@ -772,7 +772,7 @@ export default function AdminDashboard() {
                     const currentArchetype: BlogArchetype | undefined =
                       ideaArchetypeOverride[idea.id] || idea.archetype || undefined;
                     return (
-                    <div key={idea.id} className="glass-card rounded-lg p-4 border border-[var(--border)]">
+                    <div key={idea.id} className="bg-white shadow-sm rounded-lg p-4 border border-[var(--color-neutral-200)]">
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex-grow min-w-0">
                           <div className="flex items-center gap-2 mb-1 flex-wrap">
@@ -785,17 +785,17 @@ export default function AdminDashboard() {
                                 {ARCHETYPE_LABELS[currentArchetype]}
                               </span>
                             )}
-                            {idea.target_audience && <span className="text-[10px] text-[var(--text-secondary)]">{idea.target_audience}</span>}
+                            {idea.target_audience && <span className="text-[10px] text-[var(--color-neutral-700)]">{idea.target_audience}</span>}
                           </div>
                           <h3 className="font-medium text-sm">{idea.title}</h3>
-                          {idea.rationale && <p className="text-xs text-[var(--text-secondary)] mt-1">{idea.rationale}</p>}
+                          {idea.rationale && <p className="text-xs text-[var(--color-neutral-700)] mt-1">{idea.rationale}</p>}
                           <div className="flex flex-wrap gap-1 mt-2">
                             {idea.keywords.map((kw) => (
-                              <span key={kw} className="text-[10px] px-2 py-0.5 rounded-full bg-gray-100 text-[var(--text-secondary)]">{kw}</span>
+                              <span key={kw} className="text-[10px] px-2 py-0.5 rounded-full bg-gray-100 text-[var(--color-neutral-700)]">{kw}</span>
                             ))}
                           </div>
                           <div className="mt-2 flex items-center gap-2">
-                            <label className="text-[10px] text-[var(--text-secondary)]">Archetype overschrijven:</label>
+                            <label className="text-[10px] text-[var(--color-neutral-700)]">Archetype overschrijven:</label>
                             <select
                               value={ideaArchetypeOverride[idea.id] || idea.archetype || ""}
                               onChange={(e) => {
@@ -806,7 +806,7 @@ export default function AdminDashboard() {
                                   return next;
                                 });
                               }}
-                              className="text-[11px] px-2 py-1 rounded border border-[var(--border)] bg-[var(--surface)]"
+                              className="text-[11px] px-2 py-1 rounded border border-[var(--color-neutral-200)] bg-[var(--color-white)]"
                             >
                               <option value="">— gebruik suggestie —</option>
                               {ALL_ARCHETYPES.map((a) => (
@@ -824,7 +824,7 @@ export default function AdminDashboard() {
                     );
                   })}
                   {activeIdeas.length === 0 && (
-                    <p className="text-center py-12 text-[var(--text-secondary)] text-sm">
+                    <p className="text-center py-12 text-[var(--color-neutral-700)] text-sm">
                       Geen actieve onderwerpen. Vul eventueel keywords in en klik op &ldquo;Stel onderwerpen voor&rdquo;.
                     </p>
                   )}
@@ -851,8 +851,8 @@ export default function AdminDashboard() {
                     onClick={() => setNewMode("blog")}
                     className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
                       newMode === "blog"
-                        ? "bg-[var(--surface)] text-[var(--text-primary)] shadow-sm"
-                        : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+                        ? "bg-[var(--color-white)] text-[var(--color-neutral-900)] shadow-sm"
+                        : "text-[var(--color-neutral-700)] hover:text-[var(--color-neutral-900)]"
                     }`}
                   >
                     Reguliere blog
@@ -861,8 +861,8 @@ export default function AdminDashboard() {
                     onClick={() => setNewMode("pillar")}
                     className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
                       newMode === "pillar"
-                        ? "bg-[var(--surface)] text-[var(--text-primary)] shadow-sm"
-                        : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+                        ? "bg-[var(--color-white)] text-[var(--color-neutral-900)] shadow-sm"
+                        : "text-[var(--color-neutral-700)] hover:text-[var(--color-neutral-900)]"
                     }`}
                   >
                     Pillar-gids
@@ -871,38 +871,38 @@ export default function AdminDashboard() {
 
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
+                    <label className="block text-sm font-medium text-[var(--color-neutral-700)] mb-2">
                       {newMode === "pillar" ? "Gids-titel" : "Onderwerp / Titel"}
                     </label>
                     <input type="text" value={newTitle} onChange={(e) => setNewTitle(e.target.value)}
                       placeholder={newMode === "pillar" ? "Bijv: Fabric-migratie: complete gids" : "Bijv: Fabric migratie: de 5 grootste fouten"}
-                      className="w-full bg-[var(--surface)] border border-[var(--border)] rounded-lg px-4 py-3 text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)] transition-colors" />
+                      className="w-full bg-[var(--color-white)] border border-[var(--color-neutral-200)] rounded-lg px-4 py-3 text-[var(--color-neutral-900)] focus:outline-none focus:border-[var(--color-action-600)] transition-colors" />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">Keywords (komma-gescheiden)</label>
+                    <label className="block text-sm font-medium text-[var(--color-neutral-700)] mb-2">Keywords (komma-gescheiden)</label>
                     <input type="text" value={newKeywords} onChange={(e) => setNewKeywords(e.target.value)}
                       placeholder="fabric, migratie, fouten, premium"
-                      className="w-full bg-[var(--surface)] border border-[var(--border)] rounded-lg px-4 py-3 text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)] transition-colors" />
+                      className="w-full bg-[var(--color-white)] border border-[var(--color-neutral-200)] rounded-lg px-4 py-3 text-[var(--color-neutral-900)] focus:outline-none focus:border-[var(--color-action-600)] transition-colors" />
                   </div>
 
                   {newMode === "blog" && (
                     <>
                       <div>
-                        <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">Archetype</label>
+                        <label className="block text-sm font-medium text-[var(--color-neutral-700)] mb-2">Archetype</label>
                         <select
                           value={newArchetype}
                           onChange={(e) => setNewArchetype(e.target.value as BlogArchetype)}
-                          className="w-full bg-[var(--surface)] border border-[var(--border)] rounded-lg px-4 py-3 text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)] transition-colors"
+                          className="w-full bg-[var(--color-white)] border border-[var(--color-neutral-200)] rounded-lg px-4 py-3 text-[var(--color-neutral-900)] focus:outline-none focus:border-[var(--color-action-600)] transition-colors"
                         >
                           {ALL_ARCHETYPES.map((a) => (
                             <option key={a} value={a}>{ARCHETYPE_LABELS[a]}</option>
                           ))}
                         </select>
-                        <p className="text-xs text-[var(--text-secondary)] mt-1">{ARCHETYPE_DESCRIPTIONS[newArchetype]}</p>
+                        <p className="text-xs text-[var(--color-neutral-700)] mt-1">{ARCHETYPE_DESCRIPTIONS[newArchetype]}</p>
                       </div>
                       <div className="flex items-center gap-3">
                         <input type="checkbox" id="useAi" checked={useAi} onChange={(e) => setUseAi(e.target.checked)} className="rounded" />
-                        <label htmlFor="useAi" className="text-sm text-[var(--text-secondary)]">Laat AI het artikel schrijven</label>
+                        <label htmlFor="useAi" className="text-sm text-[var(--color-neutral-700)]">Laat AI het artikel schrijven</label>
                       </div>
                       <button onClick={handleWriteNew} disabled={!newTitle.trim() || generating} className="btn-primary inline-flex items-center gap-2 disabled:opacity-50">
                         {useAi ? <><Sparkles size={16} /> AI: Schrijf artikel</> : <><Plus size={16} /> Maak draft aan</>}
@@ -914,7 +914,7 @@ export default function AdminDashboard() {
                     <>
                       <div>
                         <div className="flex items-center justify-between mb-2">
-                          <label className="block text-sm font-medium text-[var(--text-secondary)]">
+                          <label className="block text-sm font-medium text-[var(--color-neutral-700)]">
                             Spoke-artikelen (selecteer 3-10)
                           </label>
                           <span className={`text-xs font-bold ${
@@ -924,19 +924,19 @@ export default function AdminDashboard() {
                           </span>
                         </div>
                         {spokeCandidates.length === 0 ? (
-                          <p className="text-sm text-[var(--text-secondary)] py-3">
+                          <p className="text-sm text-[var(--color-neutral-700)] py-3">
                             Er zijn geen gepubliceerde blog-artikelen om als spoke te selecteren. Publiceer eerst minimaal 3 reguliere blogs.
                           </p>
                         ) : (
-                          <div className="border border-[var(--border)] rounded-lg max-h-72 overflow-y-auto bg-[var(--surface)]">
+                          <div className="border border-[var(--color-neutral-200)] rounded-lg max-h-72 overflow-y-auto bg-[var(--color-white)]">
                             {spokeCandidates.map((p) => {
                               const checked = pillarSpokeSlugs.has(p.slug);
                               const disabled = !checked && spokeCount >= 10;
                               return (
                                 <label
                                   key={p.id}
-                                  className={`flex items-center gap-3 px-3 py-2 border-b border-[var(--border)] last:border-b-0 cursor-pointer transition-colors ${
-                                    checked ? "bg-[var(--accent)]/10" : "hover:bg-gray-50"
+                                  className={`flex items-center gap-3 px-3 py-2 border-b border-[var(--color-neutral-200)] last:border-b-0 cursor-pointer transition-colors ${
+                                    checked ? "bg-[var(--color-action-600)]/10" : "hover:bg-gray-50"
                                   } ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
                                 >
                                   <input
@@ -946,13 +946,13 @@ export default function AdminDashboard() {
                                     onChange={() => togglePillarSpoke(p.slug)}
                                     className="rounded"
                                   />
-                                  <span className="text-sm text-[var(--text-primary)] truncate">{p.title}</span>
+                                  <span className="text-sm text-[var(--color-neutral-900)] truncate">{p.title}</span>
                                 </label>
                               );
                             })}
                           </div>
                         )}
-                        <p className="text-xs text-[var(--text-secondary)] mt-2">
+                        <p className="text-xs text-[var(--color-neutral-700)] mt-2">
                           De pillar-gids zal naar elke geselecteerde spoke minimaal één keer linken vanuit lopende tekst.
                         </p>
                       </div>
@@ -960,7 +960,7 @@ export default function AdminDashboard() {
                         onClick={handleWritePillar}
                         disabled={!newTitle.trim() || !spokeOk || generating}
                         className="inline-flex items-center gap-2 px-6 py-3 rounded font-medium text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                        style={{ backgroundColor: "var(--color-sector-saas)" }}
+                        style={{ backgroundColor: "var(--color-primary-700)" }}
                       >
                         {generating ? <Loader2 size={16} className="animate-spin" /> : <Sparkles size={16} />}
                         Genereer pillar-gids
@@ -977,9 +977,9 @@ export default function AdminDashboard() {
             <div className="space-y-10">
               <div>
                 <h2 className="text-xl font-semibold flex items-center gap-2">
-                  <Megaphone size={20} className="text-[var(--primary)]" /> Acquisitie
+                  <Megaphone size={20} className="text-[var(--color-primary-900)]" /> Acquisitie
                 </h2>
-                <p className="text-sm text-[var(--text-secondary)] mt-1 max-w-2xl">
+                <p className="text-sm text-[var(--color-neutral-700)] mt-1 max-w-2xl">
                   Je outbound-motor op één plek: de ICP-starters om te benaderen, de
                   6 LinkedIn-posts en de outreach-funnel. Kopieer een blok en plak het
                   in LinkedIn. De bewerkbare werkkopieën blijven in{" "}
@@ -991,12 +991,12 @@ export default function AdminDashboard() {
               {/* ICP-starters */}
               <section>
                 <h3 className="text-base font-semibold flex items-center gap-2 mb-3">
-                  <Building2 size={18} className="text-[var(--accent)]" /> ICP-starters ({ICP_STARTERS.length})
+                  <Building2 size={18} className="text-[var(--color-action-600)]" /> ICP-starters ({ICP_STARTERS.length})
                 </h3>
-                <div className="overflow-x-auto rounded-lg border border-[var(--border)]">
+                <div className="overflow-x-auto rounded-lg border border-[var(--color-neutral-200)]">
                   <table className="w-full text-sm">
                     <thead>
-                      <tr className="bg-[var(--surface)] text-left text-[var(--text-secondary)]">
+                      <tr className="bg-[var(--color-white)] text-left text-[var(--color-neutral-700)]">
                         <th className="px-3 py-2 font-medium">Bedrijf</th>
                         <th className="px-3 py-2 font-medium">Plaats</th>
                         <th className="px-3 py-2 font-medium">FTE</th>
@@ -1006,18 +1006,18 @@ export default function AdminDashboard() {
                     </thead>
                     <tbody>
                       {ICP_STARTERS.map((icp) => (
-                        <tr key={icp.bedrijf} className="border-t border-[var(--border)]">
+                        <tr key={icp.bedrijf} className="border-t border-[var(--color-neutral-200)]">
                           <td className="px-3 py-2 font-medium">{icp.bedrijf}</td>
-                          <td className="px-3 py-2 text-[var(--text-secondary)]">{icp.plaats}</td>
-                          <td className="px-3 py-2 text-[var(--text-secondary)]">{icp.fte}</td>
-                          <td className="px-3 py-2 text-[var(--text-secondary)]">{icp.functie}</td>
-                          <td className="px-3 py-2 text-[var(--text-secondary)]">{icp.trigger || "—"}</td>
+                          <td className="px-3 py-2 text-[var(--color-neutral-700)]">{icp.plaats}</td>
+                          <td className="px-3 py-2 text-[var(--color-neutral-700)]">{icp.fte}</td>
+                          <td className="px-3 py-2 text-[var(--color-neutral-700)]">{icp.functie}</td>
+                          <td className="px-3 py-2 text-[var(--color-neutral-700)]">{icp.trigger || "—"}</td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
                 </div>
-                <p className="text-xs text-[var(--text-secondary)] mt-2">
+                <p className="text-xs text-[var(--color-neutral-700)] mt-2">
                   Naam, LinkedIn-URL en salarissysteem bewust leeg — die verifieer je per account in Sales Navigator.
                 </p>
               </section>
@@ -1032,14 +1032,14 @@ export default function AdminDashboard() {
                     const id = `post-${post.week}-${post.dag}`;
                     const full = `${post.body}\n\n${post.hashtags.join(" ")}`;
                     return (
-                      <div key={id} className="rounded-lg border border-[var(--border)] bg-[var(--surface)] p-4 flex flex-col">
+                      <div key={id} className="rounded-lg border border-[var(--color-neutral-200)] bg-[var(--color-white)] p-4 flex flex-col">
                         <div className="flex items-center justify-between gap-2 mb-2">
-                          <span className="text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wide">
+                          <span className="text-xs font-medium text-[var(--color-neutral-700)] uppercase tracking-wide">
                             Week {post.week} · {post.dag} · {post.style}
                           </span>
                           <button
                             onClick={() => handleAcqCopy(id, full)}
-                            className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded border border-[var(--border)] hover:bg-gray-100 shrink-0"
+                            className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded border border-[var(--color-neutral-200)] hover:bg-gray-100 shrink-0"
                             title="Kopieer post + hashtags"
                           >
                             {acqCopied === id ? <Check size={13} className="text-green-600" /> : <Copy size={13} />}
@@ -1047,7 +1047,7 @@ export default function AdminDashboard() {
                           </button>
                         </div>
                         <p className="text-sm font-medium mb-2">{post.thema}</p>
-                        <p className="text-sm text-[var(--text-secondary)] whitespace-pre-wrap flex-1">{post.body}</p>
+                        <p className="text-sm text-[var(--color-neutral-700)] whitespace-pre-wrap flex-1">{post.body}</p>
                         <p className="text-xs text-[#0A66C2] mt-3">{post.hashtags.join(" ")}</p>
                       </div>
                     );
@@ -1058,16 +1058,16 @@ export default function AdminDashboard() {
               {/* Outreach-funnel */}
               <section>
                 <h3 className="text-base font-semibold flex items-center gap-2 mb-3">
-                  <MessageSquare size={18} className="text-[var(--accent)]" /> Outreach-funnel
+                  <MessageSquare size={18} className="text-[var(--color-action-600)]" /> Outreach-funnel
                 </h3>
                 <div className="space-y-3">
                   {[...CONNECT_VARIANTEN.map((b, i) => ({ ...b, id: `connect-${i}` })), ...OUTREACH_STAPPEN.map((b, i) => ({ ...b, id: `stap-${i}` }))].map((blok) => (
-                    <div key={blok.id} className="rounded-lg border border-[var(--border)] bg-[var(--surface)] p-4">
+                    <div key={blok.id} className="rounded-lg border border-[var(--color-neutral-200)] bg-[var(--color-white)] p-4">
                       <div className="flex items-center justify-between gap-2 mb-1">
                         <span className="text-sm font-medium">{blok.label}</span>
                         <button
                           onClick={() => handleAcqCopy(blok.id, blok.tekst)}
-                          className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded border border-[var(--border)] hover:bg-gray-100 shrink-0"
+                          className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded border border-[var(--color-neutral-200)] hover:bg-gray-100 shrink-0"
                           title="Kopieer bericht"
                         >
                           {acqCopied === blok.id ? <Check size={13} className="text-green-600" /> : <Copy size={13} />}
@@ -1075,9 +1075,9 @@ export default function AdminDashboard() {
                         </button>
                       </div>
                       {blok.toelichting && (
-                        <p className="text-xs text-[var(--accent)] mb-2">{blok.toelichting}</p>
+                        <p className="text-xs text-[var(--color-action-600)] mb-2">{blok.toelichting}</p>
                       )}
-                      <p className="text-sm text-[var(--text-secondary)] whitespace-pre-wrap">{blok.tekst}</p>
+                      <p className="text-sm text-[var(--color-neutral-700)] whitespace-pre-wrap">{blok.tekst}</p>
                     </div>
                   ))}
                 </div>
@@ -1096,17 +1096,17 @@ export default function AdminDashboard() {
       {/* ===== LINKEDIN POST MODAL ===== */}
       {linkedinPost && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={closeLinkedinModal}>
-          <div className="glass-card bg-[var(--background)] rounded-xl border border-[var(--border)] max-w-2xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-white shadow-sm bg-[var(--color-neutral-50)] rounded-xl border border-[var(--color-neutral-200)] max-w-2xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
             {/* Header */}
-            <div className="flex items-center justify-between p-5 border-b border-[var(--border)] sticky top-0 bg-[var(--background)] z-10">
+            <div className="flex items-center justify-between p-5 border-b border-[var(--color-neutral-200)] sticky top-0 bg-[var(--color-neutral-50)] z-10">
               <div className="flex items-center gap-3">
                 <Linkedin size={20} className="text-[#0A66C2]" />
                 <div>
                   <h2 className="font-display font-bold text-base">LinkedIn post genereren</h2>
-                  <p className="text-xs text-[var(--text-secondary)] truncate max-w-md">{linkedinPost.title}</p>
+                  <p className="text-xs text-[var(--color-neutral-700)] truncate max-w-md">{linkedinPost.title}</p>
                 </div>
               </div>
-              <button onClick={closeLinkedinModal} className="p-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)]" title="Sluiten">
+              <button onClick={closeLinkedinModal} className="p-2 text-[var(--color-neutral-700)] hover:text-[var(--color-neutral-900)]" title="Sluiten">
                 <XCircle size={18} />
               </button>
             </div>
@@ -1115,7 +1115,7 @@ export default function AdminDashboard() {
             <div className="p-5 space-y-5">
               {/* Stijl picker */}
               <div>
-                <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">Stijl</label>
+                <label className="block text-sm font-medium text-[var(--color-neutral-700)] mb-2">Stijl</label>
                 <div className="grid grid-cols-2 gap-2">
                   {LINKEDIN_STYLES.map((s) => (
                     <button
@@ -1123,12 +1123,12 @@ export default function AdminDashboard() {
                       onClick={() => setLinkedinStyle(s.value)}
                       className={`text-left p-3 rounded-lg border transition-all ${
                         linkedinStyle === s.value
-                          ? "border-[var(--accent)] bg-[rgba(245,158,11,0.05)]"
-                          : "border-[var(--border)] hover:border-[var(--text-secondary)]"
+                          ? "border-[var(--color-action-600)] bg-[rgba(245,158,11,0.05)]"
+                          : "border-[var(--color-neutral-200)] hover:border-[var(--color-neutral-700)]"
                       }`}
                     >
                       <div className="font-semibold text-sm">{s.label}</div>
-                      <div className="text-[11px] text-[var(--text-secondary)] leading-snug mt-1">{s.description}</div>
+                      <div className="text-[11px] text-[var(--color-neutral-700)] leading-snug mt-1">{s.description}</div>
                     </button>
                   ))}
                 </div>
@@ -1136,15 +1136,15 @@ export default function AdminDashboard() {
 
               {/* Extra context */}
               <div>
-                <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
-                  Extra context <span className="text-[var(--text-secondary)] font-normal">(optioneel — eigen invalshoek of recente ervaring)</span>
+                <label className="block text-sm font-medium text-[var(--color-neutral-700)] mb-2">
+                  Extra context <span className="text-[var(--color-neutral-700)] font-normal">(optioneel — eigen invalshoek of recente ervaring)</span>
                 </label>
                 <textarea
                   value={linkedinExtraContext}
                   onChange={(e) => setLinkedinExtraContext(e.target.value)}
                   placeholder="Bv: Vorige week zat ik bij een gemeente die exact dit probleem had — ze hadden een DAX-formule die 4 minuten draaide..."
                   rows={3}
-                  className="w-full bg-[var(--surface)] border border-[var(--border)] rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[var(--accent)]"
+                  className="w-full bg-[var(--color-white)] border border-[var(--color-neutral-200)] rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[var(--color-action-600)]"
                 />
               </div>
 
@@ -1159,17 +1159,17 @@ export default function AdminDashboard() {
 
               {/* Resultaat */}
               {linkedinResult && (
-                <div className="space-y-3 pt-3 border-t border-[var(--border)]">
+                <div className="space-y-3 pt-3 border-t border-[var(--color-neutral-200)]">
                   <div className="flex items-center justify-between gap-2">
-                    <label className="text-sm font-medium text-[var(--text-secondary)]">Resultaat</label>
-                    <span className="text-[10px] text-[var(--text-secondary)] text-right">
+                    <label className="text-sm font-medium text-[var(--color-neutral-700)]">Resultaat</label>
+                    <span className="text-[10px] text-[var(--color-neutral-700)] text-right">
                       {linkedinResult.usage && (
                         <>≈ €{linkedinResult.usage.costEur.toFixed(3).replace('.', ',')} · {linkedinResult.usage.inputTokens.toLocaleString('nl-NL')} in / {linkedinResult.usage.outputTokens.toLocaleString('nl-NL')} out · </>
                       )}
                       {linkedinResult.postText.length} tekens
                     </span>
                   </div>
-                  <div className="bg-[var(--surface)] border border-[var(--border)] rounded-lg p-4 whitespace-pre-wrap text-sm leading-relaxed text-[var(--text-primary)]">
+                  <div className="bg-[var(--color-white)] border border-[var(--color-neutral-200)] rounded-lg p-4 whitespace-pre-wrap text-sm leading-relaxed text-[var(--color-neutral-900)]">
                     {linkedinResult.postText}
                   </div>
                   <div className="flex flex-wrap gap-2">
@@ -1190,14 +1190,14 @@ export default function AdminDashboard() {
                       href="https://www.linkedin.com/feed/?shareActive=true"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium border border-[var(--border)] rounded-lg hover:border-[#0A66C2] hover:text-[#0A66C2] transition-colors"
+                      className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium border border-[var(--color-neutral-200)] rounded-lg hover:border-[#0A66C2] hover:text-[#0A66C2] transition-colors"
                     >
                       <Linkedin size={15} /> Open LinkedIn
                     </a>
                     <button
                       onClick={handleGenerateLinkedin}
                       disabled={linkedinLoading}
-                      className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium border border-[var(--border)] rounded-lg hover:border-[var(--accent)] disabled:opacity-50"
+                      className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium border border-[var(--color-neutral-200)] rounded-lg hover:border-[var(--color-action-600)] disabled:opacity-50"
                     >
                       <Sparkles size={15} /> Probeer opnieuw
                     </button>
@@ -1212,14 +1212,14 @@ export default function AdminDashboard() {
       {/* ===== QUOTE IMAGES MODAL ===== */}
       {quoteImagesPost && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={closeQuoteImagesModal}>
-          <div className="glass-card bg-[var(--background)] rounded-xl border border-[var(--border)] max-w-4xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-white shadow-sm bg-[var(--color-neutral-50)] rounded-xl border border-[var(--color-neutral-200)] max-w-4xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
             {/* Header */}
-            <div className="flex items-center justify-between p-5 border-b border-[var(--border)] sticky top-0 bg-[var(--background)] z-10">
+            <div className="flex items-center justify-between p-5 border-b border-[var(--color-neutral-200)] sticky top-0 bg-[var(--color-neutral-50)] z-10">
               <div className="flex items-center gap-3">
                 <Images size={20} className="text-[#0A66C2]" />
                 <div>
                   <h2 className="font-display font-bold text-base">Quote images voor LinkedIn</h2>
-                  <p className="text-xs text-[var(--text-secondary)] truncate max-w-md">{quoteImagesPost.title}</p>
+                  <p className="text-xs text-[var(--color-neutral-700)] truncate max-w-md">{quoteImagesPost.title}</p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
@@ -1235,14 +1235,14 @@ export default function AdminDashboard() {
                     <button
                       onClick={handleRegenerateQuoteImages}
                       disabled={quoteImagesLoading}
-                      className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium border border-[var(--border)] rounded-lg hover:border-[var(--accent)] disabled:opacity-50"
+                      className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium border border-[var(--color-neutral-200)] rounded-lg hover:border-[var(--color-action-600)] disabled:opacity-50"
                       title="Andere quotes genereren"
                     >
                       <Sparkles size={14} /> Opnieuw
                     </button>
                   </>
                 )}
-                <button onClick={closeQuoteImagesModal} className="p-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)]" title="Sluiten">
+                <button onClick={closeQuoteImagesModal} className="p-2 text-[var(--color-neutral-700)] hover:text-[var(--color-neutral-900)]" title="Sluiten">
                   <XCircle size={18} />
                 </button>
               </div>
@@ -1252,15 +1252,15 @@ export default function AdminDashboard() {
             <div className="p-5">
               {quoteImagesLoading && (
                 <div className="flex flex-col items-center justify-center py-16 gap-3">
-                  <Loader2 size={28} className="animate-spin text-[var(--accent)]" />
-                  <p className="text-sm text-[var(--text-secondary)]">Quotes extraheren en images renderen...</p>
+                  <Loader2 size={28} className="animate-spin text-[var(--color-action-600)]" />
+                  <p className="text-sm text-[var(--color-neutral-700)]">Quotes extraheren en images renderen...</p>
                 </div>
               )}
 
               {!quoteImagesLoading && quoteImages && quoteImages.length > 0 && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {quoteImages.map((img) => (
-                    <div key={img.index} className="flex flex-col gap-2 border border-[var(--border)] rounded-lg overflow-hidden bg-[var(--surface)]">
+                    <div key={img.index} className="flex flex-col gap-2 border border-[var(--color-neutral-200)] rounded-lg overflow-hidden bg-[var(--color-white)]">
                       {/* Preview */}
                       <div className="bg-[#F3F6FA] flex items-center justify-center" style={{ aspectRatio: "1080/1350" }}>
                         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -1274,9 +1274,9 @@ export default function AdminDashboard() {
                       {/* Footer */}
                       <div className="p-3 flex items-start justify-between gap-3">
                         <div className="flex-grow min-w-0">
-                          <p className="text-xs text-[var(--text-secondary)] line-clamp-2">{img.text}</p>
+                          <p className="text-xs text-[var(--color-neutral-700)] line-clamp-2">{img.text}</p>
                           {img.emphasis && (
-                            <p className="text-[10px] text-[var(--accent)] mt-1">nadruk: <strong>{img.emphasis}</strong></p>
+                            <p className="text-[10px] text-[var(--color-action-600)] mt-1">nadruk: <strong>{img.emphasis}</strong></p>
                           )}
                         </div>
                         <button
@@ -1293,7 +1293,7 @@ export default function AdminDashboard() {
               )}
 
               {!quoteImagesLoading && quoteImages && quoteImages.length === 0 && (
-                <p className="text-center py-12 text-sm text-[var(--text-secondary)]">
+                <p className="text-center py-12 text-sm text-[var(--color-neutral-700)]">
                   Geen quotes gegenereerd. Probeer opnieuw.
                 </p>
               )}

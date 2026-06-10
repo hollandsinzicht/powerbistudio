@@ -94,15 +94,15 @@ export default function EditPostPage() {
     } catch (e) { console.error(e); }
   };
 
-  if (loading) return <div className="text-center py-20 text-[var(--text-secondary)]">Laden...</div>;
+  if (loading) return <div className="text-center py-20 text-[var(--color-neutral-700)]">Laden...</div>;
   if (!post) return <div className="text-center py-20 text-red-500">Post niet gevonden</div>;
 
-  const inputClass = "w-full bg-[var(--surface)] border border-[var(--border)] rounded-lg px-4 py-3 text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)] transition-colors text-sm";
+  const inputClass = "w-full bg-[var(--color-white)] border border-[var(--color-neutral-200)] rounded-lg px-4 py-3 text-[var(--color-neutral-900)] focus:outline-none focus:border-[var(--color-action-600)] transition-colors text-sm";
 
   return (
     <>
       <div className="flex items-center justify-between mb-6">
-        <Link href="/admin" className="inline-flex items-center gap-2 text-sm text-[var(--text-secondary)] hover:text-[var(--primary)] transition-colors">
+        <Link href="/admin" className="inline-flex items-center gap-2 text-sm text-[var(--color-neutral-700)] hover:text-[var(--color-primary-900)] transition-colors">
           <ArrowLeft size={16} /> Terug naar overzicht
         </Link>
         <div className="flex items-center gap-3">
@@ -125,37 +125,37 @@ export default function EditPostPage() {
         <div className={showPreview ? "hidden lg:block" : ""}>
           <div className="space-y-4">
             <div>
-              <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">Titel</label>
+              <label className="block text-xs font-medium text-[var(--color-neutral-700)] mb-1">Titel</label>
               <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} className={inputClass} />
             </div>
             <div>
-              <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">Slug</label>
+              <label className="block text-xs font-medium text-[var(--color-neutral-700)] mb-1">Slug</label>
               <input type="text" value={slug} onChange={(e) => setSlug(e.target.value)} className={inputClass} />
             </div>
             <div>
-              <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">Excerpt</label>
+              <label className="block text-xs font-medium text-[var(--color-neutral-700)] mb-1">Excerpt</label>
               <textarea value={excerpt} onChange={(e) => setExcerpt(e.target.value)} rows={2} className={inputClass} />
             </div>
             <div>
-              <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">Content (HTML)</label>
+              <label className="block text-xs font-medium text-[var(--color-neutral-700)] mb-1">Content (HTML)</label>
               <textarea value={content} onChange={(e) => setContent(e.target.value)} rows={20} className={`${inputClass} font-mono text-xs`} />
             </div>
             <div>
-              <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">Afbeelding URL</label>
+              <label className="block text-xs font-medium text-[var(--color-neutral-700)] mb-1">Afbeelding URL</label>
               <input type="text" value={image} onChange={(e) => setImage(e.target.value)} placeholder="https://..." className={inputClass} />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">SEO Titel</label>
+                <label className="block text-xs font-medium text-[var(--color-neutral-700)] mb-1">SEO Titel</label>
                 <input type="text" value={seoTitle} onChange={(e) => setSeoTitle(e.target.value)} className={inputClass} />
               </div>
               <div>
-                <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">SEO Description</label>
+                <label className="block text-xs font-medium text-[var(--color-neutral-700)] mb-1">SEO Description</label>
                 <input type="text" value={seoDescription} onChange={(e) => setSeoDescription(e.target.value)} className={inputClass} />
               </div>
             </div>
             <div>
-              <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">Keywords (komma-gescheiden)</label>
+              <label className="block text-xs font-medium text-[var(--color-neutral-700)] mb-1">Keywords (komma-gescheiden)</label>
               <input type="text" value={keywords} onChange={(e) => setKeywords(e.target.value)} className={inputClass} />
             </div>
           </div>
@@ -163,17 +163,17 @@ export default function EditPostPage() {
 
         {/* Preview */}
         <div className={!showPreview ? "hidden lg:block" : ""}>
-          <div className="glass-card rounded-xl p-6 md:p-8 border border-[var(--border)] sticky top-24">
-            <p className="text-[10px] font-semibold tracking-widest uppercase text-[var(--text-secondary)] mb-4">Preview</p>
+          <div className="bg-white shadow-sm rounded-xl p-6 md:p-8 border border-[var(--color-neutral-200)] sticky top-24">
+            <p className="text-[10px] font-semibold tracking-widest uppercase text-[var(--color-neutral-700)] mb-4">Preview</p>
             <h1 className="text-2xl font-display font-bold mb-3">{title || "Geen titel"}</h1>
-            <p className="text-sm text-[var(--text-secondary)] mb-6 italic">{excerpt || "Geen excerpt"}</p>
+            <p className="text-sm text-[var(--color-neutral-700)] mb-6 italic">{excerpt || "Geen excerpt"}</p>
             {content ? (
               <div
-                className="prose prose-sm max-w-none prose-headings:font-display prose-p:text-[var(--text-secondary)]"
+                className="prose prose-sm max-w-none prose-headings:font-display prose-p:text-[var(--color-neutral-700)]"
                 dangerouslySetInnerHTML={{ __html: content }}
               />
             ) : (
-              <p className="text-[var(--text-secondary)] text-sm">Geen content om te tonen.</p>
+              <p className="text-[var(--color-neutral-700)] text-sm">Geen content om te tonen.</p>
             )}
           </div>
         </div>

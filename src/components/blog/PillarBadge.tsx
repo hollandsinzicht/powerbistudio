@@ -4,7 +4,7 @@
  */
 export default function PillarBadge() {
     return (
-        <span className="inline-block px-3 py-1 rounded-md bg-[var(--accent)] text-white text-xs font-bold uppercase tracking-wider">
+        <span className="inline-block px-3 py-1 rounded-md bg-[var(--color-accent-700)] text-white text-xs font-bold uppercase tracking-wider">
             Complete gids
         </span>
     );

@@ -27,7 +27,7 @@ export default function BiKostenCalculatorPage() {
   return (
     <>
       {/* Hero */}
-      <section className="border-b border-[var(--border)] bg-white">
+      <section className="border-b border-[var(--color-neutral-200)] bg-white">
         <div className="container mx-auto px-6 py-20 md:px-12 md:py-24">
           <div className="max-w-3xl">
             <p className="eyebrow mb-4">HR Rapportage-kosten Calculator</p>
@@ -49,10 +49,10 @@ export default function BiKostenCalculatorPage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
               {/* Input */}
               <div>
-                <h2 className="text-xl font-display font-bold mb-6">Vul je situatie in</h2>
+                <h2 className="text-xl font-display font-semibold mb-6">Vul je situatie in</h2>
                 <div className="space-y-6">
                   <div>
-                    <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
+                    <label className="block text-sm font-medium text-[var(--color-neutral-700)] mb-2">
                       Aantal HR-medewerkers + controllers die handmatig rapporteren
                     </label>
                     <div className="flex items-center gap-4">
@@ -66,7 +66,7 @@ export default function BiKostenCalculatorPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
+                    <label className="block text-sm font-medium text-[var(--color-neutral-700)] mb-2">
                       Gemiddeld uren per week aan HR-rapportagewerk
                     </label>
                     <div className="flex items-center gap-4">
@@ -80,26 +80,26 @@ export default function BiKostenCalculatorPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
+                    <label className="block text-sm font-medium text-[var(--color-neutral-700)] mb-2">
                       Gemiddeld uurtarief HR-staff (intern, in &euro;)
                     </label>
                     <input
                       type="number" min={25} max={250} value={rate}
                       onChange={(e) => setRate(Number(e.target.value))}
-                      className="w-full bg-[var(--surface)] border border-[var(--border)] rounded-lg px-4 py-3 text-[var(--text-primary)] focus:outline-none focus:border-[var(--color-accent-700)] transition-colors font-mono"
+                      className="w-full bg-[var(--color-white)] border border-[var(--color-neutral-200)] rounded-lg px-4 py-3 text-[var(--color-neutral-900)] focus:outline-none focus:border-[var(--color-accent-700)] transition-colors font-mono"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
+                    <label className="block text-sm font-medium text-[var(--color-neutral-700)] mb-2">
                       Geschatte kosten gemiste HR-inzichten per maand (&euro;)
                     </label>
                     <input
                       type="number" min={0} step={1000} value={delayed}
                       onChange={(e) => setDelayed(Number(e.target.value))}
-                      className="w-full bg-[var(--surface)] border border-[var(--border)] rounded-lg px-4 py-3 text-[var(--text-primary)] focus:outline-none focus:border-[var(--color-accent-700)] transition-colors font-mono"
+                      className="w-full bg-[var(--color-white)] border border-[var(--color-neutral-200)] rounded-lg px-4 py-3 text-[var(--color-neutral-900)] focus:outline-none focus:border-[var(--color-accent-700)] transition-colors font-mono"
                     />
-                    <p className="text-xs text-[var(--text-secondary)] mt-1">
+                    <p className="text-xs text-[var(--color-neutral-700)] mt-1">
                       Denk aan: te late verzuim-detectie, ongewenst verloop niet zien aankomen, gemiste onboarding-correcties, formatie-overschrijdingen
                     </p>
                   </div>
@@ -118,26 +118,26 @@ export default function BiKostenCalculatorPage() {
               {/* Result */}
               <div>
                 {showResult ? (
-                  <div className="glass-card rounded-xl p-8 border border-[var(--border)] sticky top-28">
+                  <div className="bg-white shadow-sm rounded-xl p-8 border border-[var(--color-neutral-200)] sticky top-28">
                     <div className="text-center mb-6">
                       <TrendingDown size={32} className="mx-auto mb-3 text-red-500" />
-                      <p className="text-sm text-[var(--text-secondary)]">Geschatte maandelijkse kosten</p>
-                      <p className="text-4xl md:text-5xl font-display font-bold mt-2" style={{ color: 'var(--color-accent-700)' }}>
+                      <p className="text-sm text-[var(--color-neutral-700)]">Geschatte maandelijkse kosten</p>
+                      <p className="text-4xl md:text-5xl font-display font-semibold mt-2" style={{ color: 'var(--color-accent-700)' }}>
                         {formattedMonthly}
                       </p>
-                      <p className="text-[var(--text-secondary)] text-sm mt-1">per maand</p>
-                      <p className="text-lg font-display font-bold mt-4 text-[var(--text-primary)]">
+                      <p className="text-[var(--color-neutral-700)] text-sm mt-1">per maand</p>
+                      <p className="text-lg font-display font-semibold mt-4 text-[var(--color-neutral-900)]">
                         {formattedYearly} per jaar
                       </p>
                     </div>
 
-                    <div className="border-t border-[var(--border)] pt-4 mb-6">
-                      <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+                    <div className="border-t border-[var(--color-neutral-200)] pt-4 mb-6">
+                      <p className="text-sm text-[var(--color-neutral-700)] leading-relaxed">
                         <strong>Aanbeveling:</strong> {recommendation}
                       </p>
                     </div>
 
-                    <div className="border-t border-[var(--border)] pt-6">
+                    <div className="border-t border-[var(--color-neutral-200)] pt-6">
                       <p className="text-sm font-medium mb-3">Ontvang het volledige rapport per e-mail:</p>
                       <LeadCaptureForm
                         vertical="hr"
@@ -153,8 +153,8 @@ export default function BiKostenCalculatorPage() {
                     </div>
                   </div>
                 ) : (
-                  <div className="glass-card rounded-xl p-8 border border-[var(--border)] flex items-center justify-center min-h-[300px]">
-                    <div className="text-center text-[var(--text-secondary)]">
+                  <div className="bg-white shadow-sm rounded-xl p-8 border border-[var(--color-neutral-200)] flex items-center justify-center min-h-[300px]">
+                    <div className="text-center text-[var(--color-neutral-700)]">
                       <Calculator size={48} className="mx-auto mb-4 opacity-30" />
                       <p className="text-sm">Vul de gegevens in en klik op &ldquo;Bereken kosten&rdquo;</p>
                     </div>
@@ -167,10 +167,10 @@ export default function BiKostenCalculatorPage() {
       </section>
 
       {/* Context */}
-      <section className="border-y border-[var(--border)] bg-[var(--color-neutral-50)] py-20">
+      <section className="border-y border-[var(--color-neutral-200)] bg-[var(--color-neutral-50)] py-20">
         <div className="container mx-auto max-w-3xl px-6 md:px-12">
           <h2 className="mb-6">Hoe werkt deze berekening?</h2>
-          <div className="space-y-4 leading-relaxed text-[var(--text-secondary)]">
+          <div className="space-y-4 leading-relaxed text-[var(--color-neutral-700)]">
             <p>
               De formule is eenvoudig: <strong>(HR-staff &times; uren per week &times; uurtarief &times; 4,33 weken)</strong>{' '}
               plus de geschatte kosten van gemiste HR-inzichten. Het eerste deel meet de directe

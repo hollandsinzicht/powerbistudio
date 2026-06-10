@@ -4,15 +4,15 @@ import { Linkedin, Mail } from 'lucide-react';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
-  const linkClass = 'text-[var(--text-secondary)] hover:text-[var(--color-primary-900)] transition-colors';
+  const linkClass = 'text-[var(--color-neutral-700)] hover:text-[var(--color-primary-900)] transition-colors';
 
   return (
-    <footer className="border-t border-[var(--border)] bg-[var(--surface)] pb-8 pt-16">
+    <footer className="border-t border-[var(--color-neutral-200)] bg-[var(--color-white)] pb-8 pt-16">
       <div className="container mx-auto px-6 md:px-12">
         <div className="mb-12 grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-4">
           {/* Kolom 1: HR Analytics */}
           <div>
-            <h4 className="mb-4 font-display font-medium text-[var(--text-primary)]">HR Analytics</h4>
+            <h4 className="mb-4 font-display font-medium text-[var(--color-neutral-900)]">HR Analytics</h4>
             <ul className="flex flex-col gap-3 text-sm">
               <li><Link href="/hr-analytics" className={linkClass}>Hoe ik werk</Link></li>
               <li><Link href="/methodiek" className={linkClass}>Methodiek</Link></li>
@@ -23,7 +23,7 @@ export default function Footer() {
 
           {/* Kolom 2: Tools & Resources */}
           <div>
-            <h4 className="mb-4 font-display font-medium text-[var(--text-primary)]">Tools &amp; Resources</h4>
+            <h4 className="mb-4 font-display font-medium text-[var(--color-neutral-900)]">Tools &amp; Resources</h4>
             <ul className="flex flex-col gap-3 text-sm">
               <li><Link href="/tools/readiness-scan" className={linkClass}>HR Readiness Scan</Link></li>
               <li><Link href="/tools/bi-kosten-calculator" className={linkClass}>HR Kosten Calculator</Link></li>
@@ -34,7 +34,7 @@ export default function Footer() {
 
           {/* Kolom 3: Over */}
           <div>
-            <h4 className="mb-4 font-display font-medium text-[var(--text-primary)]">Over</h4>
+            <h4 className="mb-4 font-display font-medium text-[var(--color-neutral-900)]">Over</h4>
             <ul className="flex flex-col gap-3 text-sm">
               <li><Link href="/over" className={linkClass}>Jan Willem den Hollander</Link></li>
               <li><Link href="/blog" className={linkClass}>Blog</Link></li>
@@ -45,12 +45,12 @@ export default function Footer() {
 
           {/* Kolom 4: Contact */}
           <div>
-            <h4 className="mb-4 font-display font-medium text-[var(--text-primary)]">Contact</h4>
-            <ul className="flex flex-col gap-3 text-sm text-[var(--text-secondary)]">
+            <h4 className="mb-4 font-display font-medium text-[var(--color-neutral-900)]">Contact</h4>
+            <ul className="flex flex-col gap-3 text-sm text-[var(--color-neutral-700)]">
               <li>
                 <a
                   href="mailto:info@powerbistudio.nl"
-                  className="transition-colors hover:text-[var(--text-primary)]"
+                  className="transition-colors hover:text-[var(--color-neutral-900)]"
                 >
                   info@powerbistudio.nl
                 </a>
@@ -60,7 +60,7 @@ export default function Footer() {
                   href="https://www.linkedin.com/in/jan-willem-den-hollander/"
                   target="_blank"
                   rel="noreferrer"
-                  className="transition-colors hover:text-[var(--text-primary)]"
+                  className="transition-colors hover:text-[var(--color-neutral-900)]"
                 >
                   LinkedIn
                 </a>
@@ -80,14 +80,14 @@ export default function Footer() {
                 href="https://www.linkedin.com/in/jan-willem-den-hollander/"
                 target="_blank"
                 rel="noreferrer"
-                className="rounded-full border border-[var(--border)] bg-[var(--color-neutral-50)] p-2 text-[var(--text-secondary)] transition-colors hover:border-[var(--color-primary-900)] hover:text-[var(--text-primary)]"
+                className="rounded-full border border-[var(--color-neutral-200)] bg-[var(--color-neutral-50)] p-2 text-[var(--color-neutral-700)] transition-colors hover:border-[var(--color-primary-900)] hover:text-[var(--color-neutral-900)]"
                 aria-label="LinkedIn"
               >
                 <Linkedin size={18} />
               </a>
               <a
                 href="mailto:info@powerbistudio.nl"
-                className="rounded-full border border-[var(--border)] bg-[var(--color-neutral-50)] p-2 text-[var(--text-secondary)] transition-colors hover:border-[var(--color-primary-900)] hover:text-[var(--text-primary)]"
+                className="rounded-full border border-[var(--color-neutral-200)] bg-[var(--color-neutral-50)] p-2 text-[var(--color-neutral-700)] transition-colors hover:border-[var(--color-primary-900)] hover:text-[var(--color-neutral-900)]"
                 aria-label="Email"
               >
                 <Mail size={18} />
@@ -96,7 +96,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="flex flex-col items-center justify-between gap-4 border-t border-[var(--border)] pt-8 md:flex-row">
+        <div className="flex flex-col items-center justify-between gap-4 border-t border-[var(--color-neutral-200)] pt-8 md:flex-row">
           <Link href="/" className="group flex items-center gap-2">
             <Image
               src="/logo.png"
@@ -106,7 +106,7 @@ export default function Footer() {
               className="h-6 w-auto opacity-70 transition-opacity group-hover:opacity-100"
             />
           </Link>
-          <p className="text-sm text-[var(--text-secondary)]">
+          <p className="text-sm text-[var(--color-neutral-700)]">
             &copy; {currentYear} Power BI Studio · HR analytics-specialist · Jan Willem den Hollander
           </p>
         </div>

@@ -148,7 +148,7 @@ export default async function BlogPostPage({ params }: Props) {
                     <div className="max-w-3xl mx-auto">
                         <Link
                             href="/blog"
-                            className="inline-flex items-center gap-2 text-[var(--text-secondary)] hover:text-[var(--primary)] transition-colors text-sm font-medium mb-8"
+                            className="inline-flex items-center gap-2 text-[var(--color-neutral-700)] hover:text-[var(--color-primary-900)] transition-colors text-sm font-medium mb-8"
                         >
                             <ArrowLeft size={16} />
                             Terug naar alle artikelen
@@ -160,7 +160,7 @@ export default async function BlogPostPage({ params }: Props) {
                             </div>
                         )}
 
-                        <div className="flex flex-wrap items-center gap-2 text-sm text-[var(--text-secondary)] mb-4">
+                        <div className="flex flex-wrap items-center gap-2 text-sm text-[var(--color-neutral-700)] mb-4">
                             <span className="flex items-center gap-1">
                                 <Calendar size={16} />
                                 <time dateTime={article.isoDate}>{article.date}</time>
@@ -173,14 +173,14 @@ export default async function BlogPostPage({ params }: Props) {
                                 <Link
                                     key={cat.slug}
                                     href={`/blog/categorie/${cat.slug}`}
-                                    className="px-2.5 py-0.5 rounded-full bg-gray-100 border border-[var(--border)] text-xs font-medium text-[var(--text-secondary)] hover:border-[var(--accent)] hover:text-[var(--primary)] transition-colors"
+                                    className="px-2.5 py-0.5 rounded-full bg-gray-100 border border-[var(--color-neutral-200)] text-xs font-medium text-[var(--color-neutral-700)] hover:border-[var(--color-primary-700)] hover:text-[var(--color-primary-900)] transition-colors"
                                 >
                                     {cat.name}
                                 </Link>
                             ))}
                         </div>
 
-                        <h1 className="text-3xl md:text-4xl font-display font-bold text-[var(--text-primary)] mb-8">
+                        <h1 className="text-3xl md:text-4xl font-display font-semibold text-[var(--color-neutral-900)] mb-8">
                             {article.title}
                         </h1>
 
@@ -188,7 +188,7 @@ export default async function BlogPostPage({ params }: Props) {
                         <AuthorIntro />
 
                         {article.image && (
-                            <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden mb-10 border border-[var(--border)]">
+                            <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden mb-10 border border-[var(--color-neutral-200)]">
                                 <Image
                                     src={article.image}
                                     alt={article.title}
@@ -206,18 +206,18 @@ export default async function BlogPostPage({ params }: Props) {
                         {content ? (
                             <div
                                 className="prose prose-lg max-w-none
-                                    prose-headings:font-display prose-headings:text-[var(--text-primary)]
-                                    prose-p:text-[var(--text-secondary)] prose-p:leading-relaxed
-                                    prose-a:text-[var(--accent)] prose-a:no-underline hover:prose-a:underline
-                                    prose-strong:text-[var(--text-primary)]
-                                    prose-ul:text-[var(--text-secondary)] prose-ol:text-[var(--text-secondary)]
-                                    prose-li:text-[var(--text-secondary)]
-                                    prose-blockquote:border-[var(--accent)] prose-blockquote:text-[var(--text-secondary)]
+                                    prose-headings:font-display prose-headings:text-[var(--color-neutral-900)]
+                                    prose-p:text-[var(--color-neutral-700)] prose-p:leading-relaxed
+                                    prose-a:text-[var(--color-primary-700)] prose-a:no-underline hover:prose-a:underline
+                                    prose-strong:text-[var(--color-neutral-900)]
+                                    prose-ul:text-[var(--color-neutral-700)] prose-ol:text-[var(--color-neutral-700)]
+                                    prose-li:text-[var(--color-neutral-700)]
+                                    prose-blockquote:border-[var(--color-accent-700)] prose-blockquote:text-[var(--color-neutral-700)]
                                     prose-img:rounded-xl"
                                 dangerouslySetInnerHTML={{ __html: content }}
                             />
                         ) : (
-                            <p className="text-[var(--text-secondary)]">
+                            <p className="text-[var(--color-neutral-700)]">
                                 Dit artikel kon niet geladen worden. Probeer het later opnieuw.
                             </p>
                         )}

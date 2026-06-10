@@ -49,7 +49,7 @@ export default function ToolsPage() {
   return (
     <>
       {/* ═══ HERO ═══ */}
-      <section className="border-b border-[var(--border)] bg-white">
+      <section className="border-b border-[var(--color-neutral-200)] bg-white">
         <div className="container mx-auto max-w-4xl px-6 py-20 md:px-12 md:py-28">
           <p className="eyebrow mb-4">Tools</p>
           <h1 className="mb-6">Tools voor HR Analytics.</h1>
@@ -67,7 +67,7 @@ export default function ToolsPage() {
             {TOOLS.map(({ icon: Icon, titel, samenvatting, cta, href, badge }) => (
               <article
                 key={titel}
-                className="flex flex-col rounded-lg border border-[var(--border)] border-l-[3px] border-l-[var(--color-accent-700)] bg-white p-6"
+                className="flex flex-col rounded-lg border border-[var(--color-neutral-200)] border-l-[3px] border-l-[var(--color-accent-700)] bg-white p-6"
               >
                 <div className="mb-4 flex items-start justify-between">
                   <Icon
@@ -79,7 +79,7 @@ export default function ToolsPage() {
                   </span>
                 </div>
                 <h3 className="mb-3 text-lg">{titel}</h3>
-                <p className="mb-6 flex-1 text-sm leading-relaxed text-[var(--text-secondary)]">
+                <p className="mb-6 flex-1 text-sm leading-relaxed text-[var(--color-neutral-700)]">
                   {samenvatting}
                 </p>
                 <Link
@@ -96,7 +96,7 @@ export default function ToolsPage() {
       </section>
 
       {/* ═══ FOOTER-CTA ═══ */}
-      <section className="border-t border-[var(--border)] bg-[var(--color-neutral-50)] py-20 md:py-24">
+      <section className="border-t border-[var(--color-neutral-200)] bg-[var(--color-neutral-50)] py-20 md:py-24">
         <div className="container mx-auto max-w-2xl px-6 text-center md:px-12">
           <h2 className="mb-4">Bevindingen die je verder helpen?</h2>
           <p className="lead mx-auto mb-8">

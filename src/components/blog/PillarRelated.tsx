@@ -31,10 +31,10 @@ export default function PillarRelated({
     return (
         <section className="mt-20">
             <div className="mb-8">
-                <h2 className="text-2xl md:text-3xl font-display font-bold text-[var(--text-primary)] mb-2">
+                <h2 className="text-2xl md:text-3xl font-display font-semibold text-[var(--color-neutral-900)] mb-2">
                     Verder lezen
                 </h2>
-                <p className="text-[var(--text-secondary)]">
+                <p className="text-[var(--color-neutral-700)]">
                     Diepgaande artikelen die op de deelthema&apos;s uit deze gids ingaan.
                 </p>
             </div>

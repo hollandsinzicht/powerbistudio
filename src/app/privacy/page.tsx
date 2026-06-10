@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 export default function PrivacyPage() {
   return (
     <>
-      <section className="border-b border-[var(--border)] bg-white">
+      <section className="border-b border-[var(--color-neutral-200)] bg-white">
         <div className="container mx-auto max-w-3xl px-6 py-16 md:px-12 md:py-20">
           <p className="eyebrow mb-4">Juridisch</p>
           <h1 className="mb-4">Privacy statement</h1>
@@ -22,7 +22,7 @@ export default function PrivacyPage() {
             62432168). Deze pagina beschrijft welke persoonsgegevens worden
             verwerkt op powerbistudio.nl en hoe je je rechten kunt uitoefenen.
           </p>
-          <p className="mt-4 text-sm text-[var(--text-secondary)]">
+          <p className="mt-4 text-sm text-[var(--color-neutral-700)]">
             Laatst bijgewerkt: mei 2026.
           </p>
         </div>
@@ -30,7 +30,7 @@ export default function PrivacyPage() {
 
       <section className="py-16 md:py-20">
         <div className="container mx-auto max-w-3xl px-6 md:px-12">
-          <div className="space-y-10 leading-relaxed text-[var(--text-secondary)]">
+          <div className="space-y-10 leading-relaxed text-[var(--color-neutral-700)]">
             <div>
               <h2 className="mb-3">Verwerkingsverantwoordelijke</h2>
               <p>
@@ -51,7 +51,7 @@ export default function PrivacyPage() {
               <h2 className="mb-3">Welke gegevens verzameld worden</h2>
               <ul className="ml-5 list-disc space-y-2">
                 <li>
-                  <strong className="text-[var(--text-primary)]">
+                  <strong className="text-[var(--color-neutral-900)]">
                     Contactformulier:
                   </strong>{' '}
                   naam, e-mailadres, organisatie (optioneel) en de inhoud van je
@@ -59,7 +59,7 @@ export default function PrivacyPage() {
                   van je vraag.
                 </li>
                 <li>
-                  <strong className="text-[var(--text-primary)]">
+                  <strong className="text-[var(--color-neutral-900)]">
                     Lead-magnet downloads (AVG-checklist HR):
                   </strong>{' '}
                   e-mailadres en naam. Verwerkt op basis van toestemming, doel:
@@ -67,7 +67,7 @@ export default function PrivacyPage() {
                   kan via elke e-mail.
                 </li>
                 <li>
-                  <strong className="text-[var(--text-primary)]">
+                  <strong className="text-[var(--color-neutral-900)]">
                     Tools (Readiness Scan, Kosten Calculator):
                   </strong>{' '}
                   bij doorgeven via e-mail: naam, e-mail en de ingevulde
@@ -75,14 +75,14 @@ export default function PrivacyPage() {
                   Google Analytics.
                 </li>
                 <li>
-                  <strong className="text-[var(--text-primary)]">
+                  <strong className="text-[var(--color-neutral-900)]">
                     Analytics:
                   </strong>{' '}
                   Google Analytics 4 met geanonimiseerd IP. Geen
                   cross-site-tracking. Cookie alleen na opt-in via banner.
                 </li>
                 <li>
-                  <strong className="text-[var(--text-primary)]">
+                  <strong className="text-[var(--color-neutral-900)]">
                     Klant-trajecten (na opdracht):
                   </strong>{' '}
                   alle gegevens die jij aanlevert blijven in jouw eigen Microsoft-
@@ -100,7 +100,7 @@ export default function PrivacyPage() {
               </p>
               <ul className="ml-5 list-disc space-y-2">
                 <li>
-                  <strong className="text-[var(--text-primary)]">
+                  <strong className="text-[var(--color-neutral-900)]">
                     Toestemming (art. 6 lid 1 sub a):
                   </strong>{' '}
                   contactformulier, lead-magnet downloads, doorgeven van
@@ -108,21 +108,21 @@ export default function PrivacyPage() {
                   opt-in via de cookie-banner).
                 </li>
                 <li>
-                  <strong className="text-[var(--text-primary)]">
+                  <strong className="text-[var(--color-neutral-900)]">
                     Uitvoering van een overeenkomst (art. 6 lid 1 sub b):
                   </strong>{' '}
                   klant-trajecten, projectcommunicatie en de bijbehorende
                   guest-account-toegang tot jouw Microsoft-tenant.
                 </li>
                 <li>
-                  <strong className="text-[var(--text-primary)]">
+                  <strong className="text-[var(--color-neutral-900)]">
                     Wettelijke verplichting (art. 6 lid 1 sub c):
                   </strong>{' '}
                   bewaring van e-mail- en factuur-correspondentie gedurende
                   zeven jaar op grond van de fiscale bewaarplicht.
                 </li>
                 <li>
-                  <strong className="text-[var(--text-primary)]">
+                  <strong className="text-[var(--color-neutral-900)]">
                     Gerechtvaardigd belang (art. 6 lid 1 sub f):
                   </strong>{' '}
                   beveiliging van de website, fraudepreventie en het bijhouden

@@ -76,10 +76,10 @@ export default function BlogList({
     }, []);
 
     const pillBase =
-        'px-4 py-2 rounded-full text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2';
-    const pillActive = 'bg-[var(--primary)] text-white border border-transparent';
+        'px-4 py-2 rounded-full text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary-700)] focus-visible:ring-offset-2';
+    const pillActive = 'bg-[var(--color-primary-900)] text-white border border-transparent';
     const pillInactive =
-        'border border-[var(--border)] text-[var(--text-secondary)] hover:border-[var(--accent)] hover:text-[var(--primary)]';
+        'border border-[var(--color-neutral-200)] text-[var(--color-neutral-700)] hover:border-[var(--color-primary-700)] hover:text-[var(--color-primary-900)]';
 
     return (
         <>
@@ -116,13 +116,13 @@ export default function BlogList({
             {/* Grid + empty state */}
             {filtered.length === 0 ? (
                 <div className="max-w-2xl mx-auto text-center py-12">
-                    <p className="text-[var(--text-secondary)] text-lg mb-4">
+                    <p className="text-[var(--color-neutral-700)] text-lg mb-4">
                         Geen artikelen gevonden in deze categorie.
                     </p>
                     <button
                         type="button"
                         onClick={() => handleSelect(null)}
-                        className="inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-medium border border-[var(--border)] text-[var(--text-secondary)] hover:border-[var(--accent)] hover:text-[var(--primary)] transition-colors"
+                        className="inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-medium border border-[var(--color-neutral-200)] text-[var(--color-neutral-700)] hover:border-[var(--color-primary-700)] hover:text-[var(--color-primary-900)] transition-colors"
                     >
                         Toon alle artikelen
                     </button>
@@ -140,10 +140,10 @@ export default function BlogList({
                             <button
                                 type="button"
                                 onClick={handleLoadMore}
-                                className="glass-card px-8 py-3 rounded-full text-sm font-medium border border-[var(--border)] text-[var(--text-primary)] hover:border-[var(--accent)] hover:text-[var(--primary)] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2"
+                                className="bg-white shadow-sm px-8 py-3 rounded-full text-sm font-medium border border-[var(--color-neutral-200)] text-[var(--color-neutral-900)] hover:border-[var(--color-primary-700)] hover:text-[var(--color-primary-900)] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary-700)] focus-visible:ring-offset-2"
                             >
                                 Laad meer artikelen
-                                <span className="ml-2 text-[var(--text-secondary)]">
+                                <span className="ml-2 text-[var(--color-neutral-700)]">
                                     ({filtered.length - visibleCount} resterend)
                                 </span>
                             </button>

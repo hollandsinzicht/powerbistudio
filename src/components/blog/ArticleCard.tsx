@@ -22,7 +22,7 @@ export default function ArticleCard({
     return (
         <Link
             href={`/blog/${article.slug}`}
-            className="glass-card rounded-2xl overflow-hidden border border-[var(--border)] hover:border-[var(--accent)] transition-all group flex flex-col"
+            className="bg-white shadow-sm rounded-2xl overflow-hidden border border-[var(--color-neutral-200)] hover:border-[var(--color-primary-700)] transition-all group flex flex-col"
         >
             {article.image && (
                 <div className="relative w-full aspect-[16/9] overflow-hidden bg-gray-100">
@@ -36,33 +36,33 @@ export default function ArticleCard({
                 </div>
             )}
             <div className="p-6 flex flex-col flex-1">
-                <div className="flex flex-wrap items-center gap-2 text-xs text-[var(--text-secondary)] mb-3">
+                <div className="flex flex-wrap items-center gap-2 text-xs text-[var(--color-neutral-700)] mb-3">
                     <span className="flex items-center gap-1">
                         <Calendar size={14} />
                         <time dateTime={article.isoDate}>{article.date}</time>
                     </span>
                     {isPillar ? (
-                        <span className="px-2 py-0.5 rounded-full bg-[var(--accent)] text-white font-bold uppercase tracking-wider">
+                        <span className="px-2 py-0.5 rounded-full bg-[var(--color-accent-700)] text-white font-bold uppercase tracking-wider">
                             Complete gids
                         </span>
                     ) : (
                         article.categories.map((cat) => (
                             <span
                                 key={cat.slug}
-                                className="px-2 py-0.5 rounded-full bg-gray-100 border border-[var(--border)] text-[var(--text-secondary)] font-medium"
+                                className="px-2 py-0.5 rounded-full bg-gray-100 border border-[var(--color-neutral-200)] text-[var(--color-neutral-700)] font-medium"
                             >
                                 {cat.name}
                             </span>
                         ))
                     )}
                 </div>
-                <h2 className="text-lg font-display font-bold text-[var(--text-primary)] mb-3 group-hover:text-[var(--accent)] transition-colors line-clamp-2">
+                <h2 className="text-lg font-display font-semibold text-[var(--color-neutral-900)] mb-3 group-hover:text-[var(--color-primary-900)] transition-colors line-clamp-2">
                     {article.title}
                 </h2>
-                <p className="text-[var(--text-secondary)] text-sm leading-relaxed flex-1 line-clamp-3">
+                <p className="text-[var(--color-neutral-700)] text-sm leading-relaxed flex-1 line-clamp-3">
                     {article.excerpt}
                 </p>
-                <span className="inline-flex items-center gap-1 text-sm font-medium text-[var(--accent)] mt-4">
+                <span className="inline-flex items-center gap-1 text-sm font-medium text-[var(--color-primary-700)] mt-4">
                     Lees meer <ArrowRight size={14} />
                 </span>
             </div>

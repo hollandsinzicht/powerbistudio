@@ -185,7 +185,7 @@ export default function ProfielTab() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-20 gap-3 text-[var(--text-secondary)]">
+      <div className="flex items-center justify-center py-20 gap-3 text-[var(--color-neutral-700)]">
         <Loader2 size={20} className="animate-spin" /> Profiel laden...
       </div>
     );
@@ -198,16 +198,16 @@ export default function ProfielTab() {
       {/* ===== Sidebar ===== */}
       <aside className="space-y-2">
         {progress && (
-          <div className="mb-4 p-3 rounded-lg bg-[var(--surface)] border border-[var(--border)]">
+          <div className="mb-4 p-3 rounded-lg bg-[var(--color-white)] border border-[var(--color-neutral-200)]">
             <div className="flex items-center justify-between text-xs mb-1.5">
-              <span className="font-semibold text-[var(--text-primary)]">Totale voortgang</span>
-              <span className="text-[var(--text-secondary)]">
+              <span className="font-semibold text-[var(--color-neutral-900)]">Totale voortgang</span>
+              <span className="text-[var(--color-neutral-700)]">
                 {progress.total.filled}/{progress.total.total}
               </span>
             </div>
             <div className="h-2 rounded-full bg-gray-200 overflow-hidden">
               <div
-                className="h-full bg-[var(--primary)] transition-all"
+                className="h-full bg-[var(--color-primary-900)] transition-all"
                 style={{ width: `${progress.total.pct}%` }}
               />
             </div>
@@ -223,18 +223,18 @@ export default function ProfielTab() {
               onClick={() => setSelected(cat.id)}
               className={`w-full text-left p-3 rounded-lg border transition-colors ${
                 active
-                  ? "border-[var(--accent)] bg-[rgba(245,158,11,0.05)]"
-                  : "border-[var(--border)] hover:border-[var(--text-secondary)]"
+                  ? "border-[var(--color-action-600)] bg-[rgba(245,158,11,0.05)]"
+                  : "border-[var(--color-neutral-200)] hover:border-[var(--color-neutral-700)]"
               }`}
             >
               <div className="flex items-center justify-between mb-1">
                 <span className="font-semibold text-sm">{cat.title}</span>
-                {p && <span className="text-[11px] text-[var(--text-secondary)]">{p.pct}%</span>}
+                {p && <span className="text-[11px] text-[var(--color-neutral-700)]">{p.pct}%</span>}
               </div>
               {p && (
                 <div className="h-1.5 rounded-full bg-gray-200 overflow-hidden">
                   <div
-                    className="h-full bg-[var(--accent)] transition-all"
+                    className="h-full bg-[var(--color-action-600)] transition-all"
                     style={{ width: `${p.pct}%` }}
                   />
                 </div>
@@ -248,7 +248,7 @@ export default function ProfielTab() {
           className={`w-full text-left p-3 rounded-lg border transition-colors flex items-center gap-2 ${
             selected === "__freepost__"
               ? "border-[#0A66C2] bg-[rgba(10,102,194,0.05)]"
-              : "border-[var(--border)] hover:border-[var(--text-secondary)]"
+              : "border-[var(--color-neutral-200)] hover:border-[var(--color-neutral-700)]"
           }`}
         >
           <Linkedin size={16} className="text-[#0A66C2]" />
@@ -263,7 +263,7 @@ export default function ProfielTab() {
           <div className="space-y-6">
             {activeCategory.subcategories.map((sub) => (
               <section key={sub.id}>
-                <h3 className="font-display font-bold text-sm uppercase tracking-wide text-[var(--text-secondary)] mb-3">
+                <h3 className="font-display font-bold text-sm uppercase tracking-wide text-[var(--color-neutral-700)] mb-3">
                   {sub.title}
                 </h3>
                 <div className="space-y-4">
@@ -273,18 +273,18 @@ export default function ProfielTab() {
                     return (
                       <div
                         key={kp.id}
-                        className="p-4 rounded-lg border border-[var(--border)] bg-[var(--surface)]"
+                        className="p-4 rounded-lg border border-[var(--color-neutral-200)] bg-[var(--color-white)]"
                       >
                         <div className="flex items-start justify-between gap-3 mb-1">
                           <div className="min-w-0">
                             <div className="font-semibold text-sm">{kp.title}</div>
-                            <p className="text-xs text-[var(--text-secondary)] mt-0.5">{kp.question}</p>
+                            <p className="text-xs text-[var(--color-neutral-700)] mt-0.5">{kp.question}</p>
                           </div>
                           <span
                             className={`shrink-0 inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full ${
                               filled
                                 ? "bg-[rgba(16,185,129,0.1)] text-green-700"
-                                : "bg-gray-100 text-[var(--text-secondary)]"
+                                : "bg-gray-100 text-[var(--color-neutral-700)]"
                             }`}
                           >
                             {filled ? <CheckCircle2 size={12} /> : <CircleDot size={12} />}
@@ -299,7 +299,7 @@ export default function ProfielTab() {
                           }
                           placeholder={kp.placeholder || "Jouw antwoord..."}
                           rows={4}
-                          className="w-full mt-2 bg-[var(--background)] border border-[var(--border)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[var(--accent)]"
+                          className="w-full mt-2 bg-[var(--color-neutral-50)] border border-[var(--color-neutral-200)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[var(--color-action-600)]"
                         />
 
                         <div className="flex flex-wrap items-center gap-2 mt-2">
@@ -320,7 +320,7 @@ export default function ProfielTab() {
                           <button
                             onClick={() => handleInterview(kp.id)}
                             disabled={interviewingId === kp.id}
-                            className="inline-flex items-center gap-2 text-sm px-3 py-1.5 border border-[var(--border)] rounded-lg hover:border-[var(--accent)] disabled:opacity-50"
+                            className="inline-flex items-center gap-2 text-sm px-3 py-1.5 border border-[var(--color-neutral-200)] rounded-lg hover:border-[var(--color-action-600)] disabled:opacity-50"
                             title="Laat AI een conceptantwoord opstellen dat je daarna bewerkt"
                           >
                             {interviewingId === kp.id ? (
@@ -331,7 +331,7 @@ export default function ProfielTab() {
                             AI-interview
                           </button>
                           {dirty && (
-                            <span className="text-[11px] text-[var(--accent)]">niet opgeslagen</span>
+                            <span className="text-[11px] text-[var(--color-action-600)]">niet opgeslagen</span>
                           )}
                         </div>
                       </div>
@@ -348,23 +348,23 @@ export default function ProfielTab() {
           <div className="space-y-5 max-w-2xl">
             <div>
               <h3 className="font-display font-bold text-base mb-1">Vrije LinkedIn post</h3>
-              <p className="text-sm text-[var(--text-secondary)]">
+              <p className="text-sm text-[var(--color-neutral-700)]">
                 Genereer een post vanuit je merkprofiel — zonder dat er een blogartikel voor nodig is.
               </p>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Onderwerp</label>
+              <label className="block text-sm font-medium text-[var(--color-neutral-700)] mb-1">Onderwerp</label>
               <input
                 value={topic}
                 onChange={(e) => setTopic(e.target.value)}
                 placeholder="Bijv. waarom verzuimcijfers vaak misleiden"
-                className="w-full bg-[var(--surface)] border border-[var(--border)] rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-[var(--accent)]"
+                className="w-full bg-[var(--color-white)] border border-[var(--color-neutral-200)] rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-[var(--color-action-600)]"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
+              <label className="block text-sm font-medium text-[var(--color-neutral-700)] mb-1">
                 Invalshoek <span className="font-normal">(optioneel)</span>
               </label>
               <textarea
@@ -372,12 +372,12 @@ export default function ProfielTab() {
                 onChange={(e) => setAngle(e.target.value)}
                 placeholder="Bijv. vanuit een concrete situatie bij een mid-market HR-afdeling"
                 rows={2}
-                className="w-full bg-[var(--surface)] border border-[var(--border)] rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-[var(--accent)]"
+                className="w-full bg-[var(--color-white)] border border-[var(--color-neutral-200)] rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-[var(--color-action-600)]"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">Stijl</label>
+              <label className="block text-sm font-medium text-[var(--color-neutral-700)] mb-2">Stijl</label>
               <div className="grid grid-cols-2 gap-2">
                 {LINKEDIN_STYLES.map((s) => (
                   <button
@@ -385,8 +385,8 @@ export default function ProfielTab() {
                     onClick={() => setFreeStyle(s.value)}
                     className={`text-left p-2.5 rounded-lg border text-sm font-medium transition-all ${
                       freeStyle === s.value
-                        ? "border-[var(--accent)] bg-[rgba(245,158,11,0.05)]"
-                        : "border-[var(--border)] hover:border-[var(--text-secondary)]"
+                        ? "border-[var(--color-action-600)] bg-[rgba(245,158,11,0.05)]"
+                        : "border-[var(--color-neutral-200)] hover:border-[var(--color-neutral-700)]"
                     }`}
                   >
                     {s.label}
@@ -408,17 +408,17 @@ export default function ProfielTab() {
             </button>
 
             {freeResult && (
-              <div className="space-y-3 pt-3 border-t border-[var(--border)]">
+              <div className="space-y-3 pt-3 border-t border-[var(--color-neutral-200)]">
                 <div className="flex items-center justify-between gap-2">
-                  <label className="text-sm font-medium text-[var(--text-secondary)]">Resultaat</label>
-                  <span className="text-[10px] text-[var(--text-secondary)] text-right">
+                  <label className="text-sm font-medium text-[var(--color-neutral-700)]">Resultaat</label>
+                  <span className="text-[10px] text-[var(--color-neutral-700)] text-right">
                     {freeResult.usage && (
                       <>≈ €{freeResult.usage.costEur.toFixed(3).replace('.', ',')} · {freeResult.usage.inputTokens.toLocaleString('nl-NL')} in / {freeResult.usage.outputTokens.toLocaleString('nl-NL')} out · </>
                     )}
                     {freeResult.postText.length} tekens
                   </span>
                 </div>
-                <div className="bg-[var(--surface)] border border-[var(--border)] rounded-lg p-4 whitespace-pre-wrap text-sm leading-relaxed text-[var(--text-primary)]">
+                <div className="bg-[var(--color-white)] border border-[var(--color-neutral-200)] rounded-lg p-4 whitespace-pre-wrap text-sm leading-relaxed text-[var(--color-neutral-900)]">
                   {freeResult.postText}
                 </div>
                 <div className="flex flex-wrap gap-2">
@@ -438,7 +438,7 @@ export default function ProfielTab() {
                   <button
                     onClick={handleGenerateFree}
                     disabled={freeLoading}
-                    className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium border border-[var(--border)] rounded-lg hover:border-[var(--accent)] disabled:opacity-50"
+                    className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium border border-[var(--color-neutral-200)] rounded-lg hover:border-[var(--color-action-600)] disabled:opacity-50"
                   >
                     <Sparkles size={15} /> Probeer opnieuw
                   </button>

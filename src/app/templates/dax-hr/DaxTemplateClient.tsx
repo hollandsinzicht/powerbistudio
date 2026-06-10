@@ -128,7 +128,7 @@ export default function DaxTemplateClient() {
   return (
     <>
       {/* ═══ HERO ═══ */}
-      <section className="border-b border-[var(--border)] bg-white">
+      <section className="border-b border-[var(--color-neutral-200)] bg-white">
         <div className="container mx-auto max-w-4xl px-6 py-20 md:px-12 md:py-28">
           <p className="eyebrow mb-4">DAX-templates HR</p>
           <h1 className="mb-6">Drie measures die in elk HR-model thuishoren.</h1>
@@ -138,7 +138,7 @@ export default function DaxTemplateClient() {
             verzuim met peildatum, en formatie-realisatie. Direct te kopiëren
             naar je eigen model.
           </p>
-          <div className="mt-8 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-[var(--text-secondary)]">
+          <div className="mt-8 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-[var(--color-neutral-700)]">
             <span className="inline-flex items-center gap-2">
               <Code2 className="h-4 w-4 text-[var(--color-accent-700)]" />
               Drie measures
@@ -159,7 +159,7 @@ export default function DaxTemplateClient() {
             {TEMPLATES.map((tpl, index) => (
               <article
                 key={tpl.id}
-                className="rounded-lg border border-[var(--border)] bg-white p-6 md:p-8"
+                className="rounded-lg border border-[var(--color-neutral-200)] bg-white p-6 md:p-8"
               >
                 <div className="mb-5 flex items-baseline gap-3">
                   <span className="text-sm font-semibold text-[var(--color-accent-700)]">
@@ -168,17 +168,17 @@ export default function DaxTemplateClient() {
                   <h2 className="!mt-0 !mb-0">{tpl.titel}</h2>
                 </div>
 
-                <p className="mb-4 leading-relaxed text-[var(--text-primary)]">
+                <p className="mb-4 leading-relaxed text-[var(--color-neutral-900)]">
                   {tpl.context}
                 </p>
 
                 <h3 className="mb-2 text-base">Waar gebruik je dit voor</h3>
-                <p className="mb-5 text-sm leading-relaxed text-[var(--text-secondary)]">
+                <p className="mb-5 text-sm leading-relaxed text-[var(--color-neutral-700)]">
                   {tpl.toepassing}
                 </p>
 
                 <h3 className="mb-2 text-base">Voorwaarden in je model</h3>
-                <ul className="mb-6 list-disc space-y-1 pl-5 text-sm leading-relaxed text-[var(--text-secondary)]">
+                <ul className="mb-6 list-disc space-y-1 pl-5 text-sm leading-relaxed text-[var(--color-neutral-700)]">
                   {tpl.voorwaarden.map((v, i) => (
                     <li key={i}>{v}</li>
                   ))}
@@ -209,7 +209,7 @@ export default function DaxTemplateClient() {
                 </div>
 
                 <h3 className="mb-2 text-base">Hoe het werkt</h3>
-                <p className="text-sm leading-relaxed text-[var(--text-secondary)]">
+                <p className="text-sm leading-relaxed text-[var(--color-neutral-700)]">
                   {tpl.uitleg}
                 </p>
               </article>
@@ -219,7 +219,7 @@ export default function DaxTemplateClient() {
       </section>
 
       {/* ═══ FOOTER-CTA ═══ */}
-      <section className="border-t border-[var(--border)] bg-[var(--color-neutral-50)] py-16 md:py-20">
+      <section className="border-t border-[var(--color-neutral-200)] bg-[var(--color-neutral-50)] py-16 md:py-20">
         <div className="container mx-auto max-w-2xl px-6 md:px-12 text-center">
           <h2 className="mb-4">Wil je dit voor je hele HR-model?</h2>
           <p className="lead mx-auto mb-8">
@@ -234,7 +234,7 @@ export default function DaxTemplateClient() {
             Plan een Quick Scan – €1.950
             <ArrowRight className="h-4 w-4" />
           </Link>
-          <p className="mt-8 text-xs text-[var(--text-secondary)]">
+          <p className="mt-8 text-xs text-[var(--color-neutral-700)]">
             Deze pagina is een aanvulling op de AVG-checklist HR. Niet via het
             menu vindbaar — je ziet hem omdat je de checklist hebt opgevraagd.
           </p>
