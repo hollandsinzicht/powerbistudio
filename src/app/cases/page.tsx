@@ -13,17 +13,17 @@ export const metadata: Metadata = {
 export default function CasesPage() {
     return (
         <>
-            <section className="pt-32 pb-16 border-b border-[var(--border)] relative overflow-hidden">
+            <section className="pt-32 pb-16 border-b border-[var(--color-neutral-200)] relative overflow-hidden">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(59,130,246,0.1),transparent_50%)] pointer-events-none" />
                 <div className="container mx-auto px-6 md:px-12 relative z-10">
                     <div className="max-w-3xl">
-                        <span className="text-[0.7rem] font-semibold tracking-widest uppercase text-[var(--text-secondary)] mb-4 block">
+                        <span className="text-[0.7rem] font-semibold tracking-widest uppercase text-[var(--color-neutral-700)] mb-4 block">
                             Impact in de praktijk
                         </span>
-                        <h1 className="text-4xl md:text-5xl font-display font-bold mb-6">
-                            Bewezen <span className="text-[var(--accent)]">resultaten</span> per sector
+                        <h1 className="text-4xl md:text-5xl font-display font-semibold mb-6">
+                            Bewezen <span className="text-[var(--color-accent-700)]">resultaten</span> per sector
                         </h1>
-                        <p className="text-xl text-[var(--text-secondary)] leading-relaxed">
+                        <p className="text-xl text-[var(--color-neutral-700)] leading-relaxed">
                             Geen theorie, maar concrete Power BI-implementaties bij organisaties
                             in de publieke sector, energie, finance en groothandel.
                         </p>
@@ -38,12 +38,12 @@ export default function CasesPage() {
             </section>
 
             {/* CTA */}
-            <section className="py-24 bg-gray-50 border-t border-[var(--border)]">
+            <section className="py-24 bg-gray-50 border-t border-[var(--color-neutral-200)]">
                 <div className="container mx-auto px-6 md:px-12 text-center max-w-2xl">
-                    <h3 className="text-2xl font-display font-bold mb-4">
+                    <h3 className="text-2xl font-display font-semibold mb-4">
                         Staat jouw organisatie hier binnenkort?
                     </h3>
-                    <p className="text-[var(--text-secondary)] mb-8">
+                    <p className="text-[var(--color-neutral-700)] mb-8">
                         Werk je in HR en herken je deze problematiek? Plan een Quick Scan om je bestaande HR-model te laten beoordelen.
                     </p>
                     <Link href="/contact" className="btn-primary inline-flex items-center gap-2 text-lg">

@@ -116,7 +116,7 @@ export default function AVGChecklistHRPage() {
   return (
     <>
       {/* ═══ HERO ═══ */}
-      <section className="border-b border-[var(--border)] bg-white">
+      <section className="border-b border-[var(--color-neutral-200)] bg-white">
         <div className="container mx-auto max-w-4xl px-6 py-20 md:px-12 md:py-28">
           <p className="eyebrow mb-4">AVG-checklist HR</p>
           <h1 className="mb-6">
@@ -127,7 +127,7 @@ export default function AVGChecklistHRPage() {
             tot een checklist die je nu kunt aflopen. Geen AVG-theorie, wel
             concrete punten die je in je eigen model kunt controleren.
           </p>
-          <div className="mt-8 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-[var(--text-secondary)]">
+          <div className="mt-8 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-[var(--color-neutral-700)]">
             <span className="inline-flex items-center gap-2">
               <ShieldCheck className="h-4 w-4 text-[var(--color-accent-700)]" />
               12 controlepunten
@@ -147,13 +147,13 @@ export default function AVGChecklistHRPage() {
       </section>
 
       {/* ═══ VOOR WIE ═══ */}
-      <section className="border-b border-[var(--border)] bg-[var(--color-neutral-50)] py-16 md:py-20">
+      <section className="border-b border-[var(--color-neutral-200)] bg-[var(--color-neutral-50)] py-16 md:py-20">
         <div className="container mx-auto max-w-4xl px-6 md:px-12">
           <h2 className="mb-6">Voor wie deze checklist is.</h2>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
             <div>
               <h3 className="mb-2 text-base">DPO / Functionaris Gegevensbescherming</h3>
-              <p className="text-sm leading-relaxed text-[var(--text-secondary)]">
+              <p className="text-sm leading-relaxed text-[var(--color-neutral-700)]">
                 Wat moet je weten over het HR-model voordat je het verwerkingsregister
                 tekent? Deze checklist geeft de kritieke vragen die je moet stellen
                 aan IT en HR.
@@ -161,7 +161,7 @@ export default function AVGChecklistHRPage() {
             </div>
             <div>
               <h3 className="mb-2 text-base">HR-controller</h3>
-              <p className="text-sm leading-relaxed text-[var(--text-secondary)]">
+              <p className="text-sm leading-relaxed text-[var(--color-neutral-700)]">
                 Verantwoordelijk voor de juistheid van verzuim-, instroom- en
                 formatiecijfers. Deze checklist toont waar je rapportage stilletjes
                 onjuist wordt door slechte modellering.
@@ -169,7 +169,7 @@ export default function AVGChecklistHRPage() {
             </div>
             <div>
               <h3 className="mb-2 text-base">BI-lead in een HR-team</h3>
-              <p className="text-sm leading-relaxed text-[var(--text-secondary)]">
+              <p className="text-sm leading-relaxed text-[var(--color-neutral-700)]">
                 Je bouwt of beheert het Power BI-HR-model. Deze checklist is je
                 eigen audit voor de volgende DPIA of externe controle.
               </p>
@@ -182,7 +182,7 @@ export default function AVGChecklistHRPage() {
       <section className="py-16 md:py-20">
         <div className="container mx-auto max-w-4xl px-6 md:px-12">
           <h2 className="mb-2">De checklist.</h2>
-          <p className="mb-12 text-[var(--text-secondary)]">
+          <p className="mb-12 text-[var(--color-neutral-700)]">
             Per punt: de vraag die je stelt, en wat er typisch fout gaat als het
             antwoord &ldquo;nee&rdquo; is.
           </p>
@@ -197,10 +197,10 @@ export default function AVGChecklistHRPage() {
                 </div>
                 <div className="flex-1">
                   <h3 className="mb-2 text-lg">{punt.titel}</h3>
-                  <p className="mb-3 text-[0.9375rem] font-medium text-[var(--text-primary)]">
+                  <p className="mb-3 text-[0.9375rem] font-medium text-[var(--color-neutral-900)]">
                     {punt.vraag}
                   </p>
-                  <p className="text-sm leading-relaxed text-[var(--text-secondary)]">
+                  <p className="text-sm leading-relaxed text-[var(--color-neutral-700)]">
                     {punt.uitleg}
                   </p>
                 </div>
@@ -213,10 +213,10 @@ export default function AVGChecklistHRPage() {
       {/* ═══ PDF-DOWNLOAD ═══ */}
       <section
         id="download"
-        className="border-y border-[var(--border)] bg-[var(--color-neutral-50)] py-16 md:py-20"
+        className="border-y border-[var(--color-neutral-200)] bg-[var(--color-neutral-50)] py-16 md:py-20"
       >
         <div className="container mx-auto max-w-2xl px-6 md:px-12">
-          <div className="rounded-lg border border-[var(--border)] bg-white p-6 md:p-8">
+          <div className="rounded-lg border border-[var(--color-neutral-200)] bg-white p-6 md:p-8">
             <div className="mb-5 flex items-start gap-4">
               <FileDown
                 className="h-8 w-8 flex-shrink-0 text-[var(--color-accent-700)]"
@@ -224,7 +224,7 @@ export default function AVGChecklistHRPage() {
               />
               <div>
                 <h2 className="mb-1 text-xl">Wil je deze checklist als PDF?</h2>
-                <p className="text-sm leading-relaxed text-[var(--text-secondary)]">
+                <p className="text-sm leading-relaxed text-[var(--color-neutral-700)]">
                   Handig om te delen met je DPO, leidinggevende of externe
                   auditor. Eén pagina overzicht, twee pagina&apos;s toelichting.
                 </p>
@@ -248,9 +248,9 @@ export default function AVGChecklistHRPage() {
         <div className="container mx-auto max-w-4xl px-6 md:px-12">
           <h2 className="mb-6">Wat je hierna kunt doen.</h2>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-            <article className="rounded-lg border border-[var(--border)] bg-white p-6">
+            <article className="rounded-lg border border-[var(--color-neutral-200)] bg-white p-6">
               <h3 className="mb-2 text-base">Doe de Readiness Scan</h3>
-              <p className="mb-4 text-sm leading-relaxed text-[var(--text-secondary)]">
+              <p className="mb-4 text-sm leading-relaxed text-[var(--color-neutral-700)]">
                 Tien vragen over je huidige HR-rapportage. Snelle inschatting van
                 volwassenheid en prioriteiten.
               </p>
@@ -262,9 +262,9 @@ export default function AVGChecklistHRPage() {
                 <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
               </Link>
             </article>
-            <article className="rounded-lg border border-[var(--border)] bg-white p-6">
+            <article className="rounded-lg border border-[var(--color-neutral-200)] bg-white p-6">
               <h3 className="mb-2 text-base">Lees de methodiek</h3>
-              <p className="mb-4 text-sm leading-relaxed text-[var(--text-secondary)]">
+              <p className="mb-4 text-sm leading-relaxed text-[var(--color-neutral-700)]">
                 Hoe een AVG-proof HR-model van bron tot semantisch laag wordt
                 opgebouwd. Vier lagen, zonder shortcuts.
               </p>
@@ -276,9 +276,9 @@ export default function AVGChecklistHRPage() {
                 <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
               </Link>
             </article>
-            <article className="rounded-lg border border-[var(--border)] bg-white p-6">
+            <article className="rounded-lg border border-[var(--color-neutral-200)] bg-white p-6">
               <h3 className="mb-2 text-base">Plan een Quick Scan</h3>
-              <p className="mb-4 text-sm leading-relaxed text-[var(--text-secondary)]">
+              <p className="mb-4 text-sm leading-relaxed text-[var(--color-neutral-700)]">
                 Anderhalve dag waarin ik je HR-model audit op deze 12 punten —
                 met concrete actielijst. €1.950 vast.
               </p>
@@ -295,7 +295,7 @@ export default function AVGChecklistHRPage() {
       </section>
 
       {/* ═══ FOOTER-CTA ═══ */}
-      <section className="border-t border-[var(--border)] bg-white py-16 md:py-20">
+      <section className="border-t border-[var(--color-neutral-200)] bg-white py-16 md:py-20">
         <div className="container mx-auto max-w-2xl px-6 text-center md:px-12">
           <h2 className="mb-4">Hulp nodig bij één van de twaalf?</h2>
           <p className="lead mx-auto mb-8">

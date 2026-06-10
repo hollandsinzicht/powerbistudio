@@ -82,7 +82,7 @@ export default function QuickScanPage() {
       />
 
       {/* ═══ HERO ═══ */}
-      <section className="border-b border-[var(--border)] bg-white">
+      <section className="border-b border-[var(--color-neutral-200)] bg-white">
         <div className="container mx-auto max-w-4xl px-6 py-20 md:px-12 md:py-28">
           <p className="eyebrow mb-4">HR Analytics Quick Scan</p>
           <h1 className="mb-6">
@@ -106,7 +106,7 @@ export default function QuickScanPage() {
       </section>
 
       {/* ═══ STATS ═══ */}
-      <section className="border-b border-[var(--border)] bg-[var(--color-neutral-50)] py-12 md:py-16">
+      <section className="border-b border-[var(--color-neutral-200)] bg-[var(--color-neutral-50)] py-12 md:py-16">
         <div className="container mx-auto max-w-5xl px-6 md:px-12">
           <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
             {STATS.map((s) => (
@@ -131,7 +131,7 @@ export default function QuickScanPage() {
             {PATTERNS.map(({ icon: Icon, titel, tekst }) => (
               <article
                 key={titel}
-                className="grid grid-cols-[auto_1fr] gap-5 rounded-lg border border-[var(--border)] bg-white p-6 md:gap-6 md:p-7"
+                className="grid grid-cols-[auto_1fr] gap-5 rounded-lg border border-[var(--color-neutral-200)] bg-white p-6 md:gap-6 md:p-7"
               >
                 <Icon
                   className="h-7 w-7 shrink-0 text-[var(--color-accent-700)]"
@@ -139,7 +139,7 @@ export default function QuickScanPage() {
                 />
                 <div>
                   <h3 className="mb-2 text-lg">{titel}</h3>
-                  <p className="text-sm leading-relaxed text-[var(--text-secondary)]">
+                  <p className="text-sm leading-relaxed text-[var(--color-neutral-700)]">
                     {tekst}
                   </p>
                 </div>
@@ -150,14 +150,14 @@ export default function QuickScanPage() {
       </section>
 
       {/* ═══ WAT JE KRIJGT ═══ */}
-      <section className="border-y border-[var(--border)] bg-[var(--color-neutral-50)] py-20 md:py-24">
+      <section className="border-y border-[var(--color-neutral-200)] bg-[var(--color-neutral-50)] py-20 md:py-24">
         <div className="container mx-auto max-w-4xl px-6 md:px-12">
           <h2 className="mb-4">Wat je krijgt</h2>
           <p className="lead mb-10">
             Geen open uren-rekening. Een vaste scope, een vaste prijs en een
             tastbaar resultaat dat je direct kunt gebruiken.
           </p>
-          <div className="rounded-lg border border-[var(--border)] bg-white p-6 md:p-8">
+          <div className="rounded-lg border border-[var(--color-neutral-200)] bg-white p-6 md:p-8">
             <ul className="space-y-3.5">
               {INHOUD.map((punt) => (
                 <li key={punt} className="flex items-start gap-3">
@@ -169,8 +169,8 @@ export default function QuickScanPage() {
                 </li>
               ))}
             </ul>
-            <p className="mt-6 border-l-2 border-[var(--color-accent-700)] pl-3 text-sm leading-relaxed text-[var(--text-secondary)]">
-              <span className="font-semibold text-[var(--text-primary)]">
+            <p className="mt-6 border-l-2 border-[var(--color-accent-700)] pl-3 text-sm leading-relaxed text-[var(--color-neutral-700)]">
+              <span className="font-semibold text-[var(--color-neutral-900)]">
                 Wat je terugverdient:{' '}
               </span>
               eén voorkomen ontwerpfout in je dataplatform en de scan heeft
@@ -191,11 +191,11 @@ export default function QuickScanPage() {
           {hasCal ? (
             <CalEmbed
               event="quick-scan"
-              className="rounded-lg border border-[var(--border)] bg-white"
+              className="rounded-lg border border-[var(--color-neutral-200)] bg-white"
             />
           ) : (
-            <div className="rounded-lg border border-[var(--border)] bg-white p-8 text-center">
-              <p className="mb-6 text-[var(--text-secondary)]">
+            <div className="rounded-lg border border-[var(--color-neutral-200)] bg-white p-8 text-center">
+              <p className="mb-6 text-[var(--color-neutral-700)]">
                 Laat je gegevens achter via het contactformulier — ik plan de
                 Quick Scan dan binnen één werkdag met je in.
               </p>
@@ -208,7 +208,7 @@ export default function QuickScanPage() {
       </section>
 
       {/* ═══ FOOTER-CTA ═══ */}
-      <section className="border-t border-[var(--border)] bg-[var(--color-primary-900)] py-20 md:py-24 text-white">
+      <section className="border-t border-[var(--color-neutral-200)] bg-[var(--color-primary-900)] py-20 md:py-24 text-white">
         <div className="container mx-auto max-w-3xl px-6 text-center md:px-12">
           <h2 className="mb-4 text-white">Twijfel je of je model klopt?</h2>
           <p className="mb-8 text-lg leading-relaxed text-white/85">

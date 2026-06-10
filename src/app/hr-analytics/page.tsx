@@ -231,7 +231,7 @@ export default function HRAnalyticsPage() {
       />
 
       {/* ═══ HERO ═══ */}
-      <section className="border-b border-[var(--border)] bg-white">
+      <section className="border-b border-[var(--color-neutral-200)] bg-white">
         <div className="container mx-auto max-w-4xl px-6 py-20 md:px-12 md:py-28">
           <p className="eyebrow mb-4">HR Analytics-traject</p>
           <h1 className="mb-6">
@@ -254,7 +254,7 @@ export default function HRAnalyticsPage() {
         <div className="container mx-auto max-w-5xl px-6 md:px-12">
           <h2 className="mb-12">Voor wie ik werk — en voor wie niet</h2>
           <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
-            <div className="rounded-lg border border-[var(--border)] border-l-[3px] border-l-[var(--color-accent-700)] bg-white p-6">
+            <div className="rounded-lg border border-[var(--color-neutral-200)] border-l-[3px] border-l-[var(--color-accent-700)] bg-white p-6">
               <h3 className="mb-5 text-lg">Past goed bij mij</h3>
               <ul className="space-y-3">
                 {VOOR_WIE.map((item) => (
@@ -268,18 +268,18 @@ export default function HRAnalyticsPage() {
                 ))}
               </ul>
             </div>
-            <div className="rounded-lg border border-[var(--border)] bg-white p-6">
-              <h3 className="mb-5 text-lg text-[var(--text-secondary)]">
+            <div className="rounded-lg border border-[var(--color-neutral-200)] bg-white p-6">
+              <h3 className="mb-5 text-lg text-[var(--color-neutral-700)]">
                 Past minder
               </h3>
               <ul className="space-y-3">
                 {NIET_VOOR_WIE.map((item) => (
                   <li key={item} className="flex items-start gap-3">
                     <X
-                      className="mt-1 h-4 w-4 shrink-0 text-[var(--text-secondary)]"
+                      className="mt-1 h-4 w-4 shrink-0 text-[var(--color-neutral-700)]"
                       aria-hidden="true"
                     />
-                    <span className="text-sm leading-relaxed text-[var(--text-secondary)]">
+                    <span className="text-sm leading-relaxed text-[var(--color-neutral-700)]">
                       {item}
                     </span>
                   </li>
@@ -291,7 +291,7 @@ export default function HRAnalyticsPage() {
       </section>
 
       {/* ═══ DRIE PROBLEMEN UITGEBREID ═══ */}
-      <section className="border-y border-[var(--border)] bg-[var(--color-neutral-50)] py-20 md:py-24">
+      <section className="border-y border-[var(--color-neutral-200)] bg-[var(--color-neutral-50)] py-20 md:py-24">
         <div className="container mx-auto max-w-5xl px-6 md:px-12">
           <div className="mb-12 max-w-3xl">
             <h2 className="mb-4">De drie patterns die elke HR-rapportage stuk maken</h2>
@@ -304,7 +304,7 @@ export default function HRAnalyticsPage() {
             {PROBLEMEN.map(({ icon: Icon, titel, samenvatting, detail }) => (
               <article
                 key={titel}
-                className="grid grid-cols-1 gap-5 rounded-lg border border-[var(--border)] bg-white p-6 md:grid-cols-[auto_1fr] md:gap-8 md:p-8"
+                className="grid grid-cols-1 gap-5 rounded-lg border border-[var(--color-neutral-200)] bg-white p-6 md:grid-cols-[auto_1fr] md:gap-8 md:p-8"
               >
                 <Icon
                   className="h-8 w-8 shrink-0 text-[var(--color-accent-700)]"
@@ -312,10 +312,10 @@ export default function HRAnalyticsPage() {
                 />
                 <div>
                   <h3 className="mb-2 text-xl">{titel}</h3>
-                  <p className="mb-4 text-base text-[var(--text-secondary)]">
+                  <p className="mb-4 text-base text-[var(--color-neutral-700)]">
                     {samenvatting}
                   </p>
-                  <p className="text-sm leading-relaxed text-[var(--text-primary)]">
+                  <p className="text-sm leading-relaxed text-[var(--color-neutral-900)]">
                     {detail}
                   </p>
                 </div>
@@ -336,7 +336,7 @@ export default function HRAnalyticsPage() {
             </p>
           </div>
           <MethodieDiagram variant="full" />
-          <p className="mx-auto mt-6 max-w-2xl text-center text-sm leading-relaxed text-[var(--text-secondary)]">
+          <p className="mx-auto mt-6 max-w-2xl text-center text-sm leading-relaxed text-[var(--color-neutral-700)]">
             Ik werk over alle vier de lagen, maar mijn diepste expertise ligt in
             Zilver, Goud en Semantisch: cleaning + type-2 historiek, sterschema,
             DAX, RLS en KPI-bibliotheek. Bij organisaties met een bestaand
@@ -352,7 +352,7 @@ export default function HRAnalyticsPage() {
       </section>
 
       {/* ═══ PAKKETTEN MET DETAILS ═══ */}
-      <section className="border-y border-[var(--border)] bg-[var(--color-neutral-50)] py-20 md:py-24">
+      <section className="border-y border-[var(--color-neutral-200)] bg-[var(--color-neutral-50)] py-20 md:py-24">
         <div className="container mx-auto max-w-6xl px-6 md:px-12">
           <div className="mb-12 max-w-3xl">
             <h2 className="mb-4">Drie pakketten + doorlopende hosting</h2>
@@ -369,7 +369,7 @@ export default function HRAnalyticsPage() {
                 className={`flex flex-col rounded-lg border bg-white p-6 md:p-8 ${
                   p.accent
                     ? 'border-[var(--color-accent-700)] shadow-[0_4px_20px_-4px_rgba(14,124,102,0.15)]'
-                    : 'border-[var(--border)]'
+                    : 'border-[var(--color-neutral-200)]'
                 }`}
               >
                 {p.accent && (
@@ -381,10 +381,10 @@ export default function HRAnalyticsPage() {
                     {p.prijs}
                   </span>
                   {p.type === 'fixed' && (
-                    <span className="text-sm text-[var(--text-secondary)]">vast</span>
+                    <span className="text-sm text-[var(--color-neutral-700)]">vast</span>
                   )}
                 </div>
-                <p className="mb-5 text-sm text-[var(--text-secondary)]">
+                <p className="mb-5 text-sm text-[var(--color-neutral-700)]">
                   {p.doorlooptijd} · {p.voorWie}
                 </p>
                 <ul className="mb-6 space-y-2.5 flex-1">
@@ -398,8 +398,8 @@ export default function HRAnalyticsPage() {
                     </li>
                   ))}
                 </ul>
-                <p className="mb-6 border-l-2 border-[var(--color-accent-700)] pl-3 text-sm leading-relaxed text-[var(--text-secondary)]">
-                  <span className="font-semibold text-[var(--text-primary)]">
+                <p className="mb-6 border-l-2 border-[var(--color-accent-700)] pl-3 text-sm leading-relaxed text-[var(--color-neutral-700)]">
+                  <span className="font-semibold text-[var(--color-neutral-900)]">
                     Wat je terugverdient:{' '}
                   </span>
                   {p.roi}
@@ -430,7 +430,7 @@ export default function HRAnalyticsPage() {
             {FAQ.map((q) => (
               <details
                 key={q.vraag}
-                className="group rounded-lg border border-[var(--border)] bg-white p-5 transition-colors hover:border-[var(--color-accent-700)]/40"
+                className="group rounded-lg border border-[var(--color-neutral-200)] bg-white p-5 transition-colors hover:border-[var(--color-accent-700)]/40"
               >
                 <summary className="flex cursor-pointer items-center justify-between gap-4 font-display font-semibold">
                   <span>{q.vraag}</span>
@@ -439,7 +439,7 @@ export default function HRAnalyticsPage() {
                     aria-hidden="true"
                   />
                 </summary>
-                <p className="mt-4 text-sm leading-relaxed text-[var(--text-secondary)]">
+                <p className="mt-4 text-sm leading-relaxed text-[var(--color-neutral-700)]">
                   {q.antwoord}
                 </p>
               </details>
@@ -449,7 +449,7 @@ export default function HRAnalyticsPage() {
       </section>
 
       {/* ═══ FOOTER-CTA ═══ */}
-      <section className="border-t border-[var(--border)] bg-[var(--color-primary-900)] py-20 md:py-24 text-white">
+      <section className="border-t border-[var(--color-neutral-200)] bg-[var(--color-primary-900)] py-20 md:py-24 text-white">
         <div className="container mx-auto max-w-3xl px-6 text-center md:px-12">
           <h2 className="mb-4 text-white">
             Begin met een Quick Scan

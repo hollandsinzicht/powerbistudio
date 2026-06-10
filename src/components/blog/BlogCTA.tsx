@@ -135,8 +135,8 @@ export default function BlogCTA({ title, excerpt, content }: BlogCTAProps) {
   const ctas = [leadCta, serviceCta];
 
   return (
-    <div className="mt-16 pt-12 border-t border-[var(--border)]">
-      <p className="text-[0.7rem] font-semibold tracking-widest uppercase text-[var(--text-secondary)] mb-6">
+    <div className="mt-16 pt-12 border-t border-[var(--color-neutral-200)]">
+      <p className="text-[0.7rem] font-semibold tracking-widest uppercase text-[var(--color-neutral-700)] mb-6">
         Gerelateerde tools & resources
       </p>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -146,14 +146,14 @@ export default function BlogCTA({ title, excerpt, content }: BlogCTAProps) {
             <Link
               key={cta.href}
               href={cta.href}
-              className="glass-card rounded-xl p-6 border border-[var(--border)] hover:border-[var(--accent)] transition-all group flex items-start gap-4"
+              className="bg-white shadow-sm rounded-xl p-6 border border-[var(--color-neutral-200)] hover:border-[var(--color-primary-700)] transition-all group flex items-start gap-4"
             >
               <div className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0" style={{ backgroundColor: `${cta.color}15` }}>
                 <Icon size={20} style={{ color: cta.color }} />
               </div>
               <div>
-                <h4 className="font-display font-bold text-sm mb-1">{cta.title}</h4>
-                <p className="text-[var(--text-secondary)] text-xs leading-relaxed">{cta.description}</p>
+                <h4 className="font-display font-semibold text-sm mb-1">{cta.title}</h4>
+                <p className="text-[var(--color-neutral-700)] text-xs leading-relaxed">{cta.description}</p>
                 <span className="inline-flex items-center gap-1 text-xs font-medium mt-2 group-hover:gap-2 transition-all" style={{ color: cta.color }}>
                   Bekijk <ArrowRight size={12} />
                 </span>

@@ -7,17 +7,17 @@ export type TeamAccent =
   | 'orange'; // LEX — orange robot
 
 export const TEAM_ACCENT_BORDER: Record<TeamAccent, string> = {
-  'navy-amber': 'var(--accent)',
-  blue: 'var(--primary)',
-  green: 'var(--color-sector-zorg)',
-  orange: 'var(--color-sector-data)',
+  'navy-amber': 'var(--color-primary-700)',
+  blue: 'var(--color-primary-900)',
+  green: 'var(--color-accent-700)',
+  orange: 'var(--color-action-600)',
 };
 
 export const TEAM_ACCENT_COLOR: Record<TeamAccent, string> = {
-  'navy-amber': 'var(--primary)',
-  blue: 'var(--primary)',
-  green: 'var(--color-sector-zorg)',
-  orange: 'var(--color-sector-data)',
+  'navy-amber': 'var(--color-primary-900)',
+  blue: 'var(--color-primary-900)',
+  green: 'var(--color-accent-700)',
+  orange: 'var(--color-action-600)',
 };
 
 export type TeamMemberId = 'jan-willem' | 'nova' | 'ada';

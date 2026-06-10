@@ -151,7 +151,7 @@ export default function DashPortalPage() {
   return (
     <>
       {/* ═══ HERO ═══ */}
-      <section className="border-b border-[var(--border)] bg-white">
+      <section className="border-b border-[var(--color-neutral-200)] bg-white">
         <div className="container mx-auto max-w-4xl px-6 py-20 md:px-12 md:py-28">
           <p className="eyebrow mb-4">DashPortal HR Hosting</p>
           <h1 className="mb-6">
@@ -190,7 +190,7 @@ export default function DashPortalPage() {
             {PIJN_PUNTEN.map(({ icon: Icon, titel, tekst }) => (
               <article
                 key={titel}
-                className="grid grid-cols-1 gap-4 rounded-lg border border-[var(--border)] bg-white p-5 md:grid-cols-[auto_1fr] md:gap-6 md:p-6"
+                className="grid grid-cols-1 gap-4 rounded-lg border border-[var(--color-neutral-200)] bg-white p-5 md:grid-cols-[auto_1fr] md:gap-6 md:p-6"
               >
                 <Icon
                   className="h-6 w-6 shrink-0 text-[var(--color-accent-700)]"
@@ -198,7 +198,7 @@ export default function DashPortalPage() {
                 />
                 <div>
                   <h3 className="mb-1 text-base">{titel}</h3>
-                  <p className="text-sm leading-relaxed text-[var(--text-secondary)]">
+                  <p className="text-sm leading-relaxed text-[var(--color-neutral-700)]">
                     {tekst}
                   </p>
                 </div>
@@ -209,7 +209,7 @@ export default function DashPortalPage() {
       </section>
 
       {/* ═══ DRIE FEATURES ═══ */}
-      <section className="border-y border-[var(--border)] bg-[var(--color-neutral-50)] py-20 md:py-24">
+      <section className="border-y border-[var(--color-neutral-200)] bg-[var(--color-neutral-50)] py-20 md:py-24">
         <div className="container mx-auto max-w-6xl px-6 md:px-12">
           <div className="mb-12 max-w-3xl">
             <h2 className="mb-4">Wat DashPortal HR doet</h2>
@@ -223,14 +223,14 @@ export default function DashPortalPage() {
             {FEATURES.map(({ icon: Icon, titel, tekst, bullets }) => (
               <article
                 key={titel}
-                className="flex flex-col rounded-lg border border-[var(--border)] border-l-[3px] border-l-[var(--color-accent-700)] bg-white p-6"
+                className="flex flex-col rounded-lg border border-[var(--color-neutral-200)] border-l-[3px] border-l-[var(--color-accent-700)] bg-white p-6"
               >
                 <Icon
                   className="mb-4 h-7 w-7 text-[var(--color-accent-700)]"
                   aria-hidden="true"
                 />
                 <h3 className="mb-3 text-lg">{titel}</h3>
-                <p className="mb-5 text-sm leading-relaxed text-[var(--text-secondary)]">
+                <p className="mb-5 text-sm leading-relaxed text-[var(--color-neutral-700)]">
                   {tekst}
                 </p>
                 <ul className="space-y-2">
@@ -267,7 +267,7 @@ export default function DashPortalPage() {
                 className={`flex flex-col rounded-lg border bg-white p-6 md:p-8 ${
                   t.accent
                     ? 'border-[var(--color-accent-700)] shadow-[0_4px_20px_-4px_rgba(14,124,102,0.15)]'
-                    : 'border-[var(--border)]'
+                    : 'border-[var(--color-neutral-200)]'
                 }`}
               >
                 {t.accent && (
@@ -278,11 +278,11 @@ export default function DashPortalPage() {
                   <span className="font-display text-3xl font-semibold">
                     {t.prijs}
                   </span>
-                  <span className="text-sm text-[var(--text-secondary)]">
+                  <span className="text-sm text-[var(--color-neutral-700)]">
                     {t.eenheid}
                   </span>
                 </div>
-                <p className="mb-5 text-sm text-[var(--text-secondary)]">{t.voor}</p>
+                <p className="mb-5 text-sm text-[var(--color-neutral-700)]">{t.voor}</p>
                 <ul className="mb-6 flex-1 space-y-2.5">
                   {t.inhoud.map((punt) => (
                     <li key={punt} className="flex items-start gap-2.5">
@@ -307,7 +307,7 @@ export default function DashPortalPage() {
               </article>
             ))}
           </div>
-          <p className="mt-8 text-center text-sm text-[var(--text-secondary)]">
+          <p className="mt-8 text-center text-sm text-[var(--color-neutral-700)]">
             Inclusief eenmalige implementatie tussen €2.500 en €7.500, afhankelijk van
             scope. Quick Scan doet de inschatting.
           </p>
@@ -315,11 +315,11 @@ export default function DashPortalPage() {
       </section>
 
       {/* ═══ HOE SAMENWERKT MET FOUNDATION ═══ */}
-      <section className="border-y border-[var(--border)] bg-[var(--color-neutral-50)] py-20 md:py-24">
+      <section className="border-y border-[var(--color-neutral-200)] bg-[var(--color-neutral-50)] py-20 md:py-24">
         <div className="container mx-auto max-w-3xl px-6 md:px-12">
           <p className="eyebrow mb-4">In combinatie met Foundation</p>
           <h2 className="mb-4">Hoe DashPortal HR een Foundation-traject voortzet</h2>
-          <div className="space-y-4 text-base leading-relaxed text-[var(--text-secondary)]">
+          <div className="space-y-4 text-base leading-relaxed text-[var(--color-neutral-700)]">
             <p>
               Een Foundation-traject (€34.500 vast, 6-8 weken) levert een werkend
               HR-model op. DashPortal HR Essential (€1.250/mnd) is wat dat model in
@@ -333,7 +333,7 @@ export default function DashPortalPage() {
               niet goed werkt — en dat de DPO-rapportage in een lade verdwijnt.
             </p>
             <p>
-              <strong className="font-semibold text-[var(--text-primary)]">
+              <strong className="font-semibold text-[var(--color-neutral-900)]">
                 DashPortal HR is geen verplicht vervolg op Foundation.
               </strong>{' '}
               Het is een keuze: zelf monitoren, of doorlopend door mij laten draaien.
@@ -349,7 +349,7 @@ export default function DashPortalPage() {
       </section>
 
       {/* ═══ FOOTER-CTA ═══ */}
-      <section className="border-t border-[var(--border)] bg-[var(--color-primary-900)] py-20 md:py-24 text-white">
+      <section className="border-t border-[var(--color-neutral-200)] bg-[var(--color-primary-900)] py-20 md:py-24 text-white">
         <div className="container mx-auto max-w-3xl px-6 text-center md:px-12">
           <h2 className="mb-4 text-white">
             Past DashPortal HR bij jullie HR-rapportage?

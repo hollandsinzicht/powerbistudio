@@ -147,7 +147,7 @@ export default function HomePage() {
   return (
     <>
       {/* ═══ HERO ═══ */}
-      <section className="border-b border-[var(--border)] bg-white">
+      <section className="border-b border-[var(--color-neutral-200)] bg-white">
         <div className="container mx-auto px-6 md:px-12">
           <div className="grid grid-cols-1 gap-10 py-20 md:grid-cols-5 md:gap-12 md:py-28">
             {/* Tekst — 60% op desktop */}
@@ -161,7 +161,7 @@ export default function HomePage() {
                 bewezen methodiek, doorlopende hosting via DashPortal HR. AVG-proof
                 en historisch correct vanaf dag één.
               </p>
-              <p className="text-sm text-[var(--text-secondary)] mb-8">
+              <p className="text-sm text-[var(--color-neutral-700)] mb-8">
                 Jan Willem den Hollander · 15 jaar Power BI · Lean Six Sigma Black Belt
               </p>
               <div className="flex flex-wrap gap-3">
@@ -173,7 +173,7 @@ export default function HomePage() {
             {/* Foto — 40% op desktop. Ook op mobiel tonen (compacter, gecentreerd):
                 "één specialist" is de USP, dus het gezicht hoort er ook klein bij. */}
             <div className="flex flex-col items-center md:col-span-2 md:items-end">
-              <div className="relative w-full max-w-[14rem] overflow-hidden rounded-lg border border-[var(--border)] sm:max-w-xs md:max-w-sm">
+              <div className="relative w-full max-w-[14rem] overflow-hidden rounded-lg border border-[var(--color-neutral-200)] sm:max-w-xs md:max-w-sm">
                 <Image
                   src="/team/jan-willem.jpg"
                   alt="Jan Willem den Hollander, HR analytics-specialist"
@@ -183,7 +183,7 @@ export default function HomePage() {
                   className="aspect-[4/5] w-full object-cover"
                 />
               </div>
-              <span className="mt-3 inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-white px-3 py-1.5 text-xs font-medium text-[var(--text-secondary)]">
+              <span className="mt-3 inline-flex items-center gap-2 rounded-full border border-[var(--color-neutral-200)] bg-white px-3 py-1.5 text-xs font-medium text-[var(--color-neutral-700)]">
                 <span className="inline-block h-2 w-2 rounded-full bg-[var(--color-success)]" />
                 Beschikbaar voor HR-trajecten Q2-Q3 2026
               </span>
@@ -193,16 +193,16 @@ export default function HomePage() {
       </section>
 
       {/* ═══ LOGOBALK ═══ */}
-      <section className="border-b border-[var(--border)] py-10 bg-[var(--color-neutral-50)]">
+      <section className="border-b border-[var(--color-neutral-200)] py-10 bg-[var(--color-neutral-50)]">
         <div className="container mx-auto px-6 md:px-12">
-          <p className="eyebrow mb-6 text-center text-[var(--text-secondary)]">
+          <p className="eyebrow mb-6 text-center text-[var(--color-neutral-700)]">
             Vertrouwd door organisaties met gevoelige data
           </p>
           <div className="flex flex-wrap items-center justify-center gap-x-12 gap-y-3">
             {KLANTEN.map((name) => (
               <span
                 key={name}
-                className="text-sm font-medium tracking-wide text-[var(--text-secondary)] opacity-70 hover:opacity-100 transition-opacity"
+                className="text-sm font-medium tracking-wide text-[var(--color-neutral-700)] opacity-70 hover:opacity-100 transition-opacity"
               >
                 {name}
               </span>
@@ -226,14 +226,14 @@ export default function HomePage() {
             {PROBLEMEN.map(({ icon: Icon, titel, tekst }) => (
               <article
                 key={titel}
-                className="rounded-lg border border-[var(--border)] border-l-[3px] border-l-[var(--color-accent-700)] bg-white p-6 transition-shadow hover:shadow-md"
+                className="rounded-lg border border-[var(--color-neutral-200)] border-l-[3px] border-l-[var(--color-accent-700)] bg-white p-6 transition-shadow hover:shadow-md"
               >
                 <Icon
                   className="mb-4 h-6 w-6 text-[var(--color-accent-700)]"
                   aria-hidden="true"
                 />
                 <h3 className="mb-3 text-lg">{titel}</h3>
-                <p className="text-sm leading-relaxed text-[var(--text-secondary)]">
+                <p className="text-sm leading-relaxed text-[var(--color-neutral-700)]">
                   {tekst}
                 </p>
               </article>
@@ -243,7 +243,7 @@ export default function HomePage() {
       </section>
 
       {/* ═══ METHODIEK-VISUAL ═══ */}
-      <section className="border-y border-[var(--border)] bg-[var(--color-neutral-50)] py-20 md:py-24">
+      <section className="border-y border-[var(--color-neutral-200)] bg-[var(--color-neutral-50)] py-20 md:py-24">
         <div className="container mx-auto max-w-4xl px-6 md:px-12">
           <div className="mb-10 max-w-3xl">
             <h2 className="mb-4">Mijn aanpak — bron, zilver, goud, semantisch</h2>
@@ -273,9 +273,9 @@ export default function HomePage() {
           </div>
 
           {/* Tabel op desktop, kaartjes op mobile */}
-          <div className="hidden overflow-hidden rounded-lg border border-[var(--border)] bg-white md:block">
+          <div className="hidden overflow-hidden rounded-lg border border-[var(--color-neutral-200)] bg-white md:block">
             <table className="w-full text-left">
-              <thead className="border-b border-[var(--border)] bg-[var(--color-neutral-50)]">
+              <thead className="border-b border-[var(--color-neutral-200)] bg-[var(--color-neutral-50)]">
                 <tr>
                   <th className="p-4 text-sm font-semibold">Pakket</th>
                   <th className="p-4 text-sm font-semibold">Prijs</th>
@@ -290,15 +290,15 @@ export default function HomePage() {
                     className={
                       idx === PAKKETTEN.length - 1
                         ? 'bg-[var(--color-accent-100)]/40'
-                        : 'border-b border-[var(--border)]'
+                        : 'border-b border-[var(--color-neutral-200)]'
                     }
                   >
                     <td className="p-4 font-display font-semibold">{p.naam}</td>
-                    <td className="p-4 text-[var(--text-primary)]">{p.prijs}</td>
-                    <td className="p-4 text-sm text-[var(--text-secondary)]">
+                    <td className="p-4 text-[var(--color-neutral-900)]">{p.prijs}</td>
+                    <td className="p-4 text-sm text-[var(--color-neutral-700)]">
                       {p.doorlooptijd}
                     </td>
-                    <td className="p-4 text-sm text-[var(--text-secondary)]">
+                    <td className="p-4 text-sm text-[var(--color-neutral-700)]">
                       {p.voor}
                     </td>
                   </tr>
@@ -312,13 +312,13 @@ export default function HomePage() {
             {PAKKETTEN.map((p) => (
               <div
                 key={p.naam}
-                className="rounded-lg border border-[var(--border)] bg-white p-5"
+                className="rounded-lg border border-[var(--color-neutral-200)] bg-white p-5"
               >
                 <h3 className="mb-1 text-base">{p.naam}</h3>
-                <p className="mb-2 text-sm font-semibold text-[var(--text-primary)]">
+                <p className="mb-2 text-sm font-semibold text-[var(--color-neutral-900)]">
                   {p.prijs}
                 </p>
-                <p className="text-xs text-[var(--text-secondary)]">
+                <p className="text-xs text-[var(--color-neutral-700)]">
                   {p.doorlooptijd} · {p.voor}
                 </p>
               </div>
@@ -334,7 +334,7 @@ export default function HomePage() {
       </section>
 
       {/* ═══ VIER ONDERSCHEIDENDE PUNTEN ═══ */}
-      <section className="border-y border-[var(--border)] bg-[var(--color-neutral-50)] py-20 md:py-24">
+      <section className="border-y border-[var(--color-neutral-200)] bg-[var(--color-neutral-50)] py-20 md:py-24">
         <div className="container mx-auto max-w-5xl px-6 md:px-12">
           <div className="mb-12 max-w-3xl">
             <h2 className="mb-4">Vier dingen die andere Power BI-consultants niet doen</h2>
@@ -348,7 +348,7 @@ export default function HomePage() {
                 />
                 <div>
                   <h3 className="mb-2 text-base font-semibold">{titel}</h3>
-                  <p className="text-sm leading-relaxed text-[var(--text-secondary)]">
+                  <p className="text-sm leading-relaxed text-[var(--color-neutral-700)]">
                     {tekst}
                   </p>
                 </div>
@@ -373,16 +373,16 @@ export default function HomePage() {
               <Link
                 key={c.client}
                 href={c.href}
-                className="group rounded-lg border border-[var(--border)] bg-white p-6 transition-shadow hover:shadow-md"
+                className="group rounded-lg border border-[var(--color-neutral-200)] bg-white p-6 transition-shadow hover:shadow-md"
               >
-                <p className="text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
+                <p className="text-xs font-medium uppercase tracking-wider text-[var(--color-neutral-700)]">
                   {c.label}
                 </p>
                 <h3 className="mt-2 mb-2 text-lg">{c.client}</h3>
-                <p className="mb-3 text-sm text-[var(--text-secondary)]">
+                <p className="mb-3 text-sm text-[var(--color-neutral-700)]">
                   {c.description}
                 </p>
-                <p className="mb-4 text-sm font-semibold text-[var(--text-primary)]">
+                <p className="mb-4 text-sm font-semibold text-[var(--color-neutral-900)]">
                   {c.highlight}
                 </p>
                 <span className="inline-flex items-center gap-1 text-sm font-medium text-[var(--color-primary-700)] underline underline-offset-4 transition-colors group-hover:text-[var(--color-primary-900)]">
@@ -401,7 +401,7 @@ export default function HomePage() {
       </section>
 
       {/* ═══ FOOTER-CTA ═══ */}
-      <section className="border-t border-[var(--border)] bg-[var(--color-primary-900)] py-20 md:py-24 text-white">
+      <section className="border-t border-[var(--color-neutral-200)] bg-[var(--color-primary-900)] py-20 md:py-24 text-white">
         <div className="container mx-auto max-w-3xl px-6 text-center md:px-12">
           <h2 className="mb-4 text-white">
             Klaar om je HR-rapportage op orde te krijgen?

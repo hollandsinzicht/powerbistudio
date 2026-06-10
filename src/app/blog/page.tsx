@@ -9,6 +9,7 @@ export const metadata: Metadata = {
     title: 'Blog \u2014 HR Analytics, Power BI, AVG-compliance | PowerBIStudio',
     description:
         'Artikelen over HR analytics in Power BI, AVG-compliance, datamodellering en de bron-zilver-goud-methodiek.',
+    alternates: { canonical: 'https://www.powerbistudio.nl/blog' },
 };
 
 type SearchParams = Promise<{ categorie?: string | string[] }>;
@@ -31,7 +32,7 @@ export default async function BlogPage({
 
     return (
         <>
-            <section className="border-b border-[var(--border)] bg-white">
+            <section className="border-b border-[var(--color-neutral-200)] bg-white">
                 <div className="container mx-auto max-w-4xl px-6 py-20 md:px-12 md:py-24">
                     <p className="eyebrow mb-4">Blog</p>
                     <h1 className="mb-4">Artikelen over HR analytics in Power BI.</h1>
@@ -48,19 +49,19 @@ export default async function BlogPage({
             {hasPillars && (
                 <nav
                     aria-label="Sectie-navigatie"
-                    className="sticky top-0 z-30 bg-[var(--background)]/85 backdrop-blur border-b border-[var(--border)]"
+                    className="sticky top-0 z-30 bg-[var(--color-neutral-50)]/85 backdrop-blur border-b border-[var(--color-neutral-200)]"
                 >
                     <div className="container mx-auto px-6 md:px-12">
                         <div className="flex flex-wrap items-center gap-2 py-3 text-sm">
                             <a
                                 href="#gidsen"
-                                className="px-3 py-1.5 rounded-full font-medium text-[var(--text-secondary)] hover:text-[var(--primary)] hover:bg-gray-100 transition-colors"
+                                className="px-3 py-1.5 rounded-full font-medium text-[var(--color-neutral-700)] hover:text-[var(--color-primary-900)] hover:bg-gray-100 transition-colors"
                             >
                                 Complete gidsen
                             </a>
                             <a
                                 href="#alle-artikelen"
-                                className="px-3 py-1.5 rounded-full font-medium text-[var(--text-secondary)] hover:text-[var(--primary)] hover:bg-gray-100 transition-colors"
+                                className="px-3 py-1.5 rounded-full font-medium text-[var(--color-neutral-700)] hover:text-[var(--color-primary-900)] hover:bg-gray-100 transition-colors"
                             >
                                 Alle artikelen
                             </a>
@@ -72,15 +73,15 @@ export default async function BlogPage({
             {hasPillars && (
                 <section
                     id="gidsen"
-                    className="py-20 bg-gradient-to-b from-[var(--surface)] to-[var(--background)] border-b border-[var(--border)]"
+                    className="py-20 bg-gradient-to-b from-[var(--color-white)] to-[var(--color-neutral-50)] border-b border-[var(--color-neutral-200)]"
                 >
                     <div className="container mx-auto px-6 md:px-12">
                         <div className="max-w-3xl mb-12">
                             <PillarSectionEyebrow />
-                            <h2 className="mt-4 text-3xl md:text-4xl font-display font-bold text-[var(--text-primary)]">
+                            <h2 className="mt-4 text-3xl md:text-4xl font-display font-semibold text-[var(--color-neutral-900)]">
                                 Complete gidsen
                             </h2>
-                            <p className="mt-3 text-lg text-[var(--text-secondary)] leading-relaxed">
+                            <p className="mt-3 text-lg text-[var(--color-neutral-700)] leading-relaxed">
                                 Uitputtende gidsen die één breed onderwerp van A tot Z behandelen — met directe doorklikken naar de diepgaande deel-artikelen.
                             </p>
                         </div>
@@ -97,17 +98,17 @@ export default async function BlogPage({
                 <div className="container mx-auto px-6 md:px-12">
                     {hasPillars && (
                         <div className="max-w-3xl mb-10">
-                            <h2 className="text-3xl md:text-4xl font-display font-bold text-[var(--text-primary)]">
+                            <h2 className="text-3xl md:text-4xl font-display font-semibold text-[var(--color-neutral-900)]">
                                 Alle artikelen
                             </h2>
-                            <p className="mt-3 text-lg text-[var(--text-secondary)] leading-relaxed">
+                            <p className="mt-3 text-lg text-[var(--color-neutral-700)] leading-relaxed">
                                 Korte deep-dives op specifieke onderwerpen.
                             </p>
                         </div>
                     )}
 
                     {blogArticles.length === 0 ? (
-                        <p className="text-[var(--text-secondary)] text-center text-lg">
+                        <p className="text-[var(--color-neutral-700)] text-center text-lg">
                             Binnenkort verschijnen hier nieuwe artikelen.
                         </p>
                     ) : (

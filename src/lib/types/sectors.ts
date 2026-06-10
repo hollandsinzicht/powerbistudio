@@ -2,9 +2,9 @@ export type Sector = 'zorg' | 'saas' | 'data';
 export type PriceTier = 'gratis' | 'betaald' | 'op-aanvraag';
 
 export const SECTOR_COLORS: Record<Sector, string> = {
-  zorg: 'var(--color-sector-zorg)',
-  saas: 'var(--color-sector-saas)',
-  data: 'var(--color-sector-data)',
+  zorg: 'var(--color-accent-700)',
+  saas: 'var(--color-primary-700)',
+  data: 'var(--color-action-600)',
 };
 
 export const SECTOR_HEX: Record<Sector, string> = {

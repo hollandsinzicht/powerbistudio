@@ -52,14 +52,14 @@ export default async function CategoryPage({ params }: Props) {
 
     return (
         <>
-            <section className="pt-32 pb-16 border-b border-[var(--border)] relative overflow-hidden">
+            <section className="pt-32 pb-16 border-b border-[var(--color-neutral-200)] relative overflow-hidden">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(59,130,246,0.1),transparent_50%)] pointer-events-none" />
                 <div className="container mx-auto px-6 md:px-12 relative z-10">
                     <div className="max-w-3xl">
-                        <h1 className="text-4xl md:text-5xl font-display font-bold mb-6">
-                            <span className="text-[var(--accent)]">{cat.name}</span>
+                        <h1 className="text-4xl md:text-5xl font-display font-semibold mb-6">
+                            <span className="text-[var(--color-accent-700)]">{cat.name}</span>
                         </h1>
-                        <p className="text-xl text-[var(--text-secondary)] leading-relaxed">
+                        <p className="text-xl text-[var(--color-neutral-700)] leading-relaxed">
                             {cat.description}
                         </p>
                     </div>
@@ -71,7 +71,7 @@ export default async function CategoryPage({ params }: Props) {
                     <div className="flex flex-wrap gap-3 mb-12 max-w-6xl mx-auto">
                         <Link
                             href="/blog"
-                            className="px-4 py-2 rounded-full text-sm font-medium border border-[var(--border)] text-[var(--text-secondary)] hover:border-[var(--accent)] hover:text-[var(--primary)] transition-colors"
+                            className="px-4 py-2 rounded-full text-sm font-medium border border-[var(--color-neutral-200)] text-[var(--color-neutral-700)] hover:border-[var(--color-primary-700)] hover:text-[var(--color-primary-900)] transition-colors"
                         >
                             Alles
                         </Link>
@@ -81,8 +81,8 @@ export default async function CategoryPage({ params }: Props) {
                                 href={`/blog/categorie/${c.slug}`}
                                 className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                                     c.slug === category
-                                        ? 'bg-[var(--primary)] text-white'
-                                        : 'border border-[var(--border)] text-[var(--text-secondary)] hover:border-[var(--accent)] hover:text-[var(--primary)]'
+                                        ? 'bg-[var(--color-primary-900)] text-white'
+                                        : 'border border-[var(--color-neutral-200)] text-[var(--color-neutral-700)] hover:border-[var(--color-primary-700)] hover:text-[var(--color-primary-900)]'
                                 }`}
                             >
                                 {c.name}
@@ -91,7 +91,7 @@ export default async function CategoryPage({ params }: Props) {
                     </div>
 
                     {articles.length === 0 ? (
-                        <p className="text-[var(--text-secondary)] text-center text-lg">
+                        <p className="text-[var(--color-neutral-700)] text-center text-lg">
                             Nog geen artikelen in deze categorie.
                         </p>
                     ) : (

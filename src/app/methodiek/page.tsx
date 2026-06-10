@@ -128,7 +128,7 @@ export default function MethodiekPage() {
   return (
     <>
       {/* ═══ HERO ═══ */}
-      <section className="border-b border-[var(--border)] bg-white">
+      <section className="border-b border-[var(--color-neutral-200)] bg-white">
         <div className="container mx-auto max-w-4xl px-6 py-20 md:px-12 md:py-28">
           <p className="eyebrow mb-4">De methodiek</p>
           <h1 className="mb-6">
@@ -158,14 +158,14 @@ export default function MethodiekPage() {
       </section>
 
       {/* ═══ DE VIER LAGEN — UITGEBREID ═══ */}
-      <section className="border-y border-[var(--border)] bg-[var(--color-neutral-50)] py-20 md:py-24">
+      <section className="border-y border-[var(--color-neutral-200)] bg-[var(--color-neutral-50)] py-20 md:py-24">
         <div className="container mx-auto max-w-4xl px-6 md:px-12">
           <h2 className="mb-12">Per laag uitgelegd</h2>
           <div className="space-y-8">
             {LAGEN.map((laag, idx) => (
               <article
                 key={laag.naam}
-                className="rounded-lg border border-[var(--border)] bg-white p-6 md:p-8"
+                className="rounded-lg border border-[var(--color-neutral-200)] bg-white p-6 md:p-8"
               >
                 <div className="mb-4 flex items-baseline gap-4">
                   <span className="font-display text-3xl font-semibold text-[var(--color-accent-700)]">
@@ -173,20 +173,20 @@ export default function MethodiekPage() {
                   </span>
                   <div>
                     <h3 className="text-xl">{laag.naam}</h3>
-                    <p className="text-sm text-[var(--text-secondary)]">
+                    <p className="text-sm text-[var(--color-neutral-700)]">
                       {laag.rol}
                     </p>
                   </div>
                 </div>
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   <div>
-                    <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">
+                    <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-[var(--color-neutral-700)]">
                       Hoe het werkt
                     </p>
                     <p className="text-sm leading-relaxed">{laag.werking}</p>
                   </div>
                   <div>
-                    <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">
+                    <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-[var(--color-neutral-700)]">
                       Waarom deze laag
                     </p>
                     <p className="text-sm leading-relaxed">{laag.waarom}</p>
@@ -210,7 +210,7 @@ export default function MethodiekPage() {
             row-level security en de KPI-bibliotheek waar managers daadwerkelijk
             op sturen.
           </p>
-          <p className="mb-4 text-base leading-relaxed text-[var(--text-secondary)]">
+          <p className="mb-4 text-base leading-relaxed text-[var(--color-neutral-700)]">
             Bron is meestal werk dat zich leent voor standaardisatie: interne IT
             ontsluit AFAS, Visma of Nmbrs, of een bestaande ETL-tool levert de
             ruwe tabellen aan. De vertaalslag daarná — van bron-data naar een
@@ -219,7 +219,7 @@ export default function MethodiekPage() {
             en Semantisch. Daar zit vijftien jaar Power BI-ervaring, en daar maak
             ik het verschil.
           </p>
-          <p className="text-base leading-relaxed text-[var(--text-secondary)]">
+          <p className="text-base leading-relaxed text-[var(--color-neutral-700)]">
             Concreet: bij een Foundation-traject neem ik de hele keten voor mijn
             rekening, inclusief Bron. Bij organisaties met een bestaand
             datawarehouse of dataplatform stap ik vaak in vanaf Zilver of Goud en
@@ -252,7 +252,7 @@ export default function MethodiekPage() {
                 </div>
                 <div className="flex-1">
                   <h3 className="mb-1 text-lg">{fase}</h3>
-                  <p className="text-sm leading-relaxed text-[var(--text-secondary)]">
+                  <p className="text-sm leading-relaxed text-[var(--color-neutral-700)]">
                     {omschrijving}
                   </p>
                 </div>
@@ -263,7 +263,7 @@ export default function MethodiekPage() {
       </section>
 
       {/* ═══ DOELROLLEN ═══ */}
-      <section className="border-y border-[var(--border)] bg-[var(--color-neutral-50)] py-20 md:py-24">
+      <section className="border-y border-[var(--color-neutral-200)] bg-[var(--color-neutral-50)] py-20 md:py-24">
         <div className="container mx-auto max-w-5xl px-6 md:px-12">
           <div className="mb-12 max-w-3xl">
             <h2 className="mb-4">Voor welke rollen relevant</h2>
@@ -276,7 +276,7 @@ export default function MethodiekPage() {
             {ROLLEN.map(({ icon: Icon, titel, relevantie }) => (
               <article
                 key={titel}
-                className="rounded-lg border border-[var(--border)] border-l-[3px] border-l-[var(--color-accent-700)] bg-white p-6"
+                className="rounded-lg border border-[var(--color-neutral-200)] border-l-[3px] border-l-[var(--color-accent-700)] bg-white p-6"
               >
                 <div className="mb-3 flex items-center gap-3">
                   <Icon
@@ -285,7 +285,7 @@ export default function MethodiekPage() {
                   />
                   <h3 className="text-lg">{titel}</h3>
                 </div>
-                <p className="text-sm leading-relaxed text-[var(--text-secondary)]">
+                <p className="text-sm leading-relaxed text-[var(--color-neutral-700)]">
                   {relevantie}
                 </p>
               </article>
@@ -295,7 +295,7 @@ export default function MethodiekPage() {
       </section>
 
       {/* ═══ FOOTER-CTA ═══ */}
-      <section className="border-t border-[var(--border)] bg-[var(--color-primary-900)] py-20 md:py-24 text-white">
+      <section className="border-t border-[var(--color-neutral-200)] bg-[var(--color-primary-900)] py-20 md:py-24 text-white">
         <div className="container mx-auto max-w-3xl px-6 text-center md:px-12">
           <TrendingUp
             className="mx-auto mb-6 h-10 w-10 text-[var(--color-accent-600)]"

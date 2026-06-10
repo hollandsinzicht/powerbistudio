@@ -65,7 +65,7 @@ export default function StickyCTA() {
     <div
       role="complementary"
       aria-label="Quick Scan call-to-action"
-      className="fixed inset-x-4 bottom-4 z-40 mx-auto flex max-w-md items-center gap-3 rounded-lg border border-[var(--border)] bg-white p-3 pl-4 shadow-lg md:right-6 md:left-auto md:bottom-6 md:max-w-sm"
+      className="fixed inset-x-4 bottom-4 z-40 mx-auto flex max-w-md items-center gap-3 rounded-lg border border-[var(--color-neutral-200)] bg-white p-3 pl-4 shadow-lg md:right-6 md:left-auto md:bottom-6 md:max-w-sm"
     >
       <Link
         href="/contact?type=quick-scan"
@@ -79,7 +79,7 @@ export default function StickyCTA() {
       </Link>
       <button
         onClick={handleDismiss}
-        className="rounded-md p-1 text-[var(--text-secondary)] transition-colors hover:bg-[var(--color-neutral-100)] hover:text-[var(--text-primary)]"
+        className="rounded-md p-1 text-[var(--color-neutral-700)] transition-colors hover:bg-[var(--color-neutral-100)] hover:text-[var(--color-neutral-900)]"
         aria-label="Sluiten"
       >
         <X className="h-4 w-4" aria-hidden="true" />

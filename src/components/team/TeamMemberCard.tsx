@@ -27,11 +27,11 @@ export default function TeamMemberCard(props: TeamMember) {
   return (
     <article
       aria-label={ariaLabel}
-      className="glass-card rounded-xl p-6 md:p-8 border border-[var(--border)] hover:shadow-lg transition-all flex flex-col"
+      className="bg-white shadow-sm rounded-xl p-6 md:p-8 border border-[var(--color-neutral-200)] hover:shadow-lg transition-all flex flex-col"
       style={{ borderLeft: `4px solid ${TEAM_ACCENT_BORDER[accent]}` }}
     >
       {/* Avatar */}
-      <div className="relative w-24 h-24 md:w-28 md:h-28 mb-5 rounded-2xl overflow-hidden border border-[var(--border)] bg-gray-50">
+      <div className="relative w-24 h-24 md:w-28 md:h-28 mb-5 rounded-2xl overflow-hidden border border-[var(--color-neutral-200)] bg-gray-50">
         <Image
           src={image}
           alt={
@@ -49,8 +49,8 @@ export default function TeamMemberCard(props: TeamMember) {
           <div
             className="absolute -bottom-1 -right-1 flex items-center gap-1 bg-white px-2 py-0.5 rounded-full border text-[0.65rem] font-semibold shadow-sm"
             style={{
-              color: 'var(--accent)',
-              borderColor: 'var(--accent)',
+              color: 'var(--color-accent-700)',
+              borderColor: 'var(--color-accent-700)',
             }}
           >
             <Cpu size={11} />
@@ -58,9 +58,9 @@ export default function TeamMemberCard(props: TeamMember) {
           </div>
         ) : (
           available && (
-            <div className="absolute -bottom-1 -right-1 flex items-center gap-1 bg-white px-2 py-0.5 rounded-full border border-[var(--border)] text-[0.65rem] font-semibold shadow-sm">
+            <div className="absolute -bottom-1 -right-1 flex items-center gap-1 bg-white px-2 py-0.5 rounded-full border border-[var(--color-neutral-200)] text-[0.65rem] font-semibold shadow-sm">
               <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
-              <span className="text-[var(--text-primary)]">Beschikbaar</span>
+              <span className="text-[var(--color-neutral-900)]">Beschikbaar</span>
             </div>
           )
         )}
@@ -75,17 +75,17 @@ export default function TeamMemberCard(props: TeamMember) {
       </span>
 
       {/* Name */}
-      <h3 className="text-lg md:text-xl font-display font-bold mb-1 text-[var(--text-primary)]">
+      <h3 className="text-lg md:text-xl font-display font-semibold mb-1 text-[var(--color-neutral-900)]">
         {name}
       </h3>
 
       {/* Role */}
-      <p className="text-sm font-medium text-[var(--text-secondary)] mb-3">
+      <p className="text-sm font-medium text-[var(--color-neutral-700)] mb-3">
         {role}
       </p>
 
       {/* Bio */}
-      <p className="text-[var(--text-secondary)] text-sm leading-relaxed mb-4 flex-grow">
+      <p className="text-[var(--color-neutral-700)] text-sm leading-relaxed mb-4 flex-grow">
         {bio}
       </p>
 
@@ -95,7 +95,7 @@ export default function TeamMemberCard(props: TeamMember) {
           {specialties.map((s) => (
             <span
               key={s}
-              className="bg-gray-50 border border-[var(--border)] text-[var(--text-secondary)] px-2 py-0.5 rounded-md text-xs"
+              className="bg-gray-50 border border-[var(--color-neutral-200)] text-[var(--color-neutral-700)] px-2 py-0.5 rounded-md text-xs"
             >
               {s}
             </span>
@@ -105,7 +105,7 @@ export default function TeamMemberCard(props: TeamMember) {
 
       {/* Tied-to-product (AI agents only) */}
       {tiedToProduct && (
-        <p className="text-xs text-[var(--text-secondary)] mb-3">
+        <p className="text-xs text-[var(--color-neutral-700)] mb-3">
           Aangedreven door{' '}
           <Link
             href={tiedToProduct.href}

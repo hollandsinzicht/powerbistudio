@@ -61,12 +61,12 @@ export default function CookieBanner() {
     <div
       role="dialog"
       aria-label="Cookie-toestemming"
-      className="fixed inset-x-4 bottom-4 z-50 mx-auto max-w-2xl rounded-lg border border-[var(--border)] bg-white p-5 shadow-xl md:right-6 md:left-auto md:bottom-6 md:max-w-md"
+      className="fixed inset-x-4 bottom-4 z-50 mx-auto max-w-2xl rounded-lg border border-[var(--color-neutral-200)] bg-white p-5 shadow-xl md:right-6 md:left-auto md:bottom-6 md:max-w-md"
     >
       <h2 className="mb-2 text-sm font-display font-semibold text-[var(--color-primary-900)]">
         Korte vraag over analytics
       </h2>
-      <p className="mb-4 text-sm leading-relaxed text-[var(--text-secondary)]">
+      <p className="mb-4 text-sm leading-relaxed text-[var(--color-neutral-700)]">
         Ik gebruik Google Analytics om te zien welke pagina&apos;s mensen lezen
         en waar ze afhaken. Anoniem, geen cross-site-tracking. Mag dat?{' '}
         <Link

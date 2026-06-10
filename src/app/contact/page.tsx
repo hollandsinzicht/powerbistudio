@@ -131,7 +131,7 @@ function ContactContent() {
   return (
     <>
       {/* ═══ HERO ═══ */}
-      <section className="border-b border-[var(--border)] bg-white">
+      <section className="border-b border-[var(--color-neutral-200)] bg-white">
         <div className="container mx-auto max-w-4xl px-6 py-20 md:px-12 md:py-24">
           <p className="eyebrow mb-4">Contact</p>
           <h1 className="mb-4">Plan een gesprek</h1>
@@ -149,17 +149,17 @@ function ContactContent() {
             {INSTAP_OPTIES.map(({ icon: Icon, titel, prijs, voor, typeParam, cta }) => (
               <article
                 key={typeParam}
-                className="flex flex-col rounded-lg border border-[var(--border)] border-l-[3px] border-l-[var(--color-accent-700)] bg-white p-6"
+                className="flex flex-col rounded-lg border border-[var(--color-neutral-200)] border-l-[3px] border-l-[var(--color-accent-700)] bg-white p-6"
               >
                 <Icon
                   className="mb-4 h-7 w-7 text-[var(--color-accent-700)]"
                   aria-hidden="true"
                 />
                 <h2 className="mb-1 text-lg">{titel}</h2>
-                <p className="mb-4 text-sm font-semibold text-[var(--text-primary)]">
+                <p className="mb-4 text-sm font-semibold text-[var(--color-neutral-900)]">
                   {prijs}
                 </p>
-                <p className="mb-5 flex-1 text-sm leading-relaxed text-[var(--text-secondary)]">
+                <p className="mb-5 flex-1 text-sm leading-relaxed text-[var(--color-neutral-700)]">
                   {voor}
                 </p>
                 <Link
@@ -197,13 +197,13 @@ function ContactContent() {
       {hasCal && (
         <section
           id="book"
-          className="border-t border-[var(--border)] bg-white py-16 md:py-20 scroll-mt-24"
+          className="border-t border-[var(--color-neutral-200)] bg-white py-16 md:py-20 scroll-mt-24"
         >
           <div className="container mx-auto max-w-5xl px-6 md:px-12">
             <div className="mb-6 flex flex-col gap-2 md:mb-8">
               <p className="eyebrow">Direct inplannen</p>
               <h2 className="text-2xl">Kies een moment in mijn agenda</h2>
-              <p className="max-w-2xl text-sm leading-relaxed text-[var(--text-secondary)]">
+              <p className="max-w-2xl text-sm leading-relaxed text-[var(--color-neutral-700)]">
                 Liever meteen een slot vastleggen dan wachten op een reactie? Kies
                 hieronder het type gesprek en prik direct een tijd. Je krijgt
                 automatisch een bevestiging.
@@ -221,7 +221,7 @@ function ContactContent() {
                     className={`rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
                       bookingEvent === typeParam
                         ? 'border-[var(--color-accent-700)] bg-[var(--color-accent-100)] text-[var(--color-accent-700)]'
-                        : 'border-[var(--border)] bg-white text-[var(--text-secondary)] hover:border-[var(--color-accent-700)]'
+                        : 'border-[var(--color-neutral-200)] bg-white text-[var(--color-neutral-700)] hover:border-[var(--color-accent-700)]'
                     }`}
                   >
                     {titel}
@@ -230,7 +230,7 @@ function ContactContent() {
               )}
             </div>
 
-            <div className="rounded-lg border border-[var(--border)] bg-white p-2 md:p-4">
+            <div className="rounded-lg border border-[var(--color-neutral-200)] bg-white p-2 md:p-4">
               {/* key op de event-slug forceert een verse mount bij tab-wissel,
                   zodat Cal.com de nieuwe agenda rendert i.p.v. de eerste te behouden. */}
               <CalEmbed
@@ -239,7 +239,7 @@ function ContactContent() {
               />
             </div>
 
-            <p className="mt-4 text-xs text-[var(--text-secondary)]">
+            <p className="mt-4 text-xs text-[var(--color-neutral-700)]">
               Komt het niet uit in de agenda? Gebruik dan het formulier hieronder —
               ik reageer binnen één werkdag.
             </p>
@@ -250,15 +250,15 @@ function ContactContent() {
       {/* ═══ FORMULIER + SIDEBAR ═══ */}
       <section
         id="contact-form"
-        className="border-t border-[var(--border)] bg-[var(--color-neutral-50)] py-16 md:py-20 scroll-mt-24"
+        className="border-t border-[var(--color-neutral-200)] bg-[var(--color-neutral-50)] py-16 md:py-20 scroll-mt-24"
       >
         <div className="container mx-auto max-w-5xl px-6 md:px-12">
           <div className="grid grid-cols-1 gap-10 lg:grid-cols-3">
             {/* Form — 2/3 */}
             <div className="lg:col-span-2">
-              <div className="rounded-lg border border-[var(--border)] bg-white p-6 md:p-8">
+              <div className="rounded-lg border border-[var(--color-neutral-200)] bg-white p-6 md:p-8">
                 <h2 className="mb-2 text-xl">Stuur een bericht</h2>
-                <p className="mb-6 text-sm text-[var(--text-secondary)]">
+                <p className="mb-6 text-sm text-[var(--color-neutral-700)]">
                   Ik lees elk bericht zelf en reageer binnen één werkdag. Geen
                   automatische opvolging, geen sales-funnel.
                 </p>
@@ -272,7 +272,7 @@ function ContactContent() {
                       />
                     </div>
                     <h3 className="mb-2 text-lg">Bericht ontvangen</h3>
-                    <p className="mx-auto max-w-md text-sm leading-relaxed text-[var(--text-secondary)]">
+                    <p className="mx-auto max-w-md text-sm leading-relaxed text-[var(--color-neutral-700)]">
                       Ik reageer binnen 1 werkdag. Geen automatische opvolging,
                       geen sales-funnel.
                     </p>
@@ -289,7 +289,7 @@ function ContactContent() {
                       <div>
                         <label
                           htmlFor="name"
-                          className="mb-2 block text-sm font-medium text-[var(--text-primary)]"
+                          className="mb-2 block text-sm font-medium text-[var(--color-neutral-900)]"
                         >
                           Naam *
                         </label>
@@ -300,13 +300,13 @@ function ContactContent() {
                           value={formData.name}
                           onChange={handleChange}
                           required
-                          className="w-full rounded-md border border-[var(--border)] bg-white px-3 py-2.5 text-sm text-[var(--text-primary)] transition-colors focus:border-[var(--color-accent-700)] focus:outline-none"
+                          className="w-full rounded-md border border-[var(--color-neutral-200)] bg-white px-3 py-2.5 text-sm text-[var(--color-neutral-900)] transition-colors focus:border-[var(--color-accent-700)] focus:outline-none"
                         />
                       </div>
                       <div>
                         <label
                           htmlFor="email"
-                          className="mb-2 block text-sm font-medium text-[var(--text-primary)]"
+                          className="mb-2 block text-sm font-medium text-[var(--color-neutral-900)]"
                         >
                           E-mail *
                         </label>
@@ -317,7 +317,7 @@ function ContactContent() {
                           value={formData.email}
                           onChange={handleChange}
                           required
-                          className="w-full rounded-md border border-[var(--border)] bg-white px-3 py-2.5 text-sm text-[var(--text-primary)] transition-colors focus:border-[var(--color-accent-700)] focus:outline-none"
+                          className="w-full rounded-md border border-[var(--color-neutral-200)] bg-white px-3 py-2.5 text-sm text-[var(--color-neutral-900)] transition-colors focus:border-[var(--color-accent-700)] focus:outline-none"
                         />
                       </div>
                     </div>
@@ -325,7 +325,7 @@ function ContactContent() {
                     <div>
                       <label
                         htmlFor="company"
-                        className="mb-2 block text-sm font-medium text-[var(--text-primary)]"
+                        className="mb-2 block text-sm font-medium text-[var(--color-neutral-900)]"
                       >
                         Organisatie (optioneel)
                       </label>
@@ -335,14 +335,14 @@ function ContactContent() {
                         name="company"
                         value={formData.company}
                         onChange={handleChange}
-                        className="w-full rounded-md border border-[var(--border)] bg-white px-3 py-2.5 text-sm text-[var(--text-primary)] transition-colors focus:border-[var(--color-accent-700)] focus:outline-none"
+                        className="w-full rounded-md border border-[var(--color-neutral-200)] bg-white px-3 py-2.5 text-sm text-[var(--color-neutral-900)] transition-colors focus:border-[var(--color-accent-700)] focus:outline-none"
                       />
                     </div>
 
                     <div>
                       <label
                         htmlFor="type"
-                        className="mb-2 block text-sm font-medium text-[var(--text-primary)]"
+                        className="mb-2 block text-sm font-medium text-[var(--color-neutral-900)]"
                       >
                         Type vraag *
                       </label>
@@ -352,7 +352,7 @@ function ContactContent() {
                         value={formData.type}
                         onChange={handleChange}
                         required
-                        className="w-full rounded-md border border-[var(--border)] bg-white px-3 py-2.5 text-sm text-[var(--text-primary)] transition-colors focus:border-[var(--color-accent-700)] focus:outline-none"
+                        className="w-full rounded-md border border-[var(--color-neutral-200)] bg-white px-3 py-2.5 text-sm text-[var(--color-neutral-900)] transition-colors focus:border-[var(--color-accent-700)] focus:outline-none"
                       >
                         {AANVRAAG_TYPES.map((t) => (
                           <option
@@ -369,7 +369,7 @@ function ContactContent() {
                     <div>
                       <label
                         htmlFor="message"
-                        className="mb-2 block text-sm font-medium text-[var(--text-primary)]"
+                        className="mb-2 block text-sm font-medium text-[var(--color-neutral-900)]"
                       >
                         Bericht (optioneel)
                       </label>
@@ -379,7 +379,7 @@ function ContactContent() {
                         value={formData.message}
                         onChange={handleChange}
                         rows={5}
-                        className="w-full resize-none rounded-md border border-[var(--border)] bg-white px-3 py-2.5 text-sm text-[var(--text-primary)] transition-colors focus:border-[var(--color-accent-700)] focus:outline-none"
+                        className="w-full resize-none rounded-md border border-[var(--color-neutral-200)] bg-white px-3 py-2.5 text-sm text-[var(--color-neutral-900)] transition-colors focus:border-[var(--color-accent-700)] focus:outline-none"
                         placeholder="Beschrijf in een paar regels wat je situatie is."
                       />
                     </div>
@@ -405,7 +405,7 @@ function ContactContent() {
 
             {/* Sidebar — 1/3 */}
             <aside className="space-y-4">
-              <div className="rounded-lg border border-[var(--border)] bg-white p-5">
+              <div className="rounded-lg border border-[var(--color-neutral-200)] bg-white p-5">
                 <div className="mb-2 flex items-center gap-2">
                   <Mail
                     className="h-4 w-4 text-[var(--color-primary-700)]"
@@ -421,7 +421,7 @@ function ContactContent() {
                 </a>
               </div>
 
-              <div className="rounded-lg border border-[var(--border)] bg-white p-5">
+              <div className="rounded-lg border border-[var(--color-neutral-200)] bg-white p-5">
                 <div className="mb-2 flex items-center gap-2">
                   <Linkedin
                     className="h-4 w-4 text-[var(--color-primary-700)]"
@@ -439,15 +439,15 @@ function ContactContent() {
                 </a>
               </div>
 
-              <div className="rounded-lg border border-[var(--border)] border-l-[3px] border-l-[var(--color-accent-700)] bg-white p-5">
+              <div className="rounded-lg border border-[var(--color-neutral-200)] border-l-[3px] border-l-[var(--color-accent-700)] bg-white p-5">
                 <h3 className="mb-2 text-sm">Beschikbaarheid</h3>
-                <p className="flex items-start gap-2 text-sm text-[var(--text-secondary)]">
+                <p className="flex items-start gap-2 text-sm text-[var(--color-neutral-700)]">
                   <span className="mt-1.5 inline-block h-2 w-2 shrink-0 rounded-full bg-[var(--color-success)]" />
                   Beschikbaar voor HR-trajecten Q2-Q3 2026
                 </p>
               </div>
 
-              <p className="px-1 text-xs text-[var(--text-secondary)]">
+              <p className="px-1 text-xs text-[var(--color-neutral-700)]">
                 Geen account-manager, geen developer-vervanging halverwege. Eén
                 lijn, één gezicht — Jan Willem.
               </p>

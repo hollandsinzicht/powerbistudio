@@ -70,14 +70,14 @@ export default function LeadCaptureForm({
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const inputClass = "w-full bg-[var(--surface)] border border-[var(--border)] rounded-lg px-4 py-3 text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)] transition-colors text-sm";
+  const inputClass = "w-full bg-[var(--color-white)] border border-[var(--color-neutral-200)] rounded-lg px-4 py-3 text-[var(--color-neutral-900)] focus:outline-none focus:border-[var(--color-primary-700)] transition-colors text-sm";
 
   if (isSubmitted) {
     return (
       <div className={`${compact ? 'p-6' : 'p-8'} text-center`}>
         <CheckCircle2 size={32} className="text-green-500 mx-auto mb-3" />
-        <p className="font-display font-bold text-lg mb-1">Verstuurd!</p>
-        <p className="text-[var(--text-secondary)] text-sm">
+        <p className="font-display font-semibold text-lg mb-1">Verstuurd!</p>
+        <p className="text-[var(--color-neutral-700)] text-sm">
           {downloadUrl
             ? 'Check je inbox voor de downloadlink.'
             : 'Bedankt voor je aanvraag. Je hoort van ons.'}
@@ -85,7 +85,7 @@ export default function LeadCaptureForm({
         {downloadUrl && (
           <a
             href={downloadUrl}
-            className="inline-flex items-center gap-2 mt-4 text-sm font-medium text-[var(--primary)] hover:gap-3 transition-all"
+            className="inline-flex items-center gap-2 mt-4 text-sm font-medium text-[var(--color-primary-900)] hover:gap-3 transition-all"
           >
             <Download size={16} /> Direct downloaden
           </a>
@@ -95,12 +95,12 @@ export default function LeadCaptureForm({
   }
 
   return (
-    <div className={compact ? '' : 'glass-card rounded-xl p-6 md:p-8 border border-[var(--border)]'}>
+    <div className={compact ? '' : 'bg-white shadow-sm rounded-xl p-6 md:p-8 border border-[var(--color-neutral-200)]'}>
       {!compact && (
         <>
-          <h3 className="text-lg font-display font-bold mb-2">{title}</h3>
+          <h3 className="text-lg font-display font-semibold mb-2">{title}</h3>
           {description && (
-            <p className="text-[var(--text-secondary)] text-sm mb-6 leading-relaxed">{description}</p>
+            <p className="text-[var(--color-neutral-700)] text-sm mb-6 leading-relaxed">{description}</p>
           )}
         </>
       )}
@@ -158,7 +158,7 @@ export default function LeadCaptureForm({
 
       {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
 
-      <p className="text-[10px] text-[var(--text-secondary)] mt-3 opacity-60">
+      <p className="text-[10px] text-[var(--color-neutral-700)] mt-3 opacity-60">
         Ik respecteer je privacy. Je kunt je op elk moment uitschrijven.
       </p>
     </div>

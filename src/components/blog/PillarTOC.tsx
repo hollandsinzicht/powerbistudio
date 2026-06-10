@@ -15,20 +15,20 @@ export default function PillarTOC({ entries }: { entries: TocEntry[] }) {
     return (
         <nav
             aria-label="Inhoudsopgave"
-            className="glass-card rounded-2xl border border-[var(--border)] p-6 mb-10 not-prose"
+            className="bg-white shadow-sm rounded-2xl border border-[var(--color-neutral-200)] p-6 mb-10 not-prose"
         >
             <div className="flex items-center gap-2 mb-4">
-                <List size={18} className="text-[var(--accent)]" />
-                <h2 className="text-base font-display font-bold text-[var(--text-primary)] m-0">
+                <List size={18} className="text-[var(--color-accent-700)]" />
+                <h2 className="text-base font-display font-semibold text-[var(--color-neutral-900)] m-0">
                     In deze gids
                 </h2>
             </div>
-            <ol className="space-y-2 list-decimal pl-6 marker:text-[var(--text-secondary)] marker:font-semibold">
+            <ol className="space-y-2 list-decimal pl-6 marker:text-[var(--color-neutral-700)] marker:font-semibold">
                 {h2Entries.map((entry) => (
-                    <li key={entry.id} className="text-[var(--text-secondary)]">
+                    <li key={entry.id} className="text-[var(--color-neutral-700)]">
                         <a
                             href={`#${entry.id}`}
-                            className="text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors no-underline"
+                            className="text-[var(--color-neutral-700)] hover:text-[var(--color-primary-900)] transition-colors no-underline"
                         >
                             {entry.text}
                         </a>

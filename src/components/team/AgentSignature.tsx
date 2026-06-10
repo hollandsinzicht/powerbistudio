@@ -29,10 +29,10 @@ export default function AgentSignature({
   if (variant === 'compact') {
     return (
       <div className="inline-flex items-center gap-3 text-sm">
-        <div className="relative w-8 h-8 rounded-full overflow-hidden border border-[var(--border)] bg-gray-50 shrink-0">
+        <div className="relative w-8 h-8 rounded-full overflow-hidden border border-[var(--color-neutral-200)] bg-gray-50 shrink-0">
           <Image src={agent.image} alt={`${agent.name} AI-agent`} fill sizes="32px" className="object-cover" />
         </div>
-        <span className="text-[var(--text-secondary)]">
+        <span className="text-[var(--color-neutral-700)]">
           {intro}{' '}
           <Link
             href="/over"
@@ -41,7 +41,7 @@ export default function AgentSignature({
           >
             {agent.name}
           </Link>
-          <span className="ml-1 inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[0.65rem] font-semibold border align-middle" style={{ color: 'var(--accent)', borderColor: 'var(--accent)' }}>
+          <span className="ml-1 inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[0.65rem] font-semibold border align-middle" style={{ color: 'var(--color-accent-700)', borderColor: 'var(--color-accent-700)' }}>
             <Cpu size={10} />AI
           </span>
         </span>
@@ -51,15 +51,15 @@ export default function AgentSignature({
 
   return (
     <div
-      className="glass-card rounded-xl p-6 md:p-8 flex flex-col md:flex-row items-start gap-6"
+      className="bg-white shadow-sm border border-[var(--color-neutral-200)] rounded-xl p-6 md:p-8 flex flex-col md:flex-row items-start gap-6"
       style={{ borderLeft: `4px solid ${TEAM_ACCENT_BORDER[agent.accent]}` }}
     >
       {/* Avatar */}
-      <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-2xl overflow-hidden border border-[var(--border)] bg-gray-50 shrink-0">
+      <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-2xl overflow-hidden border border-[var(--color-neutral-200)] bg-gray-50 shrink-0">
         <Image src={agent.image} alt={`${agent.name} — AI-agent`} fill sizes="96px" className="object-cover" />
         <div
           className="absolute -bottom-1 -right-1 flex items-center gap-1 bg-white px-2 py-0.5 rounded-full border text-[0.65rem] font-semibold shadow-sm"
-          style={{ color: 'var(--accent)', borderColor: 'var(--accent)' }}
+          style={{ color: 'var(--color-accent-700)', borderColor: 'var(--color-accent-700)' }}
         >
           <Cpu size={11} />
           <span>AI</span>
@@ -68,15 +68,15 @@ export default function AgentSignature({
 
       {/* Body */}
       <div className="flex-1">
-        <p className="text-sm text-[var(--text-secondary)] mb-1">{intro}</p>
-        <h3 className="text-xl md:text-2xl font-display font-bold mb-2">
+        <p className="text-sm text-[var(--color-neutral-700)] mb-1">{intro}</p>
+        <h3 className="text-xl md:text-2xl font-display font-semibold mb-2">
           <Link href="/over" className="hover:underline" style={{ color: TEAM_ACCENT_COLOR[agent.accent] }}>
             {agent.name}
           </Link>
-          <span className="text-[var(--text-secondary)] font-normal text-base ml-2">— {agent.role}</span>
+          <span className="text-[var(--color-neutral-700)] font-normal text-base ml-2">— {agent.role}</span>
         </h3>
-        <p className="text-[var(--text-secondary)] leading-relaxed mb-3">{agent.bio}</p>
-        <p className="text-xs text-[var(--text-secondary)]">
+        <p className="text-[var(--color-neutral-700)] leading-relaxed mb-3">{agent.bio}</p>
+        <p className="text-xs text-[var(--color-neutral-700)]">
           Klantinteractie loopt altijd via Jan Willem. {agent.name} werkt onder de motorkap.{' '}
           <Link href="/over" className="font-medium hover:underline" style={{ color: TEAM_ACCENT_COLOR[agent.accent] }}>
             Lees meer over Power BI Studio →

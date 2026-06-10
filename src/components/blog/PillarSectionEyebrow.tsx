@@ -5,7 +5,7 @@
  */
 export default function PillarSectionEyebrow() {
     return (
-        <span className="inline-block px-3 py-1 rounded-full bg-[var(--accent)] text-white text-xs font-bold uppercase tracking-[0.1em]">
+        <span className="inline-block px-3 py-1 rounded-full bg-[var(--color-accent-700)] text-white text-xs font-bold uppercase tracking-[0.1em]">
             Begin hier
         </span>
     );

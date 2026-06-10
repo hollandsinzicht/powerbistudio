@@ -10,11 +10,6 @@
  *   • action   — oranje, UITSLUITEND voor primaire CTA-knoppen
  *
  * Plus neutrals (grijswaarden) en status (success/warning/error).
- *
- * Legacy aliases (--background, --primary, --accent, etc.) worden behouden
- * tot alle pagina's gemigreerd zijn naar de nieuwe variabelen. Deze branch
- * (feat/design-system) zet alleen het palet & typografie. Pagina-migratie
- * gebeurt per pagina in eigen branches.
  * ===================================================================== */
 
 :root {
@@ -45,23 +40,6 @@
   --color-success: #16A34A;
   --color-warning: #D97706;
   --color-error:   #DC2626;
-
-  /* ----- Legacy aliases (worden uitgefaseerd per pagina-branch) ----- */
-  --background:     var(--color-neutral-50);
-  --surface:        var(--color-white);
-  --border:         var(--color-neutral-200);
-  --primary:        var(--color-primary-900);
-  --accent:         var(--color-action-600); /* let op: nu actie-oranje, was amber */
-  --text-primary:   var(--color-neutral-900);
-  --text-secondary: var(--color-neutral-700);
-
-  /* Sector-kleuren — legacy accenttokens die nog door enkele UI-componenten
-   * worden gebruikt. Gemapt op het HR-palet zodat bestaande pagina's niet
-   * visueel breken. */
-  --color-sector-zorg: var(--color-accent-700);
-  --color-sector-saas: var(--color-primary-700);
-  --color-sector-data: var(--color-action-600);
-  --color-accent-lean: var(--color-neutral-500);
 }
 
 @theme inline {
@@ -81,23 +59,14 @@
   --color-neutral-100: var(--color-neutral-100);
   --color-neutral-50:  var(--color-neutral-50);
 
-  /* Legacy aliases */
-  --color-background:     var(--background);
-  --color-surface:        var(--surface);
-  --color-border:         var(--border);
-  --color-primary:        var(--primary);
-  --color-accent:         var(--accent);
-  --color-text-primary:   var(--text-primary);
-  --color-text-secondary: var(--text-secondary);
-
   --font-sans:    var(--font-dm-sans);
   --font-display: var(--font-geist-sans);
   --font-mono:    var(--font-jetbrains-mono);
 }
 
 body {
-  background-color: var(--background);
-  color: var(--text-primary);
+  background-color: var(--color-neutral-50);
+  color: var(--color-neutral-900);
   font-family: var(--font-dm-sans), Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -170,28 +139,7 @@ body {
  * Utilities
  * --------------------------------------------------------------------- */
 
-@utility text-gradient {
-  background-image: linear-gradient(to right, var(--text-primary), var(--text-secondary));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-/* Glass utilities — legacy, blijven beschikbaar tot pagina-migratie voltooid is. */
-@utility glass {
-  background-color: rgba(17, 24, 39, 0.7);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-@utility glass-card {
-  background-color: var(--surface);
-  border: 1px solid var(--border);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
-}
-
-/* Card normen — nieuwe baseline voor HR-rebrand. */
+/* Card normen — baseline voor HR-rebrand. */
 @utility card {
   background-color: var(--color-white);
   border: 1px solid var(--color-neutral-200);
