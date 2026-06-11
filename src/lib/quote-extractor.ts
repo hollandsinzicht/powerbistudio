@@ -26,7 +26,7 @@ export async function extractQuotes(blog: {
     .slice(0, 4500)
 
   const response = await client.messages.create({
-    model: 'claude-sonnet-4-20250514',
+    model: 'claude-sonnet-4-6',
     max_tokens: 1500,
     temperature: 0.8,
     system: `Je selecteert quotes uit een blogartikel die op LinkedIn als losstaande beeld-quotes werken. Elk wordt een shareable image.

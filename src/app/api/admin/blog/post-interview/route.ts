@@ -130,7 +130,7 @@ OUTPUT — alleen valide JSON, geen markdown, geen uitleg:
       : `Tot nu toe besproken:\n\n${answeredBlock}\n\nGeef precies één goede vervolgvraag.`
 
     const response = await client.messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-sonnet-4-6',
       max_tokens: 400,
       temperature: 0.7,
       system: systemPrompt,
@@ -230,7 +230,7 @@ OUTPUT — alleen valide JSON, één antwoord per vraag in dezelfde volgorde, ge
   const questionBlock = questions.map((q, i) => `${i + 1}. ${q}`).join('\n')
 
   const response = await client.messages.create({
-    model: 'claude-sonnet-4-20250514',
+    model: 'claude-sonnet-4-6',
     max_tokens: 800,
     temperature: 0.7,
     system: systemPrompt,

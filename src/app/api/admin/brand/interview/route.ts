@@ -76,7 +76,7 @@ ${filledContext ? `\nReeds ingevuld door JW (sluit hierop aan, herhaal niet lett
 Schrijf nu een kort conceptantwoord (2-5 zinnen) dat JW kan bewerken.`
 
     const response = await client.messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-sonnet-4-6',
       max_tokens: 600,
       temperature: 0.8,
       system: systemPrompt,

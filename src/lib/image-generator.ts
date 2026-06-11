@@ -52,7 +52,7 @@ export async function generateSceneDescription(
   }
   try {
     const response = await anthropic.messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-sonnet-4-6',
       max_tokens: 400,
       system: `Je bent een art director voor blog header illustraties. Op basis van een blog titel en samenvatting bedenk je EEN specifieke, concrete visuele scene die het kernconcept van het artikel weergeeft.
 
