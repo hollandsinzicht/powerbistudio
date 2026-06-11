@@ -293,7 +293,7 @@ ${input.extraContext ? `\nEXTRA CONTEXT van Jan Willem (verwerk dit in de post â
 Schrijf nu een LinkedIn post in de gevraagde stijl. Output alleen de JSON.`
 
   const response = await client.messages.create({
-    model: 'claude-sonnet-4-20250514',
+    model: 'claude-sonnet-4-6',
     max_tokens: 1500,
     temperature: 0.9,
     system: systemPrompt,
@@ -339,7 +339,7 @@ ${input.angle ? `\nInvalshoek: ${input.angle}` : ''}
 Schrijf de post in de gevraagde stijl, vanuit het merkprofiel. Output alleen de JSON.`
 
   const response = await client.messages.create({
-    model: 'claude-sonnet-4-20250514',
+    model: 'claude-sonnet-4-6',
     max_tokens: 1500,
     temperature: 0.9,
     system: systemPrompt,
@@ -412,7 +412,7 @@ ${recentBlock ? `\n${recentBlock}\n` : ''}
 Schrijf de post in de gevraagde stijl, vanuit het merkprofiel, passend bij de funnel-fase en categorie. Output alleen de JSON.`
 
   const response = await client.messages.create({
-    model: 'claude-sonnet-4-20250514',
+    model: 'claude-sonnet-4-6',
     max_tokens: 1500,
     temperature: 0.9,
     system: systemPrompt,

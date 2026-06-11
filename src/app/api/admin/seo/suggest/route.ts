@@ -108,7 +108,7 @@ ${gapsByPersona.map((p) => `- ${p.persona}: ${p.coveragePct}% coverage. Grootste
 Genereer ${limit} concrete nieuwe zoekterm-kansen${targetPersona ? ` specifiek voor persona ${targetPersona}` : ''}. Focus op termen die nu NIET gedekt zijn en die aantoonbaar leven op Reddit/X/LinkedIn voor deze doelgroep.`;
 
     const response = await anthropic.messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-sonnet-4-6',
       max_tokens: 2500,
       system: systemPrompt,
       messages: [{ role: 'user', content: userPrompt }],

@@ -132,7 +132,7 @@ Antwoord als JSON array (geen markdown, geen uitleg, alleen JSON):
   }
 
   const response = await client.messages.create({
-    model: 'claude-sonnet-4-20250514',
+    model: 'claude-sonnet-4-6',
     max_tokens: 2000,
     temperature: 1,
     system: `Je bent een SEO content strategist voor PowerBIStudio.nl. Je belangrijkste taak: blogonderwerpen voorstellen die EXACT aansluiten op de instructies van de gebruiker.
@@ -227,7 +227,7 @@ Noem GEEN klantnamen of cases (geen GGDGHOR, Lyreco, Technische Unie, Vattenfall
   const archetypePrompt = buildArchetypePrompt(effectiveArchetype)
 
   const response = await client.messages.create({
-    model: 'claude-sonnet-4-20250514',
+    model: 'claude-sonnet-4-6',
     max_tokens: 8000,
     system: `Je schrijft uitgebreide, informatieve bloggidsen voor PowerBIStudio.nl — de website van Jan Willem den Hollander, Power BI architect.
 
@@ -384,7 +384,7 @@ export async function suggestInternalLinks(params: {
   if (!process.env.ANTHROPIC_API_KEY) return []
 
   const response = await client.messages.create({
-    model: 'claude-sonnet-4-20250514',
+    model: 'claude-sonnet-4-6',
     max_tokens: 1500,
     system: `Je zoekt in een bestaand blogartikel naar woorden of korte woordgroepen die je kunt omzetten naar een link. Je taak is UITSLUITEND om een <a> tag om BESTAANDE woorden te plaatsen.
 
@@ -493,7 +493,7 @@ Beschikbare pagina-links (gebruik er 1-2 als ze passen, allemaal HR-propositie):
     : ''
 
   const response = await client.messages.create({
-    model: 'claude-sonnet-4-20250514',
+    model: 'claude-sonnet-4-6',
     max_tokens: 16000,
     temperature: 0.7,
     system: `Je schrijft een COMPLETE GIDS (pillar-gids) voor PowerBIStudio.nl — de website van Jan Willem den Hollander, Power BI architect.
