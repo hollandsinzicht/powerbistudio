@@ -3,10 +3,22 @@
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Trash2, FolderOpen, Loader2, LogOut } from "lucide-react";
+import { Trash2, FolderOpen, Loader2, LogOut, Info, MessageCircle, FileUp, Search, MessageSquareCode } from "lucide-react";
 import { supabaseBrowser } from "@/lib/supabase-browser";
 import UploadDropzone from "./UploadDropzone";
+import FileHelpModal from "./FileHelpModal";
 import type { PbiModelStats } from "@/lib/pbi-parser/types";
+
+// WhatsApp rechtstreeks naar Jan-Willem — laagdrempelig kanaal tijdens de beta.
+const WHATSAPP_URL =
+    "https://wa.me/31612654166?text=" +
+    encodeURIComponent("Hoi Jan-Willem, ik gebruik Studio en heb een vraag: ");
+
+const STEPS = [
+    { icon: FileUp, text: "Upload je model (.pbit, model.bim of .tmdl) — alleen het schema, nooit je data." },
+    { icon: Search, text: "Je krijgt direct een analyse: best-practice-checks plus een AI-beoordeling." },
+    { icon: MessageSquareCode, text: "Stel daarna vragen over je measures, relaties en DAX — gegrond in jóuw model." },
+] as const;
 
 interface ProjectSummary {
     id: string;
@@ -23,6 +35,7 @@ export default function StudioDashboard({ email }: { email: string }) {
     const [maxProjects, setMaxProjects] = useState(2);
     const [deleting, setDeleting] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const [showFileHelp, setShowFileHelp] = useState(false);
 
     const load = useCallback(async () => {
         try {
@@ -91,6 +104,18 @@ export default function StudioDashboard({ email }: { email: string }) {
                 </button>
             </div>
 
+            {/* Korte uitleg bovenaan — ook voor terugkerende gebruikers compact genoeg */}
+            {projects !== null && (
+                <div className="mb-8 grid sm:grid-cols-3 gap-4">
+                    {STEPS.map((step, i) => (
+                        <div key={i} className="flex items-start gap-3 rounded-xl border border-[var(--color-neutral-200)] bg-white p-4">
+                            <step.icon size={18} className="text-[var(--color-primary-700)] mt-0.5 shrink-0" />
+                            <p className="text-sm text-[var(--color-neutral-700)]">{step.text}</p>
+                        </div>
+                    ))}
+                </div>
+            )}
+
             {error && <p className="mb-4 text-sm text-[var(--color-error)]">{error}</p>}
 
             {projects === null ? (
@@ -142,8 +167,30 @@ export default function StudioDashboard({ email }: { email: string }) {
                     ) : (
                         <UploadDropzone />
                     )}
+
+                    {/* Hulp: bestandsuitleg + direct contact */}
+                    <div className="flex flex-wrap items-center gap-3">
+                        <button
+                            onClick={() => setShowFileHelp(true)}
+                            className="inline-flex items-center gap-2 rounded-lg border border-[var(--color-neutral-200)] bg-white px-4 py-2.5 text-sm font-medium text-[var(--color-neutral-900)] hover:border-[var(--color-primary-700)] transition-colors"
+                        >
+                            <Info size={16} className="text-[var(--color-primary-700)]" />
+                            Hoe kom ik aan een modelbestand?
+                        </button>
+                        <a
+                            href={WHATSAPP_URL}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-2 rounded-lg bg-[#25D366] hover:bg-[#1ebe5b] px-4 py-2.5 text-sm font-medium text-white transition-colors"
+                        >
+                            <MessageCircle size={16} />
+                            Vraag of feedback? App Jan-Willem
+                        </a>
+                    </div>
                 </div>
             )}
+
+            {showFileHelp && <FileHelpModal onClose={() => setShowFileHelp(false)} />}
         </div>
     );
 }
