@@ -15,6 +15,7 @@ const NAV_LINKS: Array<{ name: string; href: string }> = [
   { name: 'DashPortal HR', href: '/dashportal' },
   { name: 'Methodiek', href: '/methodiek' },
   { name: 'Cases', href: '/cases' },
+  { name: 'Studio', href: '/studio' },
   { name: 'Blog', href: '/blog' },
   { name: 'Contact', href: '/contact' },
 ];

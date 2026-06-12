@@ -1,0 +1,9 @@
+relationship rel1
+	fromColumn: Feit_Verzuim.MedewerkerID
+	toColumn: 'Dim Medewerker'.MedewerkerID
+
+relationship rel2
+	isActive: false
+	crossFilteringBehavior: bothDirections
+	fromColumn: Feit_Verzuim.Datum
+	toColumn: Dim_Datum.Datum

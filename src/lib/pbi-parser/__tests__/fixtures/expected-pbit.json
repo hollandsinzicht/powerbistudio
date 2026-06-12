@@ -1,0 +1,73 @@
+{
+  "name": "Verzuimrapportage",
+  "source": "pbit",
+  "tables": [
+    {
+      "name": "Dim_Medewerker",
+      "isHidden": false,
+      "columns": [
+        {
+          "name": "MedewerkerID",
+          "dataType": "int64",
+          "isHidden": true
+        },
+        {
+          "name": "Naam",
+          "dataType": "string",
+          "isHidden": false
+        },
+        {
+          "name": "Afdeling",
+          "dataType": "string",
+          "isHidden": false
+        }
+      ],
+      "measures": []
+    },
+    {
+      "name": "Feit_Verzuim",
+      "isHidden": false,
+      "columns": [
+        {
+          "name": "MedewerkerID",
+          "dataType": "int64",
+          "isHidden": true
+        },
+        {
+          "name": "Datum",
+          "dataType": "dateTime",
+          "isHidden": false
+        },
+        {
+          "name": "Uren",
+          "dataType": "decimal",
+          "isHidden": false
+        }
+      ],
+      "measures": [
+        {
+          "name": "Verzuimuren",
+          "expression": "SUM(Feit_Verzuim[Uren])",
+          "displayFolder": "Basis",
+          "formatString": "#,0"
+        },
+        {
+          "name": "Verzuim %",
+          "expression": "DIVIDE(\n    [Verzuimuren],\n    [Contracturen]\n)",
+          "displayFolder": "KPI",
+          "formatString": "0.0%"
+        }
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "fromTable": "Feit_Verzuim",
+      "fromColumn": "MedewerkerID",
+      "toTable": "Dim_Medewerker",
+      "toColumn": "MedewerkerID",
+      "isActive": true,
+      "crossFilteringBehavior": "oneDirection"
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+table Feit_Verzuim
+	lineageTag: xxx-yyy
+
+	measure Verzuimuren = SUM(Feit_Verzuim[Uren])
+		formatString: #,0
+		displayFolder: Basis
+		lineageTag: m1
+
+	measure 'Verzuim %' =
+			DIVIDE(
+			    [Verzuimuren],
+			    [Contracturen]
+			)
+		formatString: 0.0%
+		displayFolder: KPI
+		lineageTag: m2
+
+	column MedewerkerID
+		dataType: int64
+		isHidden
+		lineageTag: c1
+		summarizeBy: none
+		sourceColumn: MedewerkerID
+
+	column Datum
+		dataType: dateTime
+		lineageTag: c2
+		summarizeBy: none
+		sourceColumn: Datum
+
+	column Uren
+		dataType: decimal
+		lineageTag: c3
+		summarizeBy: sum
+		sourceColumn: Uren
