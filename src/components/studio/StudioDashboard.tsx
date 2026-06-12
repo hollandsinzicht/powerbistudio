@@ -3,10 +3,12 @@
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Trash2, FolderOpen, Loader2, LogOut, Info, MessageCircle, FileUp, Search, MessageSquareCode } from "lucide-react";
+import { Trash2, FolderOpen, Loader2, LogOut, Info, MessageCircle, FileUp, Search, MessageSquareCode, ShieldCheck } from "lucide-react";
 import { supabaseBrowser } from "@/lib/supabase-browser";
 import UploadDropzone from "./UploadDropzone";
 import FileHelpModal from "./FileHelpModal";
+import SecurityInfoModal from "./SecurityInfoModal";
+import DeleteProofModal, { DeleteVerification } from "./DeleteProofModal";
 import type { PbiModelStats } from "@/lib/pbi-parser/types";
 
 // WhatsApp rechtstreeks naar Jan-Willem — laagdrempelig kanaal tijdens de beta.
@@ -36,6 +38,8 @@ export default function StudioDashboard({ email }: { email: string }) {
     const [deleting, setDeleting] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [showFileHelp, setShowFileHelp] = useState(false);
+    const [showSecurity, setShowSecurity] = useState(false);
+    const [deleteProof, setDeleteProof] = useState<DeleteVerification | null>(null);
 
     const load = useCallback(async () => {
         try {
@@ -66,10 +70,11 @@ export default function StudioDashboard({ email }: { email: string }) {
         setError(null);
         try {
             const res = await fetch(`/api/studio/projects/${project.id}`, { method: "DELETE" });
+            const data = await res.json().catch(() => ({}));
             if (!res.ok) {
-                const data = await res.json().catch(() => ({}));
                 throw new Error(data.error ?? "Verwijderen mislukte.");
             }
+            if (data.verification) setDeleteProof(data.verification);
             await load();
         } catch (err) {
             setError(err instanceof Error ? err.message : "Verwijderen mislukte.");
@@ -177,6 +182,13 @@ export default function StudioDashboard({ email }: { email: string }) {
                             <Info size={16} className="text-[var(--color-primary-700)]" />
                             Hoe kom ik aan een modelbestand?
                         </button>
+                        <button
+                            onClick={() => setShowSecurity(true)}
+                            className="inline-flex items-center gap-2 rounded-lg border border-[var(--color-neutral-200)] bg-white px-4 py-2.5 text-sm font-medium text-[var(--color-neutral-900)] hover:border-[var(--color-accent-700)] transition-colors"
+                        >
+                            <ShieldCheck size={16} className="text-[var(--color-accent-700)]" />
+                            Zo zit de beveiliging in elkaar
+                        </button>
                         <a
                             href={WHATSAPP_URL}
                             target="_blank"
@@ -191,6 +203,10 @@ export default function StudioDashboard({ email }: { email: string }) {
             )}
 
             {showFileHelp && <FileHelpModal onClose={() => setShowFileHelp(false)} />}
+            {showSecurity && <SecurityInfoModal onClose={() => setShowSecurity(false)} />}
+            {deleteProof && (
+                <DeleteProofModal verification={deleteProof} onClose={() => setDeleteProof(null)} />
+            )}
         </div>
     );
 }

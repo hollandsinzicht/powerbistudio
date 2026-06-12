@@ -44,7 +44,9 @@ export async function GET(_req: Request, { params }: Params) {
 
 /**
  * Hard delete: storage-object + projectrij (chatberichten cascaden mee).
- * "Verwijderen = echt weg" is een productbelofte — geen soft delete.
+ * "Verwijderen = echt weg" is een productbelofte — geen soft delete. Na het
+ * verwijderen wordt live geverifieerd dat opslag én database echt leeg zijn,
+ * en dat bewijs gaat terug naar de gebruiker.
  */
 export async function DELETE(_req: Request, { params }: Params) {
     const user = await getUser();
@@ -55,13 +57,18 @@ export async function DELETE(_req: Request, { params }: Params) {
 
     const { data: project } = await supabase
         .from('studio_projects')
-        .select('id, file_path')
+        .select('id, file_path, source_filename')
         .eq('id', id)
         .eq('user_id', user.id)
         .single();
     if (!project) {
         return NextResponse.json({ error: 'Project niet gevonden.' }, { status: 404 });
     }
+
+    const { count: messagesBefore } = await supabase
+        .from('studio_messages')
+        .select('id', { count: 'exact', head: true })
+        .eq('project_id', id);
 
     if (project.file_path) {
         const { error: storageError } = await supabase.storage
@@ -86,5 +93,30 @@ export async function DELETE(_req: Request, { params }: Params) {
         return NextResponse.json({ error: 'Verwijderen mislukte.' }, { status: 500 });
     }
 
-    return NextResponse.json({ deleted: true });
+    // ── Live verificatie: lees opslag en database opnieuw uit ───────────
+    const { data: remainingObjects } = await supabase.storage
+        .from(STORAGE_BUCKET)
+        .list(`${user.id}/${id}`);
+    const { count: projectRows } = await supabase
+        .from('studio_projects')
+        .select('id', { count: 'exact', head: true })
+        .eq('id', id);
+    const { count: messageRows } = await supabase
+        .from('studio_messages')
+        .select('id', { count: 'exact', head: true })
+        .eq('project_id', id);
+
+    return NextResponse.json({
+        deleted: true,
+        verification: {
+            filename: project.source_filename,
+            hadFile: Boolean(project.file_path),
+            // herlezing ná het verwijderen — 0/leeg is het bewijs
+            storageObjectsRemaining: remainingObjects?.length ?? 0,
+            projectRowsRemaining: projectRows ?? 0,
+            messageRowsRemaining: messageRows ?? 0,
+            messagesDeleted: messagesBefore ?? 0,
+            verifiedAt: new Date().toISOString(),
+        },
+    });
 }
