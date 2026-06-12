@@ -29,11 +29,22 @@ Onder **Authentication**:
 
 1. **Providers → Email**: aanzetten (alleen magic link is nodig; wachtwoorden
    mogen uit).
-2. **URL Configuration**:
+2. **E-mailtemplate "Magic Link"** (*Authentication → Emails → Magic Link*):
+   vervang de standaardinhoud door een directe token_hash-link — de standaard
+   `{{ .ConfirmationURL }}` gebruikt de PKCE-flow, die alleen werkt als de
+   link wordt geopend in dezelfde browser als waar hij is aangevraagd:
+
+   ```html
+   <h2>Inloggen bij Power BI Studio</h2>
+   <p><a href="{{ .RedirectTo }}?token_hash={{ .TokenHash }}&type=email">Log in bij Studio</a></p>
+   <p>De link is eenmalig te gebruiken en kort geldig. Niet zelf aangevraagd? Negeer deze mail.</p>
+   ```
+
+3. **URL Configuration**:
    - Site URL: `https://www.powerbistudio.nl`
    - Redirect URLs: `https://www.powerbistudio.nl/studio/auth/callback` en
      `http://localhost:3000/studio/auth/callback` (voor lokaal testen).
-3. **SMTP (Project Settings → Auth → SMTP)**: custom SMTP via Resend instellen
+4. **SMTP (Project Settings → Auth → SMTP)**: custom SMTP via Resend instellen
    (host `smtp.resend.com`, poort 465, user `resend`, password = Resend API
    key, afzender bijv. `studio@powerbistudio.nl`). **Launch-blocker**: de
    ingebouwde Supabase-mailer is gelimiteerd tot een paar mails per uur.

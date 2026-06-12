@@ -35,9 +35,12 @@ export async function GET(request: NextRequest) {
         const { error } = await supabase.auth.exchangeCodeForSession(code);
         return error ? failed : redirect;
     }
-    if (tokenHash && type === 'magiclink') {
+    // token_hash-flow (e-mailtemplate linkt direct hierheen): werkt in elke
+    // browser, in tegenstelling tot de PKCE-code-flow die de verifier-cookie
+    // van de aanvragende browser nodig heeft.
+    if (tokenHash && (type === 'email' || type === 'magiclink')) {
         const { error } = await supabase.auth.verifyOtp({
-            type: 'magiclink',
+            type,
             token_hash: tokenHash,
         });
         return error ? failed : redirect;
