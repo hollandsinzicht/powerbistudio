@@ -1,0 +1,67 @@
+{
+  "name": "Verzuimrapportage",
+  "compatibilityLevel": 1567,
+  "model": {
+    "culture": "nl-NL",
+    "tables": [
+      {
+        "name": "Dim_Medewerker",
+        "columns": [
+          { "name": "RowNumber-2662979B-1795-4F74-8F37-6A1BA8059B61", "dataType": "int64", "type": "rowNumber", "isHidden": true },
+          { "name": "MedewerkerID", "dataType": "int64", "isHidden": true },
+          { "name": "Naam", "dataType": "string" },
+          { "name": "Afdeling", "dataType": "string" }
+        ]
+      },
+      {
+        "name": "Feit_Verzuim",
+        "columns": [
+          { "name": "MedewerkerID", "dataType": "int64", "isHidden": true },
+          { "name": "Datum", "dataType": "dateTime" },
+          { "name": "Uren", "dataType": "decimal" }
+        ],
+        "measures": [
+          {
+            "name": "Verzuimuren",
+            "expression": "SUM(Feit_Verzuim[Uren])",
+            "formatString": "#,0",
+            "displayFolder": "Basis"
+          },
+          {
+            "name": "Verzuim %",
+            "expression": [
+              "DIVIDE(",
+              "    [Verzuimuren],",
+              "    [Contracturen]",
+              ")"
+            ],
+            "formatString": "0.0%",
+            "displayFolder": "KPI"
+          }
+        ]
+      },
+      {
+        "name": "LocalDateTable_abc123",
+        "showAsVariationsOnly": true,
+        "columns": [{ "name": "Date", "dataType": "dateTime" }]
+      }
+    ],
+    "relationships": [
+      {
+        "name": "rel1",
+        "fromTable": "Feit_Verzuim",
+        "fromColumn": "MedewerkerID",
+        "toTable": "Dim_Medewerker",
+        "toColumn": "MedewerkerID"
+      },
+      {
+        "name": "rel2",
+        "fromTable": "Feit_Verzuim",
+        "fromColumn": "Datum",
+        "toTable": "LocalDateTable_abc123",
+        "toColumn": "Date",
+        "isActive": false
+      }
+    ]
+  }
+}

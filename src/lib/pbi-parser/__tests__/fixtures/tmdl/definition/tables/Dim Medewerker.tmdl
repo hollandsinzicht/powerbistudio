@@ -1,0 +1,31 @@
+table 'Dim Medewerker'
+	lineageTag: aaa-bbb
+
+	column MedewerkerID
+		dataType: int64
+		isHidden
+		lineageTag: ccc-ddd
+		summarizeBy: none
+		sourceColumn: MedewerkerID
+
+		annotation SummarizationSetBy = Automatic
+
+	column Naam
+		dataType: string
+		lineageTag: eee-fff
+		summarizeBy: none
+		sourceColumn: Naam
+
+	column Afdeling
+		dataType: string
+		lineageTag: ggg-hhh
+		summarizeBy: none
+		sourceColumn: Afdeling
+
+	partition 'Dim Medewerker' = m
+		mode: import
+		source =
+				let
+				    Bron = Csv.Document(File.Contents("medewerkers.csv"))
+				in
+				    Bron

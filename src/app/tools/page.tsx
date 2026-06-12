@@ -5,6 +5,7 @@ import {
   Calculator,
   ShieldCheck,
   ArrowRight,
+  DatabaseZap,
 } from 'lucide-react';
 import { CTA } from '@/components/ui';
 
@@ -16,6 +17,15 @@ export const metadata: Metadata = {
 };
 
 const TOOLS = [
+  {
+    icon: DatabaseZap,
+    titel: 'Studio — Model Analyzer',
+    samenvatting:
+      'Upload je semantische model (.pbit of model.bim) en krijg direct een analyse: best-practice-checks, architectuurbeoordeling en een AI-assistent die jóuw measures en relaties kent.',
+    cta: 'Open Studio',
+    href: '/studio',
+    badge: 'Nieuw · Gratis beta',
+  },
   {
     icon: ClipboardCheck,
     titel: 'HR Analytics Readiness Scan',
@@ -63,7 +73,7 @@ export default function ToolsPage() {
       {/* ═══ TOOLS GRID ═══ */}
       <section className="py-20 md:py-24">
         <div className="container mx-auto max-w-5xl px-6 md:px-12">
-          <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
             {TOOLS.map(({ icon: Icon, titel, samenvatting, cta, href, badge }) => (
               <article
                 key={titel}

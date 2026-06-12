@@ -76,6 +76,19 @@ export default function PrivacyPage() {
                 </li>
                 <li>
                   <strong className="text-[var(--color-neutral-900)]">
+                    Studio (model-analyzer):
+                  </strong>{' '}
+                  e-mailadres (account via inloglink) en het geüploade
+                  modelschema — tabelnamen, kolomnamen, measures en relaties,
+                  géén bedrijfsdata. Opslag in een private Supabase-bucket in
+                  een EU-regio, zonder publieke toegang. Voor het beantwoorden van vragen
+                  wordt het schema (metadata) naar de Anthropic API gestuurd;
+                  die gebruikt API-invoer standaard niet voor het trainen van
+                  modellen. Verwijder je een project, dan worden bestand,
+                  analyse en chatgeschiedenis permanent gewist.
+                </li>
+                <li>
+                  <strong className="text-[var(--color-neutral-900)]">
                     Analytics:
                   </strong>{' '}
                   Google Analytics 4 met geanonimiseerd IP. Geen
