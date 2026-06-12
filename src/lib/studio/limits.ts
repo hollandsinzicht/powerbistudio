@@ -3,6 +3,7 @@
 
 export const MAX_PROJECTS = 2;
 export const MAX_CHAT_MESSAGES_PER_MONTH = 50;
+export const MAX_CHATS_PER_PROJECT = 20;
 export const MAX_UPLOAD_BYTES = 50 * 1024 * 1024; // 50 MB
 
 // Schema-markdown groter dan dit wordt ingekort vóór de LLM-context

@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft, Loader2, Trash2, Sparkles } from "lucide-react";
 import FindingsList from "@/components/studio/FindingsList";
 import SchemaBrowser from "@/components/studio/SchemaBrowser";
-import ChatPanel from "@/components/studio/ChatPanel";
+import ChatPanel, { ChatSummary } from "@/components/studio/ChatPanel";
 import DeleteProofModal, { DeleteVerification } from "@/components/studio/DeleteProofModal";
 import { renderStudioMarkdown } from "@/components/studio/markdown";
 import type { Finding } from "@/lib/pbi-analysis/checks";
@@ -23,7 +23,7 @@ interface ProjectData {
         analysis_narrative: string | null;
         created_at: string;
     };
-    messages: { role: "user" | "assistant"; content: string }[];
+    chats: ChatSummary[];
     usage: { used: number; limit: number };
 }
 
@@ -108,7 +108,7 @@ export default function StudioProject({ params }: { params: Promise<{ id: string
         );
     }
 
-    const { project, messages, usage } = data;
+    const { project, chats, usage } = data;
 
     return (
         <div className="min-h-screen bg-[var(--color-neutral-50)] pt-28 pb-12">
@@ -192,7 +192,7 @@ export default function StudioProject({ params }: { params: Promise<{ id: string
 
                     {/* Rechterpaneel: chat */}
                     <div className="rounded-2xl border border-[var(--color-neutral-200)] bg-white overflow-hidden lg:sticky lg:top-24 flex flex-col h-[70vh]">
-                        <ChatPanel projectId={project.id} initialMessages={messages} usage={usage} />
+                        <ChatPanel projectId={project.id} initialChats={chats} usage={usage} />
                     </div>
                 </div>
             </div>
