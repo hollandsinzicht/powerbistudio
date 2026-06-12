@@ -1,9 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, Mail, CheckCircle2 } from "lucide-react";
-import { supabaseBrowser } from "@/lib/supabase-browser";
 
 export default function StudioLogin() {
     const [email, setEmail] = useState("");
@@ -11,24 +10,37 @@ export default function StudioLogin() {
     const [error, setError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
 
+    // De callback stuurt hierheen met ?error=link als de inloglink verlopen,
+    // al gebruikt of ongeldig is.
+    useEffect(() => {
+        if (new URLSearchParams(window.location.search).get("error") === "link") {
+            setError(
+                "Deze inloglink is verlopen of al gebruikt. Vraag hieronder een nieuwe aan."
+            );
+        }
+    }, []);
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!email.trim()) return;
         setIsLoading(true);
         setError(null);
         try {
-            const supabase = supabaseBrowser();
-            const { error } = await supabase.auth.signInWithOtp({
-                email: email.trim(),
-                options: {
-                    emailRedirectTo: `${window.location.origin}/studio/auth/callback`,
-                },
+            const res = await fetch("/api/studio/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email: email.trim() }),
             });
-            if (error) throw error;
+            const data = await res.json().catch(() => ({}));
+            if (!res.ok) throw new Error(data.error);
             setSent(true);
         } catch (err) {
             console.error(err);
-            setError("Inloggen lukte niet. Controleer het e-mailadres en probeer het opnieuw.");
+            setError(
+                err instanceof Error && err.message
+                    ? err.message
+                    : "Inloggen lukte niet. Controleer het e-mailadres en probeer het opnieuw."
+            );
         } finally {
             setIsLoading(false);
         }

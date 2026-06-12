@@ -7,6 +7,7 @@ import { ArrowLeft, Loader2, Trash2, Sparkles } from "lucide-react";
 import FindingsList from "@/components/studio/FindingsList";
 import SchemaBrowser from "@/components/studio/SchemaBrowser";
 import ChatPanel from "@/components/studio/ChatPanel";
+import DeleteProofModal, { DeleteVerification } from "@/components/studio/DeleteProofModal";
 import { renderStudioMarkdown } from "@/components/studio/markdown";
 import type { Finding } from "@/lib/pbi-analysis/checks";
 import type { PbiModel, PbiModelStats } from "@/lib/pbi-parser/types";
@@ -32,6 +33,7 @@ export default function StudioProject({ params }: { params: Promise<{ id: string
     const [data, setData] = useState<ProjectData | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [deleting, setDeleting] = useState(false);
+    const [deleteProof, setDeleteProof] = useState<DeleteVerification | null>(null);
     const [tab, setTab] = useState<"report" | "schema">("report");
 
     useEffect(() => {
@@ -59,16 +61,31 @@ export default function StudioProject({ params }: { params: Promise<{ id: string
         setDeleting(true);
         try {
             const res = await fetch(`/api/studio/projects/${id}`, { method: "DELETE" });
+            const json = await res.json().catch(() => ({}));
             if (!res.ok) {
-                const json = await res.json().catch(() => ({}));
                 throw new Error(json.error ?? "Verwijderen mislukte.");
             }
-            router.push("/studio");
+            if (json.verification) {
+                setDeleteProof(json.verification);
+            } else {
+                router.push("/studio");
+            }
         } catch (err) {
             setError(err instanceof Error ? err.message : "Verwijderen mislukte.");
             setDeleting(false);
         }
     };
+
+    if (deleteProof) {
+        return (
+            <div className="min-h-screen bg-[var(--color-neutral-50)] pt-32 pb-24">
+                <DeleteProofModal
+                    verification={deleteProof}
+                    onClose={() => router.push("/studio")}
+                />
+            </div>
+        );
+    }
 
     if (error && !data) {
         return (
