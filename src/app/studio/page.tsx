@@ -24,7 +24,7 @@ const STEPS = [
 const SECURITY_POINTS = [
     {
         title: 'Alleen metadata',
-        text: 'Een .pbit- of .bim-schema bevat tabelnamen, measures en relaties — nooit de data zelf.',
+        text: 'Een .pbit- of .bim-schema bevat tabelnamen, measures en relaties — nooit de data zelf. Alleen wat je zelf in de chat typt, wordt daarnaast bij je project bewaard.',
     },
     {
         title: 'Afgeschermde opslag in de EU',

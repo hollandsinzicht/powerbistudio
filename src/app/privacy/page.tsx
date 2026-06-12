@@ -84,8 +84,10 @@ export default function PrivacyPage() {
                   een EU-regio, zonder publieke toegang. Voor het beantwoorden van vragen
                   wordt het schema (metadata) naar de Anthropic API gestuurd;
                   die gebruikt API-invoer standaard niet voor het trainen van
-                  modellen. Verwijder je een project, dan worden bestand,
-                  analyse en chatgeschiedenis permanent gewist.
+                  modellen. Chatberichten worden bij het project bewaard zoals
+                  je ze typt — deel daarin dus zelf geen bedrijfsdata of
+                  persoonsgegevens. Verwijder je een project, dan worden
+                  bestand, analyse en chatgeschiedenis permanent gewist.
                 </li>
                 <li>
                   <strong className="text-[var(--color-neutral-900)]">

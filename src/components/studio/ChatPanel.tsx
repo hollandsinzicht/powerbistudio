@@ -140,9 +140,15 @@ export default function ChatPanel({ projectId, initialMessages, usage }: ChatPan
                         {isStreaming ? <Loader2 size={18} className="animate-spin" /> : <Send size={18} />}
                     </button>
                 </div>
-                <p className="mt-1.5 text-xs text-[var(--color-neutral-500)] text-right">
-                    {used} van {usage.limit} vragen deze maand
-                </p>
+                <div className="mt-1.5 flex items-start justify-between gap-4 text-xs text-[var(--color-neutral-500)]">
+                    <p>
+                        Je chat wordt bij dit project bewaard. Studio kent alleen je modelschema —
+                        plak dus zelf geen bedrijfsdata of persoonsgegevens in je vragen.
+                    </p>
+                    <p className="shrink-0">
+                        {used} van {usage.limit} vragen deze maand
+                    </p>
+                </div>
             </form>
         </div>
     );
