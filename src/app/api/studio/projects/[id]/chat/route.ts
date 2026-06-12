@@ -42,9 +42,12 @@ export async function POST(req: Request, { params }: Params) {
     }
     const { id } = await params;
 
-    const { question } = await req.json().catch(() => ({}));
+    const { question, chatId } = await req.json().catch(() => ({}));
     if (typeof question !== 'string' || !question.trim()) {
         return NextResponse.json({ error: 'question is verplicht.' }, { status: 400 });
+    }
+    if (typeof chatId !== 'string') {
+        return NextResponse.json({ error: 'chatId is verplicht.' }, { status: 400 });
     }
     if (question.length > MAX_QUESTION_LENGTH) {
         return NextResponse.json(
@@ -79,10 +82,21 @@ export async function POST(req: Request, { params }: Params) {
         return NextResponse.json({ error: 'Project niet gevonden.' }, { status: 404 });
     }
 
+    const { data: chat } = await supabase
+        .from('studio_chats')
+        .select('id, title')
+        .eq('id', chatId)
+        .eq('project_id', id)
+        .eq('user_id', user.id)
+        .single();
+    if (!chat) {
+        return NextResponse.json({ error: 'Chat niet gevonden.' }, { status: 404 });
+    }
+
     const { data: history } = await supabase
         .from('studio_messages')
         .select('role, content')
-        .eq('project_id', id)
+        .eq('chat_id', chatId)
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
         .limit(HISTORY_TURNS);
@@ -130,9 +144,10 @@ export async function POST(req: Request, { params }: Params) {
                 // Persistentie ná de stream, maar binnen de stream-lifetime
                 // zodat de serverless function niet eerder wordt afgekapt.
                 const { error: msgError } = await supabase.from('studio_messages').insert([
-                    { project_id: id, user_id: user.id, role: 'user', content: question },
+                    { project_id: id, chat_id: chatId, user_id: user.id, role: 'user', content: question },
                     {
                         project_id: id,
+                        chat_id: chatId,
                         user_id: user.id,
                         role: 'assistant',
                         content: answer,
@@ -141,6 +156,14 @@ export async function POST(req: Request, { params }: Params) {
                     },
                 ]);
                 if (msgError) console.error('studio chat: persist failed', msgError.message);
+
+                // Eerste vraag in een nieuw gesprek wordt de titel.
+                if (chat.title === 'Nieuwe chat') {
+                    await supabase
+                        .from('studio_chats')
+                        .update({ title: question.slice(0, 60) })
+                        .eq('id', chatId);
+                }
                 await supabase.from('studio_usage').insert({
                     user_id: user.id,
                     kind: 'chat',

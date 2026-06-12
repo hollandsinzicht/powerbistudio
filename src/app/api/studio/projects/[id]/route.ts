@@ -26,18 +26,18 @@ export async function GET(_req: Request, { params }: Params) {
         return NextResponse.json({ error: 'Project niet gevonden.' }, { status: 404 });
     }
 
-    const { data: messages } = await supabase
-        .from('studio_messages')
-        .select('role, content, created_at')
+    const { data: chats } = await supabase
+        .from('studio_chats')
+        .select('id, title, created_at')
         .eq('project_id', id)
         .eq('user_id', user.id)
-        .order('created_at', { ascending: true });
+        .order('created_at', { ascending: false });
 
     const used = await monthlyMessageCount(user.id);
 
     return NextResponse.json({
         project,
-        messages: messages ?? [],
+        chats: chats ?? [],
         usage: { used, limit: MAX_CHAT_MESSAGES_PER_MONTH },
     });
 }

@@ -98,7 +98,8 @@ export default function StudioDashboard({ email }: { email: string }) {
                         Mijn projecten
                     </h1>
                     <p className="text-sm text-[var(--color-neutral-500)] mt-1">
-                        Ingelogd als {email}
+                        Ingelogd als {email} — je projecten, analyses en chats blijven bewaard,
+                        ook nadat je uitlogt.
                     </p>
                 </div>
                 <button
