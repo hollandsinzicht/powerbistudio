@@ -6,6 +6,7 @@ import {
   getBrandCategory,
   type BrandConfig,
 } from './brands'
+import { type Audience } from './audiences'
 
 // Default-persona voor paden zonder expliciete brand (bv. blogposts): die zijn
 // altijd Power BI Studio. Brand-bewuste paden zetten de persona via brandContext.
@@ -66,6 +67,12 @@ export interface LinkedInPostInput {
   extraContext?: string
   /** Door JW opgebouwd merkprofiel. Ontbreekt → FALLBACK_PERSONA wordt gebruikt. */
   brandContext?: BrandContext
+  /**
+   * Optionele doelgroep. Aanwezig → de post wordt vertaald naar de rol, pijn en
+   * toon van die doelgroep (extra sturing in de prompt). Ontbreekt → ongewijzigd
+   * gedrag, zodat bestaande aanroepers (bv. /api/admin/blog/linkedin) blijven werken.
+   */
+  audience?: Audience
 }
 
 export interface FreeLinkedInPostInput {
@@ -275,6 +282,7 @@ export async function generateLinkedInPost(input: LinkedInPostInput): Promise<Ge
     brandContext: input.brandContext,
     style: input.style,
     structuur,
+    extraGuides: input.audience ? [input.audience.guide] : undefined,
   })
 
   const userMessage = `Blogartikel:

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Sparkles, FileText, Plus, CheckCircle2, XCircle, PenLine, Eye, Send, Archive, Loader2, Clock, Link2, ArrowUp, ArrowDown, Image as ImageIcon, Linkedin, Copy, Check, Images, Download, Target, Upload, Megaphone, MessageSquare, Building2, UserCircle } from "lucide-react";
 import ProfielTab from "./ProfielTab";
 import LinkedInPostTab from "./LinkedInPostTab";
+import CampagneTab from "./CampagneTab";
 import {
   ALL_ARCHETYPES,
   ARCHETYPE_LABELS,
@@ -54,7 +55,7 @@ function dateInputValue(iso: string | null): string {
 }
 
 export default function AdminDashboard() {
-  const [tab, setTab] = useState<"posts" | "ideas" | "new" | "acquisitie" | "profiel" | "linkedin">("posts");
+  const [tab, setTab] = useState<"posts" | "ideas" | "new" | "acquisitie" | "profiel" | "linkedin" | "campagne">("posts");
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [ideas, setIdeas] = useState<BlogIdea[]>([]);
   const [loading, setLoading] = useState(true);
@@ -556,6 +557,9 @@ export default function AdminDashboard() {
         </button>
         <button onClick={() => setTab("linkedin")} className={tabClass("linkedin")}>
           <span className="flex items-center gap-2"><Linkedin size={16} /> LinkedIn</span>
+        </button>
+        <button onClick={() => setTab("campagne")} className={tabClass("campagne")}>
+          <span className="flex items-center gap-2"><Sparkles size={16} /> Campagne</span>
         </button>
         <Link href="/admin/seo" className="px-4 py-2 text-sm font-medium rounded-lg transition-colors text-[var(--color-neutral-700)] hover:bg-gray-100 inline-flex items-center gap-2">
           <Target size={16} /> SEO Dashboard
@@ -1090,6 +1094,8 @@ export default function AdminDashboard() {
 
           {/* ===== TAB: LINKEDIN — PER-POST VRAAGGESPREK + POSTGEHEUGEN ===== */}
           {tab === "linkedin" && <LinkedInPostTab />}
+
+          {tab === "campagne" && <CampagneTab />}
         </>
       )}
 

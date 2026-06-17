@@ -17,7 +17,7 @@ export async function GET(_req: Request, { params }: Params) {
     const { data: project, error } = await supabase
         .from('studio_projects')
         .select(
-            'id, name, source_filename, source_format, file_path, schema_json, stats, analysis_findings, analysis_narrative, created_at'
+            'id, name, source_filename, source_format, file_path, schema_json, stats, analysis_findings, analysis_narrative, doc_markdown, avg_report, rls_markdown, created_at'
         )
         .eq('id', id)
         .eq('user_id', user.id)

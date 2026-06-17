@@ -8,8 +8,10 @@ import FindingsList from "@/components/studio/FindingsList";
 import SchemaBrowser from "@/components/studio/SchemaBrowser";
 import ChatPanel, { ChatSummary } from "@/components/studio/ChatPanel";
 import DeleteProofModal, { DeleteVerification } from "@/components/studio/DeleteProofModal";
+import Deliverables from "@/components/studio/Deliverables";
 import { renderStudioMarkdown } from "@/components/studio/markdown";
 import type { Finding } from "@/lib/pbi-analysis/checks";
+import type { AvgPuntResult } from "@/lib/pbi-analysis/avg-check";
 import type { PbiModel, PbiModelStats } from "@/lib/pbi-parser/types";
 
 interface ProjectData {
@@ -21,6 +23,9 @@ interface ProjectData {
         stats: PbiModelStats;
         analysis_findings: Finding[] | null;
         analysis_narrative: string | null;
+        doc_markdown: string | null;
+        avg_report: AvgPuntResult[] | null;
+        rls_markdown: string | null;
         created_at: string;
     };
     chats: ChatSummary[];
@@ -34,7 +39,7 @@ export default function StudioProject({ params }: { params: Promise<{ id: string
     const [error, setError] = useState<string | null>(null);
     const [deleting, setDeleting] = useState(false);
     const [deleteProof, setDeleteProof] = useState<DeleteVerification | null>(null);
-    const [tab, setTab] = useState<"report" | "schema">("report");
+    const [tab, setTab] = useState<"report" | "schema" | "oplevering">("report");
 
     useEffect(() => {
         (async () => {
@@ -151,6 +156,7 @@ export default function StudioProject({ params }: { params: Promise<{ id: string
                                 [
                                     ["report", "Analyse"],
                                     ["schema", "Schema"],
+                                    ["oplevering", "Oplevering"],
                                 ] as const
                             ).map(([key, label]) => (
                                 <button
@@ -167,7 +173,7 @@ export default function StudioProject({ params }: { params: Promise<{ id: string
                             ))}
                         </div>
 
-                        {tab === "report" ? (
+                        {tab === "report" && (
                             <div className="space-y-6">
                                 <FindingsList findings={project.analysis_findings ?? []} />
                                 {project.analysis_narrative && (
@@ -185,8 +191,15 @@ export default function StudioProject({ params }: { params: Promise<{ id: string
                                     </div>
                                 )}
                             </div>
-                        ) : (
-                            <SchemaBrowser model={project.schema_json} />
+                        )}
+                        {tab === "schema" && <SchemaBrowser model={project.schema_json} />}
+                        {tab === "oplevering" && (
+                            <Deliverables
+                                projectId={project.id}
+                                initialDoc={project.doc_markdown}
+                                initialAvg={project.avg_report}
+                                initialRls={project.rls_markdown}
+                            />
                         )}
                     </div>
 
