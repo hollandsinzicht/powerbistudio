@@ -78,6 +78,8 @@ export interface Campaign {
   seed: string | null
   stages: CampaignStages
   blog_post_id: string | null
+  /** Handmatig vinkje voor JW: posts daadwerkelijk ingepland/geplaatst. */
+  ingepland: boolean
 }
 
 function emptyStages(): CampaignStages {
@@ -133,7 +135,7 @@ export async function listCampaigns(limit = 20): Promise<Campaign[]> {
 
 export async function updateCampaign(
   id: string,
-  updates: Partial<Pick<Campaign, 'status' | 'stages' | 'blog_post_id' | 'seed'>>
+  updates: Partial<Pick<Campaign, 'status' | 'stages' | 'blog_post_id' | 'seed' | 'ingepland'>>
 ): Promise<void> {
   const { error } = await supabase
     .from('campaigns')
