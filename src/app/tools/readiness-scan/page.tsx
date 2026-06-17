@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight, CheckCircle2, RotateCcw, ShieldCheck, Loader2, Sparkles } from 'lucide-react';
-import AgentSignature from '@/components/team/AgentSignature';
 import LeadCaptureForm from '@/components/lead/LeadCaptureForm';
 
 type AanbevelingType = 'quick-scan' | 'verkennend';
@@ -250,10 +249,6 @@ export default function ReadinessScanPage() {
                                     samenvatting: verdict.samenvatting,
                                 }}
                             />
-
-                            <div className="border-t border-[var(--color-neutral-200)] pt-6">
-                                <AgentSignature agentId="nova" />
-                            </div>
                         </div>
                     )}
                 </div>
