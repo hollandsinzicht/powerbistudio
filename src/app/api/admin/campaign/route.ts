@@ -188,6 +188,13 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: true, campaign: await getCampaign(campaignId) })
     }
 
+    // --- SET-INGEPLAND: persoonlijk vinkje ("posts ingepland/geplaatst") ---
+    if (action === 'set-ingepland') {
+      const { ingepland } = body as { ingepland?: boolean }
+      await updateCampaign(campaignId, { ingepland: ingepland === true })
+      return NextResponse.json({ success: true, campaign: await getCampaign(campaignId) })
+    }
+
     // --- PUBLISH: blogconcept inplannen -----------------------------------
     if (action === 'publish') {
       if (!stages.blog.approved || !campaign.blog_post_id) {

@@ -168,6 +168,30 @@ export default function CampagneTab() {
     setTimeout(() => setCopied(null), 1500);
   };
 
+  // Open een opgeslagen campagne terug in de stage-weergave (volledige inhoud
+  // zit al in c.stages — de lijst haalt alles op).
+  const openCampaign = (c: Campaign) => {
+    setCampaign(c);
+    if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  // Persoonlijk vinkje: optimistisch togglen, dan persisteren.
+  const toggleIngepland = async (c: Campaign) => {
+    const next = !c.ingepland;
+    setRecent((prev) => prev.map((r) => (r.id === c.id ? { ...r, ingepland: next } : r)));
+    try {
+      await postJson("/api/admin/campaign", {
+        action: "set-ingepland",
+        campaignId: c.id,
+        ingepland: next,
+      });
+    } catch (e) {
+      // Terugdraaien bij fout.
+      setRecent((prev) => prev.map((r) => (r.id === c.id ? { ...r, ingepland: !next } : r)));
+      alert(`Opslaan mislukt: ${e instanceof Error ? e.message : e}`);
+    }
+  };
+
   const stages: CampaignStages | null = campaign?.stages ?? null;
   const blogApproved = !!stages?.blog.approved;
 
@@ -258,6 +282,17 @@ export default function CampagneTab() {
       {/* Resultaat */}
       {stages && campaign && (
         <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <span className="text-xs text-[var(--color-neutral-500)]">
+              Campagne van {new Date(campaign.created_at).toLocaleDateString("nl-NL")}
+            </span>
+            <button
+              onClick={() => setCampaign(null)}
+              className="text-xs text-[var(--color-neutral-700)] hover:text-[var(--color-primary-900)] underline"
+            >
+              sluiten
+            </button>
+          </div>
           <StageCard icon={<Lightbulb size={16} />} title="1. Idee" approved={stages.idea.approved} error={stages.idea.error}>
             {stages.idea.output ? (
               <>
@@ -384,14 +419,49 @@ export default function CampagneTab() {
 
       {recent.length > 0 && (
         <div className="pt-4">
-          <h3 className="text-sm font-medium text-[var(--color-neutral-800)] mb-2">Recente campagnes</h3>
-          <ul className="space-y-1">
-            {recent.slice(0, 8).map((c) => (
-              <li key={c.id} className="text-xs text-[var(--color-neutral-700)] flex items-center gap-2">
-                <span className="text-[var(--color-neutral-900)]">
-                  {c.stages?.idea?.output?.title || c.seed || "(zonder titel)"}
-                </span>
-                · {c.status} · {new Date(c.created_at).toLocaleDateString("nl-NL")}
+          <h3 className="text-sm font-medium text-[var(--color-neutral-800)] mb-1">Campagnes</h3>
+          <p className="text-xs text-[var(--color-neutral-500)] mb-3">
+            Vink &ldquo;ingepland&rdquo; aan zodra je de posts daadwerkelijk hebt ingepland/geplaatst — puur voor jezelf.
+          </p>
+          <ul className="divide-y divide-[var(--color-neutral-200)] rounded-lg border border-[var(--color-neutral-200)]">
+            {recent.map((c) => (
+              <li
+                key={c.id}
+                className={`flex items-center gap-3 px-3 py-2 text-sm ${
+                  campaign?.id === c.id ? "bg-[rgba(15,118,110,0.06)]" : ""
+                }`}
+              >
+                <button
+                  onClick={() => openCampaign(c)}
+                  className="flex-1 min-w-0 text-left group"
+                  title="Bekijk deze campagne met alle teksten"
+                >
+                  <span className="block truncate text-[var(--color-neutral-900)] group-hover:text-[var(--color-primary-900)] group-hover:underline">
+                    {c.stages?.idea?.output?.title || c.seed || "(zonder titel)"}
+                  </span>
+                  <span className="text-xs text-[var(--color-neutral-500)]">
+                    {c.status === "scheduled" ? "blog ingepland" : c.status} ·{" "}
+                    {(c.stages?.linkedin?.length ?? 0)} LinkedIn-posts ·{" "}
+                    {new Date(c.created_at).toLocaleDateString("nl-NL")}
+                  </span>
+                </button>
+                <button
+                  onClick={() => openCampaign(c)}
+                  className="shrink-0 text-xs px-2.5 py-1.5 rounded border border-[var(--color-neutral-300)] hover:bg-gray-50"
+                >
+                  bekijk
+                </button>
+                <label className="shrink-0 inline-flex items-center gap-1.5 text-xs cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={!!c.ingepland}
+                    onChange={() => toggleIngepland(c)}
+                    className="h-4 w-4 accent-[var(--color-primary-900)]"
+                  />
+                  <span className={c.ingepland ? "text-[var(--color-primary-900)] font-medium" : "text-[var(--color-neutral-700)]"}>
+                    ingepland
+                  </span>
+                </label>
               </li>
             ))}
           </ul>
