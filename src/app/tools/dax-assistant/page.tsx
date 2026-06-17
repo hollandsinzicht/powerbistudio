@@ -4,7 +4,6 @@ import { useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, BrainCircuit, Play, Copy, RefreshCw, FileText, CheckCircle2, Download } from "lucide-react";
 import LeadCaptureForm from "@/components/lead/LeadCaptureForm";
-import AgentSignature from "@/components/team/AgentSignature";
 
 export default function DaxAssistant() {
     const [mode, setMode] = useState<"generate" | "explain">("generate");
@@ -92,9 +91,6 @@ export default function DaxAssistant() {
                     <p className="text-[var(--color-neutral-700)] text-lg max-w-2xl mb-8">
                         Vertaal gewone taal naar werkende DAX-codes, of laat AI complexe formules aan je uitleggen in begrijpelijk Nederlands.
                     </p>
-
-                    {/* Agent signature */}
-                    <AgentSignature agentId="ada" intro="Deze tool wordt aangedreven door" />
                 </div>
 
                 {/* Main Interface */}
