@@ -2,17 +2,18 @@
 // Campagne-orkestrator
 // ----------------------------------------------------------------------------
 // Knoopt de bestaande, losse marketing-stappen aan elkaar tot één flow:
-//   idee → blogconcept → LinkedIn-variant per doelgroep → nurture-voorstel.
+//   idee → blogconcept → LinkedIn-reeks (opbouw richting de blog).
 // Modus: "genereer-alles-dan-review". Elke stap is afgeschermd met try/catch;
 // een mislukte stap degradeert naar { output: null, error } en stopt de flow
 // NIET (zelfde non-blocking patroon als de bestaande image-generatie).
 //
+// Lead-nurture is BEWUST geen stap: die loopt site-breed als één staande reeks
+// (/api/cron/nurture) voor alle HR-leads, los van campagnes.
+//
 // HARDE GRENS (= de merkbelofte): deze orkestrator raakt UITSLUITEND
-// marketing-content aan — blog_posts, linkedin_posts (geheugen) en het
-// nurture-*voorstel*. Hij leest GEEN klant-HR-data, GEEN studio_*-modellen en
-// GEEN lead-PII, en hij VERSTUURT niets. Het daadwerkelijk versturen van
-// nurture-mails blijft in de bestaande cron (/api/cron/nurture) met eigen
-// opt-in-logica. Voeg hier nooit reads van klantdata toe.
+// marketing-content aan — blog_posts en linkedin_posts (geheugen). Hij leest
+// GEEN klant-HR-data, GEEN studio_*-modellen en GEEN lead-PII, en hij VERSTUURT
+// niets. Voeg hier nooit reads van klantdata toe.
 // ============================================================================
 
 import { generateBlogIdeas, generateBlogPost } from './blog-writer'
@@ -31,16 +32,54 @@ import { savePost, getRecentPosts } from './linkedin-posts-store'
 import { getBrand, type BrandId } from './brands'
 import { getBrandAnswers } from './brand-profile-store'
 import { buildBrandContext } from './brand-context'
-import { NURTURE_SEQUENCES } from './nurture-sequences'
 import { type Audience } from './audiences'
 import type {
   CampaignStages,
   IdeaStageOutput,
   BlogStageOutput,
-  LinkedInVariant,
-  NurtureStageOutput,
+  LinkedInSeriesPost,
+  SeriesRole,
   StageState,
 } from './campaign-store'
+
+/**
+ * De vaste opbouw van de LinkedIn-reeks richting de blog. Vier posts, gespreid
+ * gepland: de eerste drie bouwen op zonder link/pitch, de laatste is de CTA.
+ */
+export const SERIES_STEPS: { rol: SeriesRole; omschrijving: string; plaatsLink: boolean }[] = [
+  {
+    rol: 'haak',
+    omschrijving:
+      'Open met het probleem of de herkenning. Geen oplossing, geen link — benoem alleen de pijn zodat de lezer denkt "dit speelt bij ons".',
+    plaatsLink: false,
+  },
+  {
+    rol: 'inzicht',
+    omschrijving:
+      'Geef één concrete takeaway uit het artikel die de lezer morgen kan toepassen. Leerzaam, niet verkopend.',
+    plaatsLink: false,
+  },
+  {
+    rol: 'bewijs',
+    omschrijving:
+      'Illustreer met een patroon of voorbeeld (geen verzonnen cijfers of klantnamen) waarom de aanpak werkt.',
+    plaatsLink: false,
+  },
+  {
+    rol: 'cta',
+    omschrijving:
+      'Vat de rode draad samen en verwijs naar het volledige artikel en/of de gratis Readiness Scan.',
+    plaatsLink: true,
+  },
+]
+
+/** Voorgestelde plaatsingsdatum: start over 2 dagen, daarna +3 dagen per post, 09:00. */
+function suggestDate(index: number): string {
+  const d = new Date()
+  d.setDate(d.getDate() + 2 + index * 3)
+  d.setHours(9, 0, 0, 0)
+  return d.toISOString()
+}
 
 export interface RunCampaignInput {
   brand?: string
@@ -182,15 +221,23 @@ export async function buildBlogStage(
 }
 
 // ---------------------------------------------------------------------------
-// Stap 3 — LinkedIn-variant per doelgroep (+ schrijft naar het post-geheugen)
+// Stap 3 — LinkedIn-reeks: één post per opbouw-stap (+ schrijft naar geheugen)
 // ---------------------------------------------------------------------------
-export async function buildLinkedInVariant(params: {
+export async function buildSeriesPost(params: {
   brandId: BrandId
+  index: number
+  step: (typeof SERIES_STEPS)[number]
   audience: Audience
   post: { title: string; excerpt: string; content: string; slug: string }
-}): Promise<LinkedInVariant> {
-  const { audience } = params
-  const style = audience.style
+}): Promise<LinkedInSeriesPost> {
+  const { step, audience, index } = params
+  const base = {
+    index,
+    rol: step.rol,
+    audienceKey: audience.key,
+    audienceLabel: audience.label,
+    plannenOp: suggestDate(index),
+  }
 
   try {
     const brand = getBrand(params.brandId)
@@ -203,9 +250,10 @@ export async function buildLinkedInVariant(params: {
       excerpt: params.post.excerpt,
       content: params.post.content,
       slug: params.post.slug,
-      style,
+      style: audience.style,
       brandContext,
       audience,
+      seriesStep: { rol: step.rol, omschrijving: step.omschrijving, plaatsLink: step.plaatsLink },
     })
 
     // Bewaar in het post-geheugen zodat toekomstige generaties niet herhalen.
@@ -216,9 +264,9 @@ export async function buildLinkedInVariant(params: {
         brand: brand.id,
         postText: result.postText,
         hashtags: result.hashtags,
-        funnelStage: 'tofu',
+        funnelStage: step.plaatsLink ? 'bofu' : 'tofu',
         category: '3-hr-problemen',
-        style,
+        style: audience.style,
         topic: params.post.title,
         interview: [],
       })
@@ -226,69 +274,48 @@ export async function buildLinkedInVariant(params: {
       console.error('Campagne: LinkedIn-post opslaan in geheugen mislukt (non-blocking):', saveErr)
     }
 
-    return {
-      audienceKey: audience.key,
-      audienceLabel: audience.label,
-      postText: result.postText,
-      hashtags: result.hashtags,
-      approved: false,
-    }
+    return { ...base, postText: result.postText, hashtags: result.hashtags, approved: false }
   } catch (err) {
     return {
-      audienceKey: audience.key,
-      audienceLabel: audience.label,
+      ...base,
       postText: '',
       hashtags: [],
       approved: false,
-      error: err instanceof Error ? err.message : 'LinkedIn-variant mislukt',
+      error: err instanceof Error ? err.message : 'LinkedIn-post mislukt',
     }
   }
 }
 
-/** Regenereer één LinkedIn-variant op basis van de al opgeslagen blog-draft. */
-export async function regenerateLinkedInVariant(params: {
+/** Regenereer één post uit de reeks (op stap-index) op basis van de blog-draft. */
+export async function regenerateSeriesPost(params: {
   brandId: BrandId
+  index: number
   audience: Audience
   blogPostId: string
-}): Promise<LinkedInVariant> {
-  const post = await getPostById(params.blogPostId)
-  if (!post) {
-    return {
-      audienceKey: params.audience.key,
-      audienceLabel: params.audience.label,
-      postText: '',
-      hashtags: [],
-      approved: false,
-      error: 'Blogconcept niet gevonden',
-    }
+}): Promise<LinkedInSeriesPost> {
+  const step = SERIES_STEPS[params.index]
+  const fallback: LinkedInSeriesPost = {
+    index: params.index,
+    rol: step?.rol ?? 'haak',
+    audienceKey: params.audience.key,
+    audienceLabel: params.audience.label,
+    postText: '',
+    hashtags: [],
+    plannenOp: suggestDate(params.index),
+    approved: false,
   }
-  return buildLinkedInVariant({
+  if (!step) return { ...fallback, error: 'Onbekende reeks-stap' }
+
+  const post = await getPostById(params.blogPostId)
+  if (!post) return { ...fallback, error: 'Blogconcept niet gevonden' }
+
+  return buildSeriesPost({
     brandId: params.brandId,
+    index: params.index,
+    step,
     audience: params.audience,
     post: { title: post.title, excerpt: post.excerpt, content: post.content, slug: post.slug },
   })
-}
-
-// ---------------------------------------------------------------------------
-// Stap 4 — Nurture-VOORSTEL (deterministisch; verstuurt niets)
-// ---------------------------------------------------------------------------
-export function buildNurtureStage(idea: IdeaStageOutput | null): StageState<NurtureStageOutput> {
-  // Sinds de HR-rebrand is er één sequence ('hr'). We stellen die voor en
-  // motiveren waarom; daadwerkelijk versturen blijft buiten deze flow.
-  const hr = NURTURE_SEQUENCES['hr']
-  if (!hr || hr.length === 0) {
-    return { output: null, approved: false, error: 'Geen nurture-sequence beschikbaar' }
-  }
-
-  const topic = idea?.title ? `"${idea.title}"` : 'dit onderwerp'
-  return {
-    output: {
-      vertical: 'hr',
-      emailCount: hr.length,
-      rationale: `Voorstel: koppel leads die via ${topic} binnenkomen aan de HR-nurturereeks (${hr.length} mails over 18 dagen: AVG-checklist → RLS → historiek → GGD-case → soft CTA). Versturen gebeurt pas na expliciete lead-opt-in via de bestaande cron.`,
-    },
-    approved: false,
-  }
 }
 
 // ---------------------------------------------------------------------------
@@ -313,26 +340,26 @@ export async function runCampaign(input: RunCampaignInput): Promise<RunCampaignR
     blogStage = { output: built.output, approved: built.approved, error: built.error }
   }
 
-  const linkedin: LinkedInVariant[] = []
-  if (blogStage.output && blogContent) {
+  const linkedin: LinkedInSeriesPost[] = []
+  if (blogStage.output && blogContent && audiences.length > 0) {
     const post = {
       title: blogStage.output.title,
       excerpt: blogStage.output.excerpt,
       content: blogContent,
       slug: blogStage.output.slug,
     }
+    // Eén reeks met opbouw; de gekozen doelgroepen rouleren over de stappen.
     // Sequentieel: voorkomt parallelle race op het post-geheugen + rate limits.
-    for (const audience of audiences) {
-      linkedin.push(await buildLinkedInVariant({ brandId: brand.id, audience, post }))
+    for (let i = 0; i < SERIES_STEPS.length; i++) {
+      const audience = audiences[i % audiences.length]
+      linkedin.push(await buildSeriesPost({ brandId: brand.id, index: i, step: SERIES_STEPS[i], audience, post }))
     }
   }
-
-  const nurture = buildNurtureStage(ideaStage.output)
 
   return {
     brand: brand.id,
     seed: input.seed?.trim() || null,
-    stages: { idea: ideaStage, blog: blogStage, linkedin, nurture },
+    stages: { idea: ideaStage, blog: blogStage, linkedin },
     blogPostId: blogStage.output?.postId ?? null,
   }
 }

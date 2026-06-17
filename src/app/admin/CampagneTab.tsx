@@ -12,7 +12,6 @@ import {
   Lightbulb,
   FileText,
   Linkedin,
-  Mail,
   AlertTriangle,
   Users,
   Settings2,
@@ -22,8 +21,23 @@ import {
 } from "lucide-react";
 import { VALID_STYLES } from "@/lib/audiences";
 import type { AudienceRecord } from "@/lib/audience-store";
-import type { Campaign, CampaignStages } from "@/lib/campaign-store";
+import type { Campaign, CampaignStages, SeriesRole } from "@/lib/campaign-store";
 import type { LinkedInStyle } from "@/lib/linkedin-writer";
+
+const ROL_LABEL: Record<SeriesRole, string> = {
+  haak: "Haak",
+  inzicht: "Inzicht",
+  bewijs: "Bewijs",
+  cta: "CTA",
+};
+
+function fmtDate(iso: string): string {
+  try {
+    return new Date(iso).toLocaleDateString("nl-NL", { day: "numeric", month: "short" });
+  } catch {
+    return iso;
+  }
+}
 
 function getToken() {
   return localStorage.getItem("admin_token") || "";
@@ -165,7 +179,7 @@ export default function CampagneTab() {
           <Sparkles size={18} /> Campagne-flow
         </h2>
         <p className="text-sm text-[var(--color-neutral-700)] mt-1">
-          Eén run knoopt idee → blogconcept → LinkedIn per doelgroep → nurture-voorstel aan elkaar.
+          Eén run knoopt idee → blogconcept → een opbouwende LinkedIn-reeks aan elkaar.
           Alles komt als <strong>concept</strong> terug; jij keurt per stap goed of genereert opnieuw.
           Niets gaat live zonder jouw akkoord — en geen agent raakt klant- of HR-data aan.
         </p>
@@ -291,17 +305,27 @@ export default function CampagneTab() {
             />
           </StageCard>
 
-          <StageCard icon={<Linkedin size={16} />} title="3. LinkedIn per doelgroep" approved={false}>
+          <StageCard icon={<Linkedin size={16} />} title="3. LinkedIn-reeks" approved={false}>
+            <p className="text-xs text-[var(--color-neutral-500)] mb-3">
+              Een opbouw van 4 posts richting de blog, gespreid gepland. Posten doe je zelf
+              (kopiëren) op de voorgestelde datum — LinkedIn staat auto-posten niet toe.
+            </p>
             <div className="space-y-3">
               {stages.linkedin.length === 0 && (
-                <p className="text-sm text-[var(--color-neutral-700)]">Geen varianten (geen blogconcept).</p>
+                <p className="text-sm text-[var(--color-neutral-700)]">Geen reeks (geen blogconcept of geen doelgroep).</p>
               )}
               {stages.linkedin.map((v) => (
-                <div key={v.audienceKey} className="border border-[var(--color-neutral-300)] rounded-lg p-3">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-[var(--color-neutral-900)]">{v.audienceLabel}</span>
+                <div key={v.index} className="border border-[var(--color-neutral-300)] rounded-lg p-3">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-sm font-medium text-[var(--color-neutral-900)]">
+                      {v.index + 1}. {ROL_LABEL[v.rol] ?? v.rol}
+                      <span className="font-normal text-[var(--color-neutral-500)]"> · {v.audienceLabel}</span>
+                    </span>
                     <StatusBadge approved={v.approved} error={v.error} />
                   </div>
+                  <p className="text-xs text-[var(--color-neutral-500)] mb-2 flex items-center gap-1">
+                    <CalendarClock size={12} /> voorgesteld: {fmtDate(v.plannenOp)}
+                  </p>
                   {v.error ? (
                     <p className="text-sm text-red-600">{v.error}</p>
                   ) : (
@@ -314,22 +338,22 @@ export default function CampagneTab() {
                   )}
                   <div className="flex flex-wrap gap-2 mt-3">
                     <button
-                      onClick={() => copy(v.audienceKey, `${v.postText}\n\n${v.hashtags.join(" ")}`)}
+                      onClick={() => copy(`li-${v.index}`, `${v.postText}\n\n${v.hashtags.join(" ")}`)}
                       className="inline-flex items-center gap-1 text-xs px-2.5 py-1.5 rounded border border-[var(--color-neutral-300)] hover:bg-gray-50"
                     >
-                      {copied === v.audienceKey ? <Check size={13} /> : <Copy size={13} />} kopieer
+                      {copied === `li-${v.index}` ? <Check size={13} /> : <Copy size={13} />} kopieer
                     </button>
                     <button
-                      onClick={() => mutate({ action: "regenerate-stage", stage: "linkedin", audienceKey: v.audienceKey }, `li-regen-${v.audienceKey}`)}
-                      disabled={busy === `li-regen-${v.audienceKey}`}
+                      onClick={() => mutate({ action: "regenerate-stage", stage: "linkedin", index: v.index }, `li-regen-${v.index}`)}
+                      disabled={busy === `li-regen-${v.index}`}
                       className="inline-flex items-center gap-1 text-xs px-2.5 py-1.5 rounded border border-[var(--color-neutral-300)] hover:bg-gray-50 disabled:opacity-60"
                     >
-                      {busy === `li-regen-${v.audienceKey}` ? <Loader2 size={13} className="animate-spin" /> : <RotateCcw size={13} />}
+                      {busy === `li-regen-${v.index}` ? <Loader2 size={13} className="animate-spin" /> : <RotateCcw size={13} />}
                       opnieuw
                     </button>
                     <button
-                      onClick={() => mutate({ action: "approve-stage", stage: "linkedin", audienceKey: v.audienceKey, approved: !v.approved }, `li-appr-${v.audienceKey}`)}
-                      disabled={busy === `li-appr-${v.audienceKey}`}
+                      onClick={() => mutate({ action: "approve-stage", stage: "linkedin", index: v.index, approved: !v.approved }, `li-appr-${v.index}`)}
+                      disabled={busy === `li-appr-${v.index}`}
                       className={`inline-flex items-center gap-1 text-xs px-2.5 py-1.5 rounded ${
                         v.approved ? "bg-gray-100 text-[var(--color-neutral-700)]" : "bg-[var(--color-primary-900)] text-white"
                       } disabled:opacity-60`}
@@ -340,25 +364,6 @@ export default function CampagneTab() {
                 </div>
               ))}
             </div>
-          </StageCard>
-
-          <StageCard icon={<Mail size={16} />} title="4. Nurture-voorstel" approved={stages.nurture.approved} error={stages.nurture.error}>
-            {stages.nurture.output ? (
-              <p className="text-sm text-[var(--color-neutral-800)]">{stages.nurture.output.rationale}</p>
-            ) : (
-              <p className="text-sm text-red-600">{stages.nurture.error || "Geen voorstel"}</p>
-            )}
-            <p className="text-xs text-[var(--color-neutral-700)] mt-2 italic">
-              Dit is alleen een voorstel — versturen blijft in de bestaande cron, na lead-opt-in.
-            </p>
-            <StageActions
-              onApprove={() => mutate({ action: "approve-stage", stage: "nurture", approved: !stages.nurture.approved }, "nurture-approve")}
-              onRegenerate={() => mutate({ action: "regenerate-stage", stage: "nurture" }, "nurture-regen")}
-              approved={stages.nurture.approved}
-              busy={busy}
-              regenKey="nurture-regen"
-              approveKey="nurture-approve"
-            />
           </StageCard>
 
           <div className="flex items-center gap-3 pt-2">
