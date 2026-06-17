@@ -73,6 +73,12 @@ export interface LinkedInPostInput {
    * gedrag, zodat bestaande aanroepers (bv. /api/admin/blog/linkedin) blijven werken.
    */
   audience?: Audience
+  /**
+   * Optioneel: positie binnen een opbouwende reeks richting de blog. Aanwezig →
+   * de structuur en sturing passen zich aan de rol aan. `plaatsLink: false`
+   * (haak/inzicht/bewijs) → post zónder artikel-link; `true` (cta) → met link.
+   */
+  seriesStep?: { rol: string; omschrijving: string; plaatsLink: boolean }
 }
 
 export interface FreeLinkedInPostInput {
@@ -273,16 +279,23 @@ export async function generateLinkedInPost(input: LinkedInPostInput): Promise<Ge
     .trim()
     .slice(0, 2000)
 
+  // Binnen een reeks bepaalt de stap of er een link onderaan komt: alleen de
+  // afsluitende cta-post verwijst naar het artikel; de opbouwende posts niet.
+  const plaatsLink = input.seriesStep ? input.seriesStep.plaatsLink : true
   const structuur = `- Hook (eerste 2-3 zinnen)
 - Body (2-4 korte alinea's)
 - Lege regel
-- Link naar het artikel: "${blogUrl}"`
+${plaatsLink ? `- Link naar het artikel: "${blogUrl}"` : '- GEEN link en GEEN pitch; deze post staat op zichzelf.'}`
+
+  const seriesGuide = input.seriesStep
+    ? `ROL BINNEN DE REEKS — deze post is de "${input.seriesStep.rol}":\n${input.seriesStep.omschrijving}\nDit is één post uit een reeks rond hetzelfde artikel; herhaal niet wat een andere post zou zeggen.`
+    : undefined
 
   const systemPrompt = buildSystemPrompt({
     brandContext: input.brandContext,
     style: input.style,
     structuur,
-    extraGuides: input.audience ? [input.audience.guide] : undefined,
+    extraGuides: [input.audience?.guide, seriesGuide].filter((g): g is string => !!g),
   })
 
   const userMessage = `Blogartikel:

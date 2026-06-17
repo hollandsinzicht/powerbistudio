@@ -37,32 +37,36 @@ export interface BlogStageOutput {
   image: string | null
 }
 
-export interface LinkedInVariant {
+/** De rol van een post binnen de reeks-opbouw richting de blog. */
+export type SeriesRole = 'haak' | 'inzicht' | 'bewijs' | 'cta'
+
+/**
+ * Eén post in de LinkedIn-reeks. De reeks bouwt op richting de blog (haak →
+ * inzicht → bewijs → cta) en is gespreid in te plannen. Posten zelf gebeurt
+ * handmatig (kopiëren) — LinkedIn's API staat auto-posten op een persoonlijk
+ * profiel niet toe; dit is plannen + kopiëren.
+ */
+export interface LinkedInSeriesPost {
+  /** Volgorde in de reeks (0-based). */
+  index: number
+  rol: SeriesRole
   /** Verwijst naar audiences.key (doelgroep kan in de admin gewijzigd worden). */
   audienceKey: string
   audienceLabel: string
   postText: string
   hashtags: string[]
+  /** Voorgestelde plaatsingsdatum (ISO), gespreid over de campagneperiode. */
+  plannenOp: string
   approved: boolean
   edited?: boolean
   error?: string
 }
 
-export interface NurtureStageOutput {
-  /** Welke bestaande sequence past — momenteel altijd 'hr'. */
-  vertical: string
-  /** Aantal mails in de voorgestelde sequence. */
-  emailCount: number
-  /** Waarom deze sequence past bij het onderwerp. */
-  rationale: string
-}
-
 export interface CampaignStages {
   idea: StageState<IdeaStageOutput>
   blog: StageState<BlogStageOutput>
-  /** Eén variant per gekozen doelgroep. */
-  linkedin: LinkedInVariant[]
-  nurture: StageState<NurtureStageOutput>
+  /** Eén reeks van opbouwende posts (haak → inzicht → bewijs → cta). */
+  linkedin: LinkedInSeriesPost[]
 }
 
 export interface Campaign {
@@ -81,7 +85,6 @@ function emptyStages(): CampaignStages {
     idea: { output: null, approved: false },
     blog: { output: null, approved: false },
     linkedin: [],
-    nurture: { output: null, approved: false },
   }
 }
 

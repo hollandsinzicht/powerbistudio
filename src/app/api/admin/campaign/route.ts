@@ -3,8 +3,7 @@ import {
   runCampaign,
   buildIdeaStage,
   buildBlogStage,
-  regenerateLinkedInVariant,
-  buildNurtureStage,
+  regenerateSeriesPost,
 } from '@/lib/campaign-orchestrator'
 import {
   createCampaign,
@@ -30,7 +29,7 @@ function checkAuth(req: Request): boolean {
   return req.headers.get('x-admin-token') === ADMIN_PASSWORD
 }
 
-type StageKey = 'idea' | 'blog' | 'linkedin' | 'nurture'
+type StageKey = 'idea' | 'blog' | 'linkedin'
 
 export async function POST(req: Request) {
   if (!checkAuth(req)) {
@@ -90,7 +89,7 @@ export async function POST(req: Request) {
 
     // --- REGENERATE één stap ----------------------------------------------
     if (action === 'regenerate-stage') {
-      const { stage, audienceKey } = body as { stage?: StageKey; audienceKey?: string }
+      const { stage, index } = body as { stage?: StageKey; index?: number }
 
       if (stage === 'idea') {
         stages.idea = await buildIdeaStage({ seed: campaign.seed ?? undefined })
@@ -102,26 +101,30 @@ export async function POST(req: Request) {
         stages.blog = { output: built.output, approved: built.approved, error: built.error }
         if (built.output) await updateCampaign(campaignId, { blog_post_id: built.output.postId })
       } else if (stage === 'linkedin') {
-        if (!audienceKey) {
-          return NextResponse.json({ error: 'audienceKey verplicht' }, { status: 400 })
+        if (typeof index !== 'number') {
+          return NextResponse.json({ error: 'index verplicht' }, { status: 400 })
         }
         if (!campaign.blog_post_id) {
           return NextResponse.json({ error: 'Nog geen blogconcept' }, { status: 400 })
         }
-        const audience = await getAudienceByKey(audienceKey)
+        const existing = stages.linkedin.find((p) => p.index === index)
+        if (!existing) return NextResponse.json({ error: 'Post niet gevonden' }, { status: 404 })
+        // Behoud de doelgroep van de bestaande post; verstuur 'm opnieuw.
+        const audience = await getAudienceByKey(existing.audienceKey)
         if (!audience) {
           return NextResponse.json({ error: 'Doelgroep niet gevonden' }, { status: 404 })
         }
-        const variant = await regenerateLinkedInVariant({
+        const post = await regenerateSeriesPost({
           brandId: getBrand(campaign.brand).id,
+          index,
           audience,
           blogPostId: campaign.blog_post_id,
         })
-        const idx = stages.linkedin.findIndex((v) => v.audienceKey === audienceKey)
-        if (idx >= 0) stages.linkedin[idx] = variant
-        else stages.linkedin.push(variant)
-      } else if (stage === 'nurture') {
-        stages.nurture = buildNurtureStage(stages.idea.output)
+        // Behoud de eerder voorgestelde plaatsingsdatum.
+        post.plannenOp = existing.plannenOp
+        const i = stages.linkedin.findIndex((p) => p.index === index)
+        if (i >= 0) stages.linkedin[i] = post
+        else stages.linkedin.push(post)
       } else {
         return NextResponse.json({ error: 'Onbekende stap' }, { status: 400 })
       }
@@ -132,18 +135,18 @@ export async function POST(req: Request) {
 
     // --- APPROVE / un-approve een stap ------------------------------------
     if (action === 'approve-stage') {
-      const { stage, audienceKey, approved } = body as {
+      const { stage, index, approved } = body as {
         stage?: StageKey
-        audienceKey?: string
+        index?: number
         approved?: boolean
       }
       const value = approved !== false // default true
 
       if (stage === 'linkedin') {
-        const idx = stages.linkedin.findIndex((v) => v.audienceKey === audienceKey)
-        if (idx < 0) return NextResponse.json({ error: 'Variant niet gevonden' }, { status: 404 })
-        stages.linkedin[idx].approved = value
-      } else if (stage === 'idea' || stage === 'blog' || stage === 'nurture') {
+        const post = stages.linkedin.find((p) => p.index === index)
+        if (!post) return NextResponse.json({ error: 'Post niet gevonden' }, { status: 404 })
+        post.approved = value
+      } else if (stage === 'idea' || stage === 'blog') {
         stages[stage].approved = value
       } else {
         return NextResponse.json({ error: 'Onbekende stap' }, { status: 400 })
@@ -155,9 +158,9 @@ export async function POST(req: Request) {
 
     // --- EDIT een stap (handmatige aanpassing) ----------------------------
     if (action === 'edit-stage') {
-      const { stage, audienceKey, patch } = body as {
+      const { stage, index, patch } = body as {
         stage?: StageKey
-        audienceKey?: string
+        index?: number
         patch?: Record<string, unknown>
       }
       if (!patch || typeof patch !== 'object') {
@@ -165,13 +168,13 @@ export async function POST(req: Request) {
       }
 
       if (stage === 'linkedin') {
-        const idx = stages.linkedin.findIndex((v) => v.audienceKey === audienceKey)
-        if (idx < 0) return NextResponse.json({ error: 'Variant niet gevonden' }, { status: 404 })
-        const v = stages.linkedin[idx]
-        if (typeof patch.postText === 'string') v.postText = patch.postText
-        if (Array.isArray(patch.hashtags)) v.hashtags = patch.hashtags as string[]
-        v.edited = true
-      } else if (stage === 'idea' || stage === 'blog' || stage === 'nurture') {
+        const post = stages.linkedin.find((p) => p.index === index)
+        if (!post) return NextResponse.json({ error: 'Post niet gevonden' }, { status: 404 })
+        if (typeof patch.postText === 'string') post.postText = patch.postText
+        if (Array.isArray(patch.hashtags)) post.hashtags = patch.hashtags as string[]
+        if (typeof patch.plannenOp === 'string') post.plannenOp = patch.plannenOp
+        post.edited = true
+      } else if (stage === 'idea' || stage === 'blog') {
         const s = stages[stage]
         if (s.output) {
           s.output = { ...s.output, ...patch } as typeof s.output
