@@ -165,8 +165,8 @@ export default function HomePage() {
                 Jan Willem den Hollander · 15 jaar Power BI · Lean Six Sigma Black Belt
               </p>
               <div className="flex flex-wrap gap-3">
-                <CTA variant="primary">Plan een Quick Scan – €1.950</CTA>
-                <CTA variant="lead-magnet" />
+                <CTA variant="scan">Doe de gratis Readiness Scan</CTA>
+                <CTA variant="soft" href="/contact?type=quick-scan">Plan een Quick Scan – €1.950</CTA>
               </div>
             </div>
 

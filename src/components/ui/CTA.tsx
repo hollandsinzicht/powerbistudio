@@ -6,8 +6,9 @@ import { clsx, type ClassValue } from 'clsx';
 /**
  * CTA — één component voor alle call-to-actions op de site.
  *
- * Vier varianten met vaste defaults (tekst + href):
+ * Vijf varianten met vaste defaults (tekst + href):
  *   • primary      → "Plan een Quick Scan"           → /contact?type=quick-scan
+ *   • scan         → "Doe de gratis scan"            → /tools/readiness-scan
  *   • lead-magnet  → "Download de AVG-checklist HR"  → /avg-checklist-hr
  *   • soft         → "Plan een verkennend gesprek"   → /contact?type=verkennend
  *   • navigation   → "Lees meer →"                   → href required
@@ -21,7 +22,7 @@ import { clsx, type ClassValue } from 'clsx';
  *   <CTA variant="primary" href="/contact?type=hosting">Boek een DashPortal demo</CTA>
  */
 
-export type CTAVariant = 'primary' | 'lead-magnet' | 'soft' | 'navigation';
+export type CTAVariant = 'primary' | 'scan' | 'lead-magnet' | 'soft' | 'navigation';
 
 interface CTAProps {
   variant: CTAVariant;
@@ -38,6 +39,10 @@ const VARIANT_DEFAULTS: Record<
   primary: {
     text: 'Plan een Quick Scan',
     href: '/contact?type=quick-scan',
+  },
+  scan: {
+    text: 'Doe de gratis scan',
+    href: '/tools/readiness-scan',
   },
   'lead-magnet': {
     text: 'Download de AVG-checklist HR',
@@ -60,6 +65,9 @@ const VARIANT_DEFAULTS: Record<
 // expliciete bracket-syntax met var(...) wat altijd werkt.
 const VARIANT_STYLES: Record<CTAVariant, string> = {
   primary:
+    'inline-flex items-center justify-center gap-2 rounded-md bg-[var(--color-action-600)] px-6 py-3 text-[0.9375rem] font-semibold text-white transition-colors hover:bg-[var(--color-action-700)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-action-700)]',
+  // De scan is de primaire lead-magnet → gevulde knop, zelfde gewicht als primary.
+  scan:
     'inline-flex items-center justify-center gap-2 rounded-md bg-[var(--color-action-600)] px-6 py-3 text-[0.9375rem] font-semibold text-white transition-colors hover:bg-[var(--color-action-700)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-action-700)]',
   'lead-magnet':
     'inline-flex items-center justify-center gap-2 rounded-md border border-[var(--color-primary-900)] bg-transparent px-5 py-2.5 text-[0.9375rem] font-semibold text-[var(--color-primary-900)] transition-colors hover:bg-[var(--color-primary-900)] hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-primary-900)]',

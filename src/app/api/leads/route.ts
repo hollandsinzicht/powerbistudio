@@ -5,11 +5,12 @@ import { checkRateLimit } from '@/lib/security';
 import type { LeadVertical, LeadSource } from '@/lib/lead-store';
 
 const VALID_VERTICALS: LeadVertical[] = ['hr'];
-const VALID_SOURCES: LeadSource[] = ['calculator', 'dax-fouten', 'contact', 'avg-checklist-hr'];
+const VALID_SOURCES: LeadSource[] = ['calculator', 'dax-fouten', 'contact', 'avg-checklist-hr', 'readiness-scan'];
 
 const RESOURCE_TITLES: Record<string, string> = {
   'dax-fouten': '10 meest voorkomende DAX-fouten in productie-modellen',
   'avg-checklist-hr': 'AVG-checklist HR Power BI — 12 controlepunten',
+  'readiness-scan': 'Jouw HR Analytics Readiness Scan — uitslag en vervolgstap',
 };
 
 export async function POST(req: Request) {
