@@ -1,7 +1,7 @@
 import { supabase } from './supabase'
 
 export type LeadVertical = 'hr'
-export type LeadSource = 'calculator' | 'dax-fouten' | 'contact' | 'avg-checklist-hr'
+export type LeadSource = 'calculator' | 'dax-fouten' | 'contact' | 'avg-checklist-hr' | 'readiness-scan'
 
 export async function createLead(params: {
   email: string

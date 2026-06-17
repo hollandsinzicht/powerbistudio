@@ -25,6 +25,13 @@ const PRIMARY_CTA = {
   label: 'Plan een Quick Scan',
 };
 
+// Zachte instap naast de primaire CTA: de gratis scan is de laagdrempelige
+// lead-route (eindigt zelf in een contact-aanbeveling).
+const SCAN_CTA = {
+  href: '/tools/readiness-scan',
+  label: 'Doe de scan',
+};
+
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -78,8 +85,14 @@ export default function Navbar() {
             })}
           </ul>
           <Link
-            href={PRIMARY_CTA.href}
+            href={SCAN_CTA.href}
             className="inline-flex items-center justify-center rounded-md bg-[var(--color-action-600)] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[var(--color-action-700)]"
+          >
+            {SCAN_CTA.label}
+          </Link>
+          <Link
+            href={PRIMARY_CTA.href}
+            className="inline-flex items-center justify-center rounded-md border border-[var(--color-primary-900)] px-4 py-2.5 text-sm font-semibold text-[var(--color-primary-900)] transition-colors hover:bg-[var(--color-primary-900)] hover:text-white"
           >
             {PRIMARY_CTA.label}
           </Link>
@@ -119,10 +132,17 @@ export default function Navbar() {
               );
             })}
           </ul>
-          <div className="border-t border-[var(--color-neutral-200)] pt-3">
+          <div className="flex flex-col gap-3 border-t border-[var(--color-neutral-200)] pt-3">
+            <Link
+              href={SCAN_CTA.href}
+              className="block w-full rounded-md bg-[var(--color-action-600)] px-5 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-[var(--color-action-700)]"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              {SCAN_CTA.label}
+            </Link>
             <Link
               href={PRIMARY_CTA.href}
-              className="block w-full rounded-md bg-[var(--color-action-600)] px-5 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-[var(--color-action-700)]"
+              className="block w-full rounded-md border border-[var(--color-primary-900)] px-5 py-3 text-center text-sm font-semibold text-[var(--color-primary-900)] transition-colors hover:bg-[var(--color-primary-900)] hover:text-white"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               {PRIMARY_CTA.label}
