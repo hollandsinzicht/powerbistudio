@@ -174,6 +174,19 @@ export interface GeneratedPost {
   archetype: BlogArchetype
 }
 
+/**
+ * Knipt het JSON-object robuust uit een modelrespons: strip markdown-fences en
+ * neem alles tussen de eerste `{` en de laatste `}`. Dit overleeft preamble of
+ * trailing tekst die een kale JSON.parse zou laten breken.
+ */
+function extractJsonObject(raw: string): string {
+  const stripped = raw.replace(/```json?\n?/gi, '').replace(/```/g, '').trim()
+  const start = stripped.indexOf('{')
+  const end = stripped.lastIndexOf('}')
+  if (start >= 0 && end > start) return stripped.slice(start, end + 1)
+  return stripped
+}
+
 export async function generateBlogPost(params: {
   title: string
   keywords: string[]
@@ -228,7 +241,7 @@ Noem GEEN klantnamen of cases (geen GGDGHOR, Lyreco, Technische Unie, Vattenfall
 
   const response = await client.messages.create({
     model: 'claude-sonnet-4-6',
-    max_tokens: 8000,
+    max_tokens: 16000,
     system: `Je schrijft uitgebreide, informatieve bloggidsen voor PowerBIStudio.nl — de website van Jan Willem den Hollander, Power BI architect.
 
 TOON & STIJL:
@@ -316,16 +329,27 @@ Context over de site: ${SITE_CONTEXT}`,
   })
 
   const text = response.content[0]
-  if (text.type !== 'text') return getMockPost(params.title, effectiveArchetype)
-
-  try {
-    const cleaned = text.text.replace(/```json?\n?/g, '').replace(/```/g, '').trim()
-    const parsed = JSON.parse(cleaned) as Omit<GeneratedPost, 'archetype'>
-    return { ...parsed, archetype: effectiveArchetype }
-  } catch {
-    console.error('Failed to parse blog post response:', text.text)
-    return getMockPost(params.title, effectiveArchetype)
+  if (text.type !== 'text') {
+    throw new Error('Onverwacht antwoord van Claude (geen tekst) bij het schrijven van het artikel.')
   }
+
+  // Bewust GEEN stille mock bij een fout: een ontbrekende of afgekapte respons
+  // moet zichtbaar falen (de campagne-stap toont dan een fout en je kunt
+  // opnieuw genereren) in plaats van stilletjes een "automatisch gegenereerd"-
+  // stub op te leveren die op een echt-maar-kort artikel lijkt.
+  let parsed: Omit<GeneratedPost, 'archetype'>
+  try {
+    parsed = JSON.parse(extractJsonObject(text.text)) as Omit<GeneratedPost, 'archetype'>
+  } catch {
+    console.error('Failed to parse blog post response:', text.text.slice(0, 500))
+    throw new Error(
+      'Kon het gegenereerde artikel niet verwerken (ongeldige of afgekapte JSON). Probeer opnieuw.'
+    )
+  }
+  if (!parsed.content?.trim() || !parsed.title?.trim()) {
+    throw new Error('Het gegenereerde artikel mist verplichte velden (titel/content). Probeer opnieuw.')
+  }
+  return { ...parsed, archetype: effectiveArchetype }
 }
 
 // ===== INTERNE LINKS UPDATEN IN BESTAANDE POSTS =====
