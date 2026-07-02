@@ -16,12 +16,17 @@ export interface ChatSummary {
 }
 
 interface ChatPanelProps {
-    projectId: string;
+    // Basispad van de chat-API: /api/studio/projects/{id} (datamodel) of
+    // /api/studio/portfolios/{id} (project).
+    apiBase: string;
     initialChats: ChatSummary[];
     usage: { used: number; limit: number };
+    // Aanwezig bij een projectchat: modellen die je kunt taggen (in/uit de context).
+    models?: { id: string; name: string }[];
+    initialModelIds?: string[];
 }
 
-export default function ChatPanel({ projectId, initialChats, usage }: ChatPanelProps) {
+export default function ChatPanel({ apiBase, initialChats, usage, models, initialModelIds }: ChatPanelProps) {
     const [chats, setChats] = useState<ChatSummary[]>(initialChats);
     const [activeChatId, setActiveChatId] = useState<string | null>(initialChats[0]?.id ?? null);
     const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -30,7 +35,15 @@ export default function ChatPanel({ projectId, initialChats, usage }: ChatPanelP
     const [used, setUsed] = useState(usage.used);
     const [isStreaming, setIsStreaming] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [selectedModelIds, setSelectedModelIds] = useState<string[]>(
+        initialModelIds?.length ? initialModelIds : (models?.map((m) => m.id) ?? [])
+    );
     const scrollRef = useRef<HTMLDivElement>(null);
+
+    const toggleModel = (modelId: string) =>
+        setSelectedModelIds((prev) =>
+            prev.includes(modelId) ? prev.filter((x) => x !== modelId) : [...prev, modelId]
+        );
 
     useEffect(() => {
         scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight });
@@ -42,7 +55,7 @@ export default function ChatPanel({ projectId, initialChats, usage }: ChatPanelP
             setLoadingMessages(true);
             setError(null);
             try {
-                const res = await fetch(`/api/studio/projects/${projectId}/chats/${chatId}`);
+                const res = await fetch(`${apiBase}/chats/${chatId}`);
                 const data = await res.json();
                 if (!res.ok) throw new Error(data.error ?? "Chat laden mislukte.");
                 setMessages(data.messages);
@@ -53,7 +66,7 @@ export default function ChatPanel({ projectId, initialChats, usage }: ChatPanelP
                 setLoadingMessages(false);
             }
         },
-        [projectId]
+        [apiBase]
     );
 
     useEffect(() => {
@@ -62,7 +75,7 @@ export default function ChatPanel({ projectId, initialChats, usage }: ChatPanelP
     }, [activeChatId, loadMessages]);
 
     const createChat = async (): Promise<string | null> => {
-        const res = await fetch(`/api/studio/projects/${projectId}/chats`, { method: "POST" });
+        const res = await fetch(`${apiBase}/chats`, { method: "POST" });
         const data = await res.json().catch(() => ({}));
         if (!res.ok) {
             setError(data.error ?? "Nieuwe chat aanmaken mislukte.");
@@ -92,7 +105,7 @@ export default function ChatPanel({ projectId, initialChats, usage }: ChatPanelP
         ) {
             return;
         }
-        const res = await fetch(`/api/studio/projects/${projectId}/chats/${activeChatId}`, {
+        const res = await fetch(`${apiBase}/chats/${activeChatId}`, {
             method: "DELETE",
         });
         if (!res.ok) {
@@ -126,10 +139,12 @@ export default function ChatPanel({ projectId, initialChats, usage }: ChatPanelP
         ]);
 
         try {
-            const res = await fetch(`/api/studio/projects/${projectId}/chat`, {
+            const res = await fetch(`${apiBase}/chat`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ question, chatId }),
+                body: JSON.stringify(
+                    models ? { question, chatId, modelIds: selectedModelIds } : { question, chatId }
+                ),
             });
             if (!res.ok) {
                 const data = await res.json().catch(() => ({}));
@@ -254,6 +269,34 @@ export default function ChatPanel({ projectId, initialChats, usage }: ChatPanelP
 
             {error && (
                 <p className="px-4 pb-2 text-sm text-[var(--color-error)]">{error}</p>
+            )}
+
+            {models && models.length > 0 && (
+                <div className="shrink-0 border-t border-[var(--color-neutral-200)] px-3 pt-2.5">
+                    <p className="text-xs text-[var(--color-neutral-500)] mb-1.5">
+                        Modellen in de vraag {selectedModelIds.length === 0 && "(geen keuze = alle)"}
+                    </p>
+                    <div className="flex flex-wrap gap-1.5">
+                        {models.map((m) => {
+                            const on = selectedModelIds.includes(m.id);
+                            return (
+                                <button
+                                    key={m.id}
+                                    type="button"
+                                    onClick={() => toggleModel(m.id)}
+                                    className={`rounded-full border px-2.5 py-1 text-xs font-medium transition-colors ${
+                                        on
+                                            ? "border-[var(--color-primary-700)] bg-[var(--color-primary-900)] text-white"
+                                            : "border-[var(--color-neutral-200)] bg-white text-[var(--color-neutral-700)] hover:border-[var(--color-primary-700)]"
+                                    }`}
+                                    title={on ? "Klik om uit te sluiten" : "Klik om mee te nemen"}
+                                >
+                                    {m.name}
+                                </button>
+                            );
+                        })}
+                    </div>
+                </div>
             )}
 
             <form onSubmit={handleSubmit} className="shrink-0 border-t border-[var(--color-neutral-200)] p-3">

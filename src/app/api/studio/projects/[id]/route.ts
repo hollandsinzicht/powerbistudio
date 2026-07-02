@@ -17,13 +17,25 @@ export async function GET(_req: Request, { params }: Params) {
     const { data: project, error } = await supabase
         .from('studio_projects')
         .select(
-            'id, name, source_filename, source_format, file_path, schema_json, stats, analysis_findings, analysis_narrative, doc_markdown, avg_report, rls_markdown, created_at'
+            'id, name, source_filename, source_format, file_path, schema_json, stats, analysis_findings, analysis_narrative, doc_markdown, avg_report, rls_markdown, portfolio_id, created_at'
         )
         .eq('id', id)
         .eq('user_id', user.id)
         .single();
     if (error || !project) {
-        return NextResponse.json({ error: 'Project niet gevonden.' }, { status: 404 });
+        return NextResponse.json({ error: 'Datamodel niet gevonden.' }, { status: 404 });
+    }
+
+    // Projectcontext (indien dit datamodel bij een project hoort).
+    let portfolio: { id: string; name: string } | null = null;
+    if (project.portfolio_id) {
+        const { data } = await supabase
+            .from('studio_portfolios')
+            .select('id, name')
+            .eq('id', project.portfolio_id)
+            .eq('user_id', user.id)
+            .single();
+        portfolio = data ?? null;
     }
 
     const { data: chats } = await supabase
@@ -37,9 +49,48 @@ export async function GET(_req: Request, { params }: Params) {
 
     return NextResponse.json({
         project,
+        portfolio,
         chats: chats ?? [],
         usage: { used, limit: MAX_CHAT_MESSAGES_PER_MONTH },
     });
+}
+
+/**
+ * Koppel dit datamodel aan een project (portfolio) of maak het los.
+ * Body: { portfolioId: string | null }.
+ */
+export async function PATCH(req: Request, { params }: Params) {
+    const user = await getUser();
+    if (!user) {
+        return NextResponse.json({ error: 'Niet ingelogd.' }, { status: 401 });
+    }
+    const { id } = await params;
+    const { portfolioId } = await req.json().catch(() => ({}));
+    if (portfolioId !== null && typeof portfolioId !== 'string') {
+        return NextResponse.json({ error: 'portfolioId moet een id of null zijn.' }, { status: 400 });
+    }
+
+    if (typeof portfolioId === 'string') {
+        const { count } = await supabase
+            .from('studio_portfolios')
+            .select('id', { count: 'exact', head: true })
+            .eq('id', portfolioId)
+            .eq('user_id', user.id);
+        if (!count) {
+            return NextResponse.json({ error: 'Project niet gevonden.' }, { status: 404 });
+        }
+    }
+
+    const { error } = await supabase
+        .from('studio_projects')
+        .update({ portfolio_id: portfolioId })
+        .eq('id', id)
+        .eq('user_id', user.id);
+    if (error) {
+        console.error('studio project PATCH failed', error.message);
+        return NextResponse.json({ error: 'Bijwerken mislukte.' }, { status: 500 });
+    }
+    return NextResponse.json({ updated: true });
 }
 
 /**

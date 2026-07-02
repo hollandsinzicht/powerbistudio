@@ -3,7 +3,7 @@
 import { use, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Loader2, Trash2, Sparkles, FolderKanban } from "lucide-react";
+import { Loader2, Trash2, Sparkles, FolderKanban, Layers, MessageSquare } from "lucide-react";
 import Breadcrumb from "@/components/studio/Breadcrumb";
 import FindingsList from "@/components/studio/FindingsList";
 import SchemaBrowser from "@/components/studio/SchemaBrowser";
@@ -29,6 +29,7 @@ interface ProjectData {
         rls_markdown: string | null;
         created_at: string;
     };
+    portfolio: { id: string; name: string } | null;
     chats: ChatSummary[];
     usage: { used: number; limit: number };
 }
@@ -114,7 +115,7 @@ export default function StudioProject({ params }: { params: Promise<{ id: string
         );
     }
 
-    const { project, chats, usage } = data;
+    const { project, portfolio, chats, usage } = data;
     const tabLabel = tab === "report" ? "Analyse" : tab === "schema" ? "Schema" : "Oplevering";
 
     return (
@@ -124,7 +125,10 @@ export default function StudioProject({ params }: { params: Promise<{ id: string
                 <div className="mb-6">
                     <Breadcrumb
                         items={[
-                            { label: "Mijn projecten", href: "/studio", icon: FolderKanban },
+                            { label: "Studio", href: "/studio", icon: FolderKanban },
+                            ...(portfolio
+                                ? [{ label: portfolio.name, href: `/studio/portfolio/${portfolio.id}`, icon: Layers }]
+                                : []),
                             { label: project.name, onClick: () => setTab("report") },
                             { label: tabLabel },
                         ]}
@@ -146,7 +150,7 @@ export default function StudioProject({ params }: { params: Promise<{ id: string
                             className="inline-flex items-center gap-2 text-sm text-[var(--color-neutral-700)] hover:text-[var(--color-error)] transition-colors"
                         >
                             {deleting ? <Loader2 size={15} className="animate-spin" /> : <Trash2 size={15} />}
-                            Verwijder project
+                            Verwijder datamodel
                         </button>
                     </div>
                 </div>
@@ -208,10 +212,34 @@ export default function StudioProject({ params }: { params: Promise<{ id: string
                         )}
                     </div>
 
-                    {/* Rechterpaneel: chat */}
-                    <div className="rounded-2xl border border-[var(--color-neutral-200)] bg-white overflow-hidden lg:sticky lg:top-6 flex flex-col h-[70vh]">
-                        <ChatPanel projectId={project.id} initialChats={chats} usage={usage} />
-                    </div>
+                    {/* Rechterpaneel: chat (los model) of verwijzing naar projectchat */}
+                    {portfolio ? (
+                        <div className="rounded-2xl border border-[var(--color-neutral-200)] bg-white p-6 lg:sticky lg:top-6">
+                            <p className="flex items-center gap-2 text-sm font-semibold text-[var(--color-primary-900)]">
+                                <MessageSquare size={16} className="text-[var(--color-primary-700)]" />
+                                Chat op projectniveau
+                            </p>
+                            <p className="text-sm text-[var(--color-neutral-700)] mt-2">
+                                Dit datamodel hoort bij project <strong>{portfolio.name}</strong>. Chatten
+                                gebeurt op projectniveau, zodat je meerdere modellen kunt vergelijken en
+                                specifieke modellen kunt taggen.
+                            </p>
+                            <Link
+                                href={`/studio/portfolio/${portfolio.id}?model=${project.id}`}
+                                className="mt-4 inline-flex items-center gap-2 rounded-lg bg-[var(--color-action-600)] hover:bg-[var(--color-action-700)] px-4 py-2 text-sm font-medium text-white transition-colors"
+                            >
+                                <MessageSquare size={15} /> Chat in project (dit model voorgetagd)
+                            </Link>
+                        </div>
+                    ) : (
+                        <div className="rounded-2xl border border-[var(--color-neutral-200)] bg-white overflow-hidden lg:sticky lg:top-6 flex flex-col h-[70vh]">
+                            <ChatPanel
+                                apiBase={`/api/studio/projects/${project.id}`}
+                                initialChats={chats}
+                                usage={usage}
+                            />
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

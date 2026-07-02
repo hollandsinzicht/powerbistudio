@@ -8,8 +8,16 @@ import { supabaseBrowser } from "@/lib/supabase-browser";
 type Phase = "idle" | "uploading" | "analyzing";
 
 // Upload: signed URL ophalen → bestand direct naar de private bucket →
-// server parseert + analyseert → door naar de projectpagina.
-export default function UploadDropzone() {
+// server parseert + analyseert. Zonder portfolioId: los datamodel, door naar de
+// datamodel-pagina. Mét portfolioId: het model komt direct in dat project en we
+// roepen onUploaded aan (de projectpagina herlaadt dan).
+export default function UploadDropzone({
+    portfolioId,
+    onUploaded,
+}: {
+    portfolioId?: string;
+    onUploaded?: (id: string) => void;
+} = {}) {
     const router = useRouter();
     const inputRef = useRef<HTMLInputElement>(null);
     const [phase, setPhase] = useState<Phase>("idle");
@@ -42,12 +50,18 @@ export default function UploadDropzone() {
                     projectId: urlData.projectId,
                     path: urlData.path,
                     filename: file.name,
+                    ...(portfolioId ? { portfolioId } : {}),
                 }),
             });
             const created = await createRes.json();
             if (!createRes.ok) throw new Error(created.error ?? "Analyseren mislukte.");
 
-            router.push(`/studio/p/${created.id}`);
+            if (portfolioId && onUploaded) {
+                setPhase("idle");
+                onUploaded(created.id);
+            } else {
+                router.push(`/studio/p/${created.id}`);
+            }
         } catch (err) {
             setError(err instanceof Error ? err.message : "Er ging iets mis.");
             setPhase("idle");
