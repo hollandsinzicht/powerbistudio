@@ -113,6 +113,8 @@ export default function UploadDropzone() {
                         <p className="text-xs text-[var(--color-neutral-500)]">
                             .pbit · model.bim · .tmdl · .zip — alleen metadata, geen bedrijfsdata.
                             <br />
+                            PBIP? Zip de hele map <em>definition</em> (inclusief de submap <em>tables</em>) en upload die .zip.
+                            <br />
                             Een .pbix? Exporteer eerst via <em>Bestand → Exporteren → Power BI-sjabloon</em>.
                         </p>
                     </div>
