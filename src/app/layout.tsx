@@ -2,8 +2,7 @@ import type { Metadata } from 'next';
 import { Geist, DM_Sans, JetBrains_Mono } from 'next/font/google';
 import Script from 'next/script';
 import './globals.css';
-import Navbar from '@/components/layout/Navbar';
-import Footer from '@/components/layout/Footer';
+import ChromeGate from '@/components/layout/ChromeGate';
 import CookieBanner from '@/components/ui/CookieBanner';
 
 const geistSans = Geist({
@@ -203,9 +202,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${dmSans.variable} ${jetbrainsMono.variable} antialiased min-h-screen flex flex-col`}
       >
-        <Navbar />
-        <main className="flex-grow">{children}</main>
-        <Footer />
+        <ChromeGate>{children}</ChromeGate>
         <CookieBanner />
       </body>
     </html>

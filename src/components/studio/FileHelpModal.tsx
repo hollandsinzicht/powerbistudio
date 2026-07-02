@@ -27,13 +27,14 @@ const FORMATS = [
     },
     {
         icon: FolderTree,
-        ext: ".tmdl / .pbip — Power BI-project",
+        ext: ".pbip — Power BI-project (PBIP)",
         how: [
-            "Sla je rapport in Power BI Desktop op als Power BI-projectbestand (.pbip).",
-            "Zoek in de projectmap de map *.SemanticModel/definition met .tmdl-bestanden.",
-            "Zip die map (rechtsklik → comprimeren) en upload de .zip.",
+            "Sla je rapport in Power BI Desktop op als Power BI-project (.pbip).",
+            "Open in de projectmap de map *.SemanticModel/definition. Je ziet daar o.a. model.tmdl, relationships.tmdl en een submap tables.",
+            "Zip de héle map definition — inclusief de submap tables. Kies dus géén los bestand.",
+            "Upload die .zip hier.",
         ],
-        note: "Een los .tmdl-bestand uploaden kan ook, maar met de hele definition-map als zip krijg je het complete model.",
+        note: "Belangrijk: upload nooit één los .tmdl-bestand. De tabellen en measures zitten in de submap tables, de relaties in relationships.tmdl — alleen samen vormen ze het complete model. (De hele *.SemanticModel-map zippen werkt ook.)",
     },
 ] as const;
 
