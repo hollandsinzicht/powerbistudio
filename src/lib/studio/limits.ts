@@ -1,7 +1,12 @@
 // Beta-limieten voor Studio. Eén plek, zodat fase 2 (betaalde plannen) dit
 // alleen hoeft te vervangen door een plan-lookup per gebruiker.
 
-export const MAX_PROJECTS = 2;
+// Cross-model portfolio-analyse heeft meerdere modellen nodig; het oude limiet
+// van 2 projecten blokkeerde dat. Ruimer, maar nog steeds een beta-kostenrem.
+export const MAX_PROJECTS = 12;
+export const MAX_PORTFOLIOS = 3;
+export const MIN_PORTFOLIO_MODELS = 2;
+export const MAX_PORTFOLIO_MODELS = 12;
 export const MAX_CHAT_MESSAGES_PER_MONTH = 50;
 export const MAX_CHATS_PER_PROJECT = 20;
 export const MAX_UPLOAD_BYTES = 50 * 1024 * 1024; // 50 MB
