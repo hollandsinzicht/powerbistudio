@@ -2,11 +2,7 @@ import { NextResponse } from 'next/server';
 import { getUser } from '@/lib/supabase-server';
 import { supabase } from '@/lib/supabase';
 import { checkRateLimit } from '@/lib/security';
-import {
-    MAX_PORTFOLIOS,
-    MIN_PORTFOLIO_MODELS,
-    MAX_PORTFOLIO_MODELS,
-} from '@/lib/studio/limits';
+import { MAX_PORTFOLIOS, MAX_PORTFOLIO_MODELS } from '@/lib/studio/limits';
 
 /** Portfoliolijst van de ingelogde gebruiker, met aantal gekoppelde modellen. */
 export async function GET() {
@@ -62,19 +58,15 @@ export async function POST(req: Request) {
     }
 
     const { name, projectIds } = await req.json().catch(() => ({}));
-    if (!Array.isArray(projectIds) || projectIds.some((id) => typeof id !== 'string')) {
-        return NextResponse.json({ error: 'projectIds is verplicht.' }, { status: 400 });
+    // Een project mag leeg starten (je uploadt daarna modellen erin). Worden er
+    // wél modellen meegegeven, dan koppelen we die direct.
+    if (projectIds !== undefined && (!Array.isArray(projectIds) || projectIds.some((id) => typeof id !== 'string'))) {
+        return NextResponse.json({ error: 'projectIds moet een lijst zijn.' }, { status: 400 });
     }
-    const ids = [...new Set(projectIds as string[])];
-    if (ids.length < MIN_PORTFOLIO_MODELS) {
-        return NextResponse.json(
-            { error: `Een portfolio heeft minimaal ${MIN_PORTFOLIO_MODELS} modellen nodig.` },
-            { status: 400 }
-        );
-    }
+    const ids = Array.isArray(projectIds) ? [...new Set(projectIds as string[])] : [];
     if (ids.length > MAX_PORTFOLIO_MODELS) {
         return NextResponse.json(
-            { error: `Maximaal ${MAX_PORTFOLIO_MODELS} modellen per portfolio.` },
+            { error: `Maximaal ${MAX_PORTFOLIO_MODELS} modellen per project.` },
             { status: 400 }
         );
     }
@@ -91,17 +83,19 @@ export async function POST(req: Request) {
         );
     }
 
-    // Alle opgegeven projecten moeten van de gebruiker zijn.
-    const { data: owned } = await supabase
-        .from('studio_projects')
-        .select('id')
-        .eq('user_id', user.id)
-        .in('id', ids);
-    if ((owned?.length ?? 0) !== ids.length) {
-        return NextResponse.json(
-            { error: 'Een of meer modellen bestaan niet of zijn niet van jou.' },
-            { status: 400 }
-        );
+    // Alle opgegeven modellen moeten van de gebruiker zijn (indien meegegeven).
+    if (ids.length) {
+        const { data: owned } = await supabase
+            .from('studio_projects')
+            .select('id')
+            .eq('user_id', user.id)
+            .in('id', ids);
+        if ((owned?.length ?? 0) !== ids.length) {
+            return NextResponse.json(
+                { error: 'Een of meer modellen bestaan niet of zijn niet van jou.' },
+                { status: 400 }
+            );
+        }
     }
 
     const { data: portfolio, error: insertError } = await supabase
@@ -117,15 +111,17 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: 'Aanmaken mislukte.' }, { status: 500 });
     }
 
-    const { error: linkError } = await supabase
-        .from('studio_projects')
-        .update({ portfolio_id: portfolio.id })
-        .eq('user_id', user.id)
-        .in('id', ids);
-    if (linkError) {
-        console.error('studio portfolios POST: link failed', linkError.message);
-        await supabase.from('studio_portfolios').delete().eq('id', portfolio.id);
-        return NextResponse.json({ error: 'Koppelen van modellen mislukte.' }, { status: 500 });
+    if (ids.length) {
+        const { error: linkError } = await supabase
+            .from('studio_projects')
+            .update({ portfolio_id: portfolio.id })
+            .eq('user_id', user.id)
+            .in('id', ids);
+        if (linkError) {
+            console.error('studio portfolios POST: link failed', linkError.message);
+            await supabase.from('studio_portfolios').delete().eq('id', portfolio.id);
+            return NextResponse.json({ error: 'Koppelen van modellen mislukte.' }, { status: 500 });
+        }
     }
 
     return NextResponse.json({ id: portfolio.id });

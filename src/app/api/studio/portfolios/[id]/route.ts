@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { getUser } from '@/lib/supabase-server';
 import { supabase } from '@/lib/supabase';
+import { MAX_CHAT_MESSAGES_PER_MONTH } from '@/lib/studio/limits';
+import { monthlyMessageCount } from '@/lib/studio/usage';
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -29,7 +31,21 @@ export async function GET(_req: Request, { params }: Params) {
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
-    return NextResponse.json({ portfolio, members: members ?? [] });
+    const { data: chats } = await supabase
+        .from('studio_chats')
+        .select('id, title, created_at')
+        .eq('portfolio_id', id)
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+
+    const usedMessages = await monthlyMessageCount(user.id);
+
+    return NextResponse.json({
+        portfolio,
+        members: members ?? [],
+        chats: chats ?? [],
+        usage: { used: usedMessages, limit: MAX_CHAT_MESSAGES_PER_MONTH },
+    });
 }
 
 /**

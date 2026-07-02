@@ -19,18 +19,25 @@ const SOURCE_FORMATS: Record<string, string> = {
     '.zip': 'zip',
 };
 
-/** Projectenlijst van de ingelogde gebruiker. */
-export async function GET() {
+/**
+ * Datamodellen van de ingelogde gebruiker. Met `?scope=loose` alleen de losse
+ * modellen (niet in een project) — dat is wat het dashboard toont.
+ */
+export async function GET(req: Request) {
     const user = await getUser();
     if (!user) {
         return NextResponse.json({ error: 'Niet ingelogd.' }, { status: 401 });
     }
 
-    const { data, error } = await supabase
+    const looseOnly = new URL(req.url).searchParams.get('scope') === 'loose';
+    let query = supabase
         .from('studio_projects')
-        .select('id, name, source_filename, source_format, stats, created_at')
+        .select('id, name, source_filename, source_format, stats, portfolio_id, created_at')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
+    if (looseOnly) query = query.is('portfolio_id', null);
+
+    const { data, error } = await query;
     if (error) {
         console.error('studio projects GET failed', error.message);
         return NextResponse.json({ error: 'Er ging iets mis.' }, { status: 500 });
@@ -57,7 +64,7 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: 'Niet ingelogd.' }, { status: 401 });
     }
 
-    const { projectId, path, filename, name } = await req.json().catch(() => ({}));
+    const { projectId, path, filename, name, portfolioId } = await req.json().catch(() => ({}));
     if (
         typeof projectId !== 'string' ||
         typeof path !== 'string' ||
@@ -67,6 +74,20 @@ export async function POST(req: Request) {
             { error: 'projectId, path en filename zijn verplicht.' },
             { status: 400 }
         );
+    }
+    // Optioneel direct in een project (portfolio) plaatsen.
+    if (portfolioId !== undefined && portfolioId !== null && typeof portfolioId !== 'string') {
+        return NextResponse.json({ error: 'portfolioId is ongeldig.' }, { status: 400 });
+    }
+    if (typeof portfolioId === 'string') {
+        const { count: owns } = await supabase
+            .from('studio_portfolios')
+            .select('id', { count: 'exact', head: true })
+            .eq('id', portfolioId)
+            .eq('user_id', user.id);
+        if (!owns) {
+            return NextResponse.json({ error: 'Project niet gevonden.' }, { status: 404 });
+        }
     }
     // Het pad moet binnen de eigen map van de gebruiker liggen.
     if (!path.startsWith(`${user.id}/${projectId}/`) || path.includes('..')) {
@@ -141,6 +162,7 @@ export async function POST(req: Request) {
         stats,
         analysis_findings: findings,
         analysis_narrative: narrative,
+        portfolio_id: typeof portfolioId === 'string' ? portfolioId : null,
     });
     if (insertError) {
         console.error('studio projects POST: insert failed', insertError.message);
