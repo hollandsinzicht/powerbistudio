@@ -3,7 +3,8 @@
 import { use, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Loader2, Trash2, Sparkles, Layers, RefreshCw } from "lucide-react";
+import { Loader2, Trash2, Sparkles, Layers, RefreshCw, FolderKanban } from "lucide-react";
+import Breadcrumb from "@/components/studio/Breadcrumb";
 import FindingsList from "@/components/studio/FindingsList";
 import PortfolioMap from "@/components/studio/PortfolioMap";
 import DownloadButtons from "@/components/studio/DownloadButtons";
@@ -119,31 +120,33 @@ export default function StudioPortfolio({ params }: { params: Promise<{ id: stri
     const analyzed = Boolean(portfolio.analyzed_at);
     const modelNames = members.map((m) => m.name || m.source_filename);
 
+    const TAB_LABELS = { findings: "Bevindingen", map: "Model-map", narrative: "AI-analyse", models: "Modellen" } as const;
+    const crumbs = [
+        { label: "Mijn projecten", href: "/studio", icon: FolderKanban },
+        { label: portfolio.name, icon: Layers, onClick: () => setTab("findings") },
+        ...(analyzed ? [{ label: TAB_LABELS[tab] }] : []),
+    ];
+
     return (
         <div className="min-h-screen bg-[var(--color-neutral-50)] pt-8 pb-12">
             <div className="container mx-auto px-6 max-w-5xl">
                 {/* Kop */}
-                <div className="flex flex-wrap items-center gap-4 mb-6">
-                    <Link
-                        href="/studio"
-                        className="text-[var(--color-neutral-700)] hover:text-[var(--color-neutral-900)] inline-flex items-center gap-2 text-sm transition-colors"
-                    >
-                        <ArrowLeft size={16} /> Mijn projecten
-                    </Link>
-                    <div className="flex-grow min-w-0">
-                        <h1 className="text-xl font-bold text-[var(--color-primary-900)] truncate flex items-center gap-2">
-                            <Layers size={18} className="text-[var(--color-primary-700)]" />
-                            {portfolio.name}
-                        </h1>
-                        <p className="text-xs text-[var(--color-neutral-500)]">
-                            {members.length} modellen
-                            {portfolio.stats
-                                ? ` · ${portfolio.stats.sharedEntities} gedeelde entiteiten · ${portfolio.stats.findings} bevindingen`
-                                : ""}
-                        </p>
-                    </div>
-                    <button
-                        onClick={handleAnalyze}
+                <div className="mb-6">
+                    <Breadcrumb items={crumbs} />
+                    <div className="mt-3 flex flex-wrap items-center gap-4">
+                        <div className="flex-grow min-w-0">
+                            <h1 className="text-xl font-bold text-[var(--color-primary-900)] truncate">
+                                {portfolio.name}
+                            </h1>
+                            <p className="text-xs text-[var(--color-neutral-500)]">
+                                {members.length} modellen
+                                {portfolio.stats
+                                    ? ` · ${portfolio.stats.sharedEntities} gedeelde entiteiten · ${portfolio.stats.findings} bevindingen`
+                                    : ""}
+                            </p>
+                        </div>
+                        <button
+                            onClick={handleAnalyze}
                         disabled={analyzing}
                         className="inline-flex items-center gap-2 rounded-lg bg-[var(--color-primary-700)] hover:bg-[var(--color-primary-900)] px-4 py-2 text-sm font-medium text-white transition-colors disabled:opacity-60"
                     >
@@ -156,9 +159,10 @@ export default function StudioPortfolio({ params }: { params: Promise<{ id: stri
                         disabled={deleting}
                         className="inline-flex items-center gap-2 text-sm text-[var(--color-neutral-700)] hover:text-[var(--color-error)] transition-colors"
                     >
-                        {deleting ? <Loader2 size={15} className="animate-spin" /> : <Trash2 size={15} />}
-                        Verwijder
-                    </button>
+                            {deleting ? <Loader2 size={15} className="animate-spin" /> : <Trash2 size={15} />}
+                            Verwijder
+                        </button>
+                    </div>
                 </div>
 
                 {error && <p className="mb-4 text-sm text-[var(--color-error)]">{error}</p>}

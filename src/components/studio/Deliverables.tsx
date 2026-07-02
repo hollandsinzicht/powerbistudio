@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Loader2, FileText, ShieldCheck, KeyRound, RotateCcw, Sparkles } from "lucide-react";
+import { Loader2, FileText, ShieldCheck, KeyRound, RotateCcw, Sparkles, ChevronDown } from "lucide-react";
 import { renderStudioMarkdown } from "@/components/studio/markdown";
 import DownloadButtons from "@/components/studio/DownloadButtons";
 import type { AvgPuntResult, AvgStatus } from "@/lib/pbi-analysis/avg-check";
@@ -27,6 +27,10 @@ export default function Deliverables({ projectId, initialDoc, initialAvg, initia
     const [rls, setRls] = useState<string | null>(initialRls);
     const [busy, setBusy] = useState<Kind | null>(null);
     const [error, setError] = useState<string | null>(null);
+    // Opleveringen zijn inklapbaar: bestaande content start ingeklapt (ruimte
+    // besparen), maar klapt automatisch open zodra je hem net genereert.
+    const [open, setOpen] = useState<Record<Kind, boolean>>({ doc: false, avg: false, rls: false });
+    const toggle = (kind: Kind) => setOpen((o) => ({ ...o, [kind]: !o[kind] }));
 
     const generate = async (kind: Kind) => {
         setBusy(kind);
@@ -42,6 +46,7 @@ export default function Deliverables({ projectId, initialDoc, initialAvg, initia
             if (kind === "doc") setDoc(json.value as string);
             else if (kind === "avg") setAvg(json.value as AvgPuntResult[]);
             else setRls(json.value as string);
+            setOpen((o) => ({ ...o, [kind]: true }));
         } catch (e) {
             setError(e instanceof Error ? e.message : "Genereren mislukte.");
         } finally {
@@ -66,6 +71,8 @@ export default function Deliverables({ projectId, initialDoc, initialAvg, initia
                 onGenerate={() => generate("doc")}
                 projectId={projectId}
                 downloadKind="doc"
+                open={open.doc}
+                onToggle={() => toggle("doc")}
             >
                 {doc && (
                     <div
@@ -84,6 +91,8 @@ export default function Deliverables({ projectId, initialDoc, initialAvg, initia
                 onGenerate={() => generate("avg")}
                 projectId={projectId}
                 downloadKind="avg"
+                open={open.avg}
+                onToggle={() => toggle("avg")}
             >
                 {avg && <AvgTable report={avg} />}
             </DeliverableCard>
@@ -97,6 +106,8 @@ export default function Deliverables({ projectId, initialDoc, initialAvg, initia
                 onGenerate={() => generate("rls")}
                 projectId={projectId}
                 downloadKind="rls"
+                open={open.rls}
+                onToggle={() => toggle("rls")}
             >
                 {rls && (
                     <div
@@ -118,6 +129,8 @@ function DeliverableCard({
     onGenerate,
     projectId,
     downloadKind,
+    open,
+    onToggle,
     children,
 }: {
     icon: React.ReactNode;
@@ -128,17 +141,41 @@ function DeliverableCard({
     onGenerate: () => void;
     projectId: string;
     downloadKind: "doc" | "avg" | "rls";
+    open: boolean;
+    onToggle: () => void;
     children: React.ReactNode;
 }) {
     return (
         <div className="rounded-lg border border-[var(--color-neutral-200)] bg-white p-5">
             <div className="flex items-start justify-between gap-4 mb-2">
-                <div>
-                    <p className="flex items-center gap-2 text-sm font-semibold text-[var(--color-primary-900)]">
-                        {icon} {title}
-                    </p>
-                    <p className="text-xs text-[var(--color-neutral-500)] mt-1">{hint}</p>
-                </div>
+                {hasContent ? (
+                    <button
+                        onClick={onToggle}
+                        className="flex items-start gap-2 text-left min-w-0 group"
+                        aria-expanded={open}
+                    >
+                        <ChevronDown
+                            size={16}
+                            className={`mt-0.5 shrink-0 text-[var(--color-neutral-500)] transition-transform ${open ? "rotate-180" : ""}`}
+                        />
+                        <span className="min-w-0">
+                            <span className="flex items-center gap-2 text-sm font-semibold text-[var(--color-primary-900)]">
+                                {icon} {title}
+                            </span>
+                            <span className="block text-xs text-[var(--color-neutral-500)] mt-1">
+                                {hint}
+                                {!open && " · ingeklapt"}
+                            </span>
+                        </span>
+                    </button>
+                ) : (
+                    <div className="min-w-0">
+                        <p className="flex items-center gap-2 text-sm font-semibold text-[var(--color-primary-900)]">
+                            {icon} {title}
+                        </p>
+                        <p className="text-xs text-[var(--color-neutral-500)] mt-1">{hint}</p>
+                    </div>
+                )}
                 <div className="shrink-0 flex items-center gap-2">
                     {hasContent && <DownloadButtons source="project" id={projectId} kind={downloadKind} />}
                     <button
@@ -157,7 +194,9 @@ function DeliverableCard({
                     </button>
                 </div>
             </div>
-            {children && <div className="mt-4 pt-4 border-t border-[var(--color-neutral-100)]">{children}</div>}
+            {hasContent && open && children && (
+                <div className="mt-4 pt-4 border-t border-[var(--color-neutral-100)]">{children}</div>
+            )}
         </div>
     );
 }
