@@ -3,7 +3,8 @@
 import { use, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Loader2, Trash2, Sparkles } from "lucide-react";
+import { Loader2, Trash2, Sparkles, FolderKanban } from "lucide-react";
+import Breadcrumb from "@/components/studio/Breadcrumb";
 import FindingsList from "@/components/studio/FindingsList";
 import SchemaBrowser from "@/components/studio/SchemaBrowser";
 import ChatPanel, { ChatSummary } from "@/components/studio/ChatPanel";
@@ -114,36 +115,40 @@ export default function StudioProject({ params }: { params: Promise<{ id: string
     }
 
     const { project, chats, usage } = data;
+    const tabLabel = tab === "report" ? "Analyse" : tab === "schema" ? "Schema" : "Oplevering";
 
     return (
         <div className="min-h-screen bg-[var(--color-neutral-50)] pt-8 pb-12">
             <div className="container mx-auto px-6 max-w-7xl">
                 {/* Kop */}
-                <div className="flex flex-wrap items-center gap-4 mb-6">
-                    <Link
-                        href="/studio"
-                        className="text-[var(--color-neutral-700)] hover:text-[var(--color-neutral-900)] inline-flex items-center gap-2 text-sm transition-colors"
-                    >
-                        <ArrowLeft size={16} /> Mijn projecten
-                    </Link>
-                    <div className="flex-grow min-w-0">
-                        <h1 className="text-xl font-bold text-[var(--color-primary-900)] truncate">
-                            {project.name}
-                        </h1>
-                        <p className="text-xs text-[var(--color-neutral-500)]">
-                            {project.source_filename} · {project.stats.tables} tabellen ·{" "}
-                            {project.stats.columns} kolommen · {project.stats.measures} measures ·{" "}
-                            {project.stats.relationships} relaties
-                        </p>
+                <div className="mb-6">
+                    <Breadcrumb
+                        items={[
+                            { label: "Mijn projecten", href: "/studio", icon: FolderKanban },
+                            { label: project.name, onClick: () => setTab("report") },
+                            { label: tabLabel },
+                        ]}
+                    />
+                    <div className="mt-3 flex flex-wrap items-center gap-4">
+                        <div className="flex-grow min-w-0">
+                            <h1 className="text-xl font-bold text-[var(--color-primary-900)] truncate">
+                                {project.name}
+                            </h1>
+                            <p className="text-xs text-[var(--color-neutral-500)]">
+                                {project.source_filename} · {project.stats.tables} tabellen ·{" "}
+                                {project.stats.columns} kolommen · {project.stats.measures} measures ·{" "}
+                                {project.stats.relationships} relaties
+                            </p>
+                        </div>
+                        <button
+                            onClick={handleDelete}
+                            disabled={deleting}
+                            className="inline-flex items-center gap-2 text-sm text-[var(--color-neutral-700)] hover:text-[var(--color-error)] transition-colors"
+                        >
+                            {deleting ? <Loader2 size={15} className="animate-spin" /> : <Trash2 size={15} />}
+                            Verwijder project
+                        </button>
                     </div>
-                    <button
-                        onClick={handleDelete}
-                        disabled={deleting}
-                        className="inline-flex items-center gap-2 text-sm text-[var(--color-neutral-700)] hover:text-[var(--color-error)] transition-colors"
-                    >
-                        {deleting ? <Loader2 size={15} className="animate-spin" /> : <Trash2 size={15} />}
-                        Verwijder project
-                    </button>
                 </div>
 
                 {error && <p className="mb-4 text-sm text-[var(--color-error)]">{error}</p>}
