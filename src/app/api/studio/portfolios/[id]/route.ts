@@ -16,7 +16,7 @@ export async function GET(_req: Request, { params }: Params) {
 
     const { data: portfolio, error } = await supabase
         .from('studio_portfolios')
-        .select('id, name, analysis_findings, analysis_narrative, map_json, stats, analyzed_at, created_at')
+        .select('id, name, analysis_findings, analysis_narrative, map_json, stats, analyzed_at, doc_markdown, avg_report, rls_markdown, created_at')
         .eq('id', id)
         .eq('user_id', user.id)
         .single();

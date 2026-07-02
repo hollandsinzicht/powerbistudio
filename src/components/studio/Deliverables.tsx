@@ -9,7 +9,10 @@ import type { AvgPuntResult, AvgStatus } from "@/lib/pbi-analysis/avg-check";
 type Kind = "doc" | "avg" | "rls";
 
 interface Props {
-    projectId: string;
+    // Bron van de oplevering: een los datamodel of een heel project.
+    source: "project" | "portfolio";
+    id: string;
+    apiBase: string; // /api/studio/projects/{id} of /api/studio/portfolios/{id}
     initialDoc: string | null;
     initialAvg: AvgPuntResult[] | null;
     initialRls: string | null;
@@ -21,7 +24,7 @@ const STATUS_STYLE: Record<AvgStatus, { label: string; cls: string }> = {
     "niet-detecteerbaar": { label: "handmatig", cls: "bg-gray-100 text-gray-600" },
 };
 
-export default function Deliverables({ projectId, initialDoc, initialAvg, initialRls }: Props) {
+export default function Deliverables({ source, id, apiBase, initialDoc, initialAvg, initialRls }: Props) {
     const [doc, setDoc] = useState<string | null>(initialDoc);
     const [avg, setAvg] = useState<AvgPuntResult[] | null>(initialAvg);
     const [rls, setRls] = useState<string | null>(initialRls);
@@ -36,7 +39,7 @@ export default function Deliverables({ projectId, initialDoc, initialAvg, initia
         setBusy(kind);
         setError(null);
         try {
-            const res = await fetch(`/api/studio/projects/${projectId}/deliverables`, {
+            const res = await fetch(`${apiBase}/deliverables`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ kind }),
@@ -69,7 +72,8 @@ export default function Deliverables({ projectId, initialDoc, initialAvg, initia
                 hasContent={!!doc}
                 busy={busy === "doc"}
                 onGenerate={() => generate("doc")}
-                projectId={projectId}
+                cardSource={source}
+                downloadId={id}
                 downloadKind="doc"
                 open={open.doc}
                 onToggle={() => toggle("doc")}
@@ -89,7 +93,8 @@ export default function Deliverables({ projectId, initialDoc, initialAvg, initia
                 hasContent={!!avg}
                 busy={busy === "avg"}
                 onGenerate={() => generate("avg")}
-                projectId={projectId}
+                cardSource={source}
+                downloadId={id}
                 downloadKind="avg"
                 open={open.avg}
                 onToggle={() => toggle("avg")}
@@ -104,7 +109,8 @@ export default function Deliverables({ projectId, initialDoc, initialAvg, initia
                 hasContent={!!rls}
                 busy={busy === "rls"}
                 onGenerate={() => generate("rls")}
-                projectId={projectId}
+                cardSource={source}
+                downloadId={id}
                 downloadKind="rls"
                 open={open.rls}
                 onToggle={() => toggle("rls")}
@@ -127,7 +133,8 @@ function DeliverableCard({
     hasContent,
     busy,
     onGenerate,
-    projectId,
+    cardSource,
+    downloadId,
     downloadKind,
     open,
     onToggle,
@@ -139,7 +146,8 @@ function DeliverableCard({
     hasContent: boolean;
     busy: boolean;
     onGenerate: () => void;
-    projectId: string;
+    cardSource: "project" | "portfolio";
+    downloadId: string;
     downloadKind: "doc" | "avg" | "rls";
     open: boolean;
     onToggle: () => void;
@@ -177,7 +185,7 @@ function DeliverableCard({
                     </div>
                 )}
                 <div className="shrink-0 flex items-center gap-2">
-                    {hasContent && <DownloadButtons source="project" id={projectId} kind={downloadKind} />}
+                    {hasContent && <DownloadButtons source={cardSource} id={downloadId} kind={downloadKind} />}
                     <button
                         onClick={onGenerate}
                         disabled={busy}
