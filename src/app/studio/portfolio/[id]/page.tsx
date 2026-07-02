@@ -3,13 +3,14 @@
 import { use, useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Loader2, Trash2, Sparkles, Layers, RefreshCw, FolderKanban, Plus, Unlink, FolderOpen } from "lucide-react";
+import { Loader2, Trash2, Sparkles, Layers, RefreshCw, FolderKanban, Plus } from "lucide-react";
 import Breadcrumb from "@/components/studio/Breadcrumb";
 import FindingsList from "@/components/studio/FindingsList";
 import PortfolioMap from "@/components/studio/PortfolioMap";
 import DownloadButtons from "@/components/studio/DownloadButtons";
 import UploadDropzone from "@/components/studio/UploadDropzone";
 import ChatPanel, { ChatSummary } from "@/components/studio/ChatPanel";
+import ProjectModelPanel from "@/components/studio/ProjectModelPanel";
 import Deliverables from "@/components/studio/Deliverables";
 import { renderStudioMarkdown } from "@/components/studio/markdown";
 import type { CrossModelFinding, PortfolioMap as PortfolioMapType, CrossModelStats } from "@/lib/pbi-analysis/cross-model";
@@ -189,23 +190,14 @@ export default function StudioProjectPage({ params }: { params: Promise<{ id: st
         <div className="space-y-4">
             <div className="space-y-3">
                 {members.map((m) => (
-                    <div key={m.id} className="flex items-center gap-3 rounded-xl border border-[var(--color-neutral-200)] bg-white p-4">
-                        <FolderOpen size={18} className="text-[var(--color-primary-700)] shrink-0" />
-                        <Link href={`/studio/p/${m.id}`} className="flex-grow min-w-0 group">
-                            <p className="text-sm font-semibold text-[var(--color-neutral-900)] group-hover:text-[var(--color-primary-700)] transition-colors truncate">{m.name}</p>
-                            <p className="text-xs text-[var(--color-neutral-500)]">
-                                {m.stats.tables} tabellen · {m.stats.measures} measures · {m.stats.relationships} relaties
-                            </p>
-                        </Link>
-                        <button
-                            onClick={() => setMembership(m.id, null)}
-                            disabled={busy}
-                            className="shrink-0 inline-flex items-center gap-1.5 text-xs text-[var(--color-neutral-500)] hover:text-[var(--color-error)] transition-colors"
-                            title="Uit project halen (blijft als los datamodel bestaan)"
-                        >
-                            <Unlink size={14} /> Losmaken
-                        </button>
-                    </div>
+                    <ProjectModelPanel
+                        key={m.id}
+                        modelId={m.id}
+                        name={m.name}
+                        stats={m.stats}
+                        onDetach={() => setMembership(m.id, null)}
+                        busy={busy}
+                    />
                 ))}
             </div>
 
