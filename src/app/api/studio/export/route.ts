@@ -50,11 +50,24 @@ async function resolveContent(
     if (source === 'portfolio') {
         const { data: pf } = await supabase
             .from('studio_portfolios')
-            .select('name, analysis_findings, analysis_narrative, map_json, analyzed_at')
+            .select('name, analysis_findings, analysis_narrative, map_json, analyzed_at, doc_markdown, avg_report, rls_markdown')
             .eq('id', id)
             .eq('user_id', userId)
             .single();
-        if (!pf) return { error: 'Portfolio niet gevonden.', status: 404 };
+        if (!pf) return { error: 'Project niet gevonden.', status: 404 };
+
+        // Projectbrede opleveringen (doc/rls/avg) uit de portfolio-kolommen.
+        if (kind === 'doc' || kind === 'rls' || kind === 'avg') {
+            let markdown: string | null = null;
+            if (kind === 'doc') markdown = pf.doc_markdown;
+            else if (kind === 'rls') markdown = pf.rls_markdown;
+            else markdown = pf.avg_report ? avgReportToMarkdown(pf.avg_report) : null;
+            if (!markdown) return { error: 'Dit onderdeel is nog niet gegenereerd.', status: 400 };
+            const label = kind === 'doc' ? 'Projectdocumentatie' : kind === 'rls' ? 'RLS-testcases' : 'AVG-check';
+            return { title: `${label} — ${pf.name}`, markdown };
+        }
+
+        // Anders: de cross-model-audit.
         if (!pf.analyzed_at) return { error: 'Draai eerst de analyse.', status: 400 };
         const markdown = portfolioReportMarkdown(
             pf.name,

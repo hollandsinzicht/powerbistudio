@@ -234,7 +234,7 @@ export default function ChatPanel({ apiBase, initialChats, usage, models, initia
                 ) : messages.length === 0 ? (
                     <div className="text-sm text-[var(--color-neutral-500)] space-y-2 pt-8 text-center">
                         <p className="font-medium text-[var(--color-neutral-700)]">
-                            Stel een vraag over dit model
+                            {models ? "Stel een vraag over dit project" : "Stel een vraag over dit model"}
                         </p>
                         <p className="text-xs max-w-sm mx-auto">
                             Bijvoorbeeld: &ldquo;Waarom is de relatie tussen de feitentabel en de

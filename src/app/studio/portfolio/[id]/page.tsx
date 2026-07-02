@@ -10,8 +10,10 @@ import PortfolioMap from "@/components/studio/PortfolioMap";
 import DownloadButtons from "@/components/studio/DownloadButtons";
 import UploadDropzone from "@/components/studio/UploadDropzone";
 import ChatPanel, { ChatSummary } from "@/components/studio/ChatPanel";
+import Deliverables from "@/components/studio/Deliverables";
 import { renderStudioMarkdown } from "@/components/studio/markdown";
 import type { CrossModelFinding, PortfolioMap as PortfolioMapType, CrossModelStats } from "@/lib/pbi-analysis/cross-model";
+import type { AvgPuntResult } from "@/lib/pbi-analysis/avg-check";
 import type { PbiModelStats } from "@/lib/pbi-parser/types";
 
 interface Member {
@@ -36,6 +38,9 @@ interface PortfolioData {
         map_json: PortfolioMapType | null;
         stats: CrossModelStats | null;
         analyzed_at: string | null;
+        doc_markdown: string | null;
+        avg_report: AvgPuntResult[] | null;
+        rls_markdown: string | null;
         created_at: string;
     };
     members: Member[];
@@ -43,7 +48,7 @@ interface PortfolioData {
     usage: { used: number; limit: number };
 }
 
-type Tab = "findings" | "map" | "narrative" | "models";
+type Tab = "findings" | "map" | "narrative" | "oplevering" | "models";
 
 export default function StudioProjectPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
@@ -156,7 +161,7 @@ export default function StudioProjectPage({ params }: { params: Promise<{ id: st
     const analyzed = Boolean(portfolio.analyzed_at);
     const canAnalyze = members.length >= 2;
     const modelNames = members.map((m) => m.name || m.source_filename);
-    const TAB_LABELS: Record<Tab, string> = { findings: "Bevindingen", map: "Model-map", narrative: "AI-analyse", models: "Modellen" };
+    const TAB_LABELS: Record<Tab, string> = { findings: "Bevindingen", map: "Model-map", narrative: "AI-analyse", oplevering: "Oplevering", models: "Modellen" };
 
     const notAnalyzed = (
         <div className="rounded-2xl border border-[var(--color-neutral-200)] bg-white p-8 text-center">
@@ -330,6 +335,16 @@ export default function StudioProjectPage({ params }: { params: Promise<{ id: st
                                     <div className="text-sm text-[var(--color-neutral-700)] leading-relaxed" dangerouslySetInnerHTML={{ __html: renderStudioMarkdown(portfolio.analysis_narrative) }} />
                                 </div>
                             ) : notAnalyzed)}
+                            {tab === "oplevering" && (
+                                <Deliverables
+                                    source="portfolio"
+                                    id={id}
+                                    apiBase={`/api/studio/portfolios/${id}`}
+                                    initialDoc={portfolio.doc_markdown}
+                                    initialAvg={portfolio.avg_report}
+                                    initialRls={portfolio.rls_markdown}
+                                />
+                            )}
                             {tab === "models" && modelsTab}
                         </div>
 

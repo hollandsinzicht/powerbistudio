@@ -42,19 +42,46 @@ export default function StudioProject({ params }: { params: Promise<{ id: string
     const [deleting, setDeleting] = useState(false);
     const [deleteProof, setDeleteProof] = useState<DeleteVerification | null>(null);
     const [tab, setTab] = useState<"report" | "schema" | "oplevering">("report");
+    // Als dit datamodel bij een project hoort, laden we de projectchat (zelfde
+    // ervaring als op de projectpagina, met dit model voorgetagd).
+    const [pfChat, setPfChat] = useState<{
+        chats: ChatSummary[];
+        usage: { used: number; limit: number };
+        models: { id: string; name: string }[];
+    } | null>(null);
 
     useEffect(() => {
         (async () => {
             try {
                 const res = await fetch(`/api/studio/projects/${id}`);
                 const json = await res.json();
-                if (!res.ok) throw new Error(json.error ?? "Project laden mislukte.");
+                if (!res.ok) throw new Error(json.error ?? "Datamodel laden mislukte.");
                 setData(json);
             } catch (err) {
-                setError(err instanceof Error ? err.message : "Project laden mislukte.");
+                setError(err instanceof Error ? err.message : "Datamodel laden mislukte.");
             }
         })();
     }, [id]);
+
+    const portfolioId = data?.portfolio?.id;
+    useEffect(() => {
+        if (!portfolioId) return;
+        (async () => {
+            try {
+                const res = await fetch(`/api/studio/portfolios/${portfolioId}`);
+                const json = await res.json();
+                if (res.ok) {
+                    setPfChat({
+                        chats: json.chats ?? [],
+                        usage: json.usage,
+                        models: (json.members ?? []).map((m: { id: string; name: string }) => ({ id: m.id, name: m.name })),
+                    });
+                }
+            } catch {
+                /* fallback: geen chat tonen */
+            }
+        })();
+    }, [portfolioId]);
 
     const handleDelete = async () => {
         if (!data) return;
@@ -204,7 +231,9 @@ export default function StudioProject({ params }: { params: Promise<{ id: string
                         {tab === "schema" && <SchemaBrowser model={project.schema_json} />}
                         {tab === "oplevering" && (
                             <Deliverables
-                                projectId={project.id}
+                                source="project"
+                                id={project.id}
+                                apiBase={`/api/studio/projects/${project.id}`}
                                 initialDoc={project.doc_markdown}
                                 initialAvg={project.avg_report}
                                 initialRls={project.rls_markdown}
@@ -212,24 +241,30 @@ export default function StudioProject({ params }: { params: Promise<{ id: string
                         )}
                     </div>
 
-                    {/* Rechterpaneel: chat (los model) of verwijzing naar projectchat */}
+                    {/* Rechterpaneel: chat. In een project exact dezelfde projectchat
+                        (dit model voorgetagd); los model zijn eigen chat. */}
                     {portfolio ? (
-                        <div className="rounded-2xl border border-[var(--color-neutral-200)] bg-white p-6 lg:sticky lg:top-6">
-                            <p className="flex items-center gap-2 text-sm font-semibold text-[var(--color-primary-900)]">
-                                <MessageSquare size={16} className="text-[var(--color-primary-700)]" />
-                                Chat op projectniveau
-                            </p>
-                            <p className="text-sm text-[var(--color-neutral-700)] mt-2">
-                                Dit datamodel hoort bij project <strong>{portfolio.name}</strong>. Chatten
-                                gebeurt op projectniveau, zodat je meerdere modellen kunt vergelijken en
-                                specifieke modellen kunt taggen.
-                            </p>
-                            <Link
-                                href={`/studio/portfolio/${portfolio.id}?model=${project.id}`}
-                                className="mt-4 inline-flex items-center gap-2 rounded-lg bg-[var(--color-action-600)] hover:bg-[var(--color-action-700)] px-4 py-2 text-sm font-medium text-white transition-colors"
-                            >
-                                <MessageSquare size={15} /> Chat in project (dit model voorgetagd)
-                            </Link>
+                        <div className="rounded-2xl border border-[var(--color-neutral-200)] bg-white overflow-hidden lg:sticky lg:top-6 flex flex-col h-[70vh]">
+                            <div className="shrink-0 flex items-center gap-2 border-b border-[var(--color-neutral-200)] px-3 py-2 text-xs text-[var(--color-neutral-500)]">
+                                <MessageSquare size={13} className="text-[var(--color-primary-700)]" />
+                                Projectchat ·{" "}
+                                <Link href={`/studio/portfolio/${portfolio.id}`} className="underline underline-offset-2 hover:text-[var(--color-neutral-900)]">
+                                    {portfolio.name}
+                                </Link>
+                            </div>
+                            {pfChat ? (
+                                <ChatPanel
+                                    apiBase={`/api/studio/portfolios/${portfolio.id}`}
+                                    initialChats={pfChat.chats}
+                                    usage={pfChat.usage}
+                                    models={pfChat.models}
+                                    initialModelIds={[project.id]}
+                                />
+                            ) : (
+                                <div className="flex-grow flex justify-center items-center">
+                                    <Loader2 size={20} className="animate-spin text-[var(--color-neutral-500)]" />
+                                </div>
+                            )}
                         </div>
                     ) : (
                         <div className="rounded-2xl border border-[var(--color-neutral-200)] bg-white overflow-hidden lg:sticky lg:top-6 flex flex-col h-[70vh]">
