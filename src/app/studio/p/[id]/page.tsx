@@ -83,7 +83,7 @@ export default function StudioProject({ params }: { params: Promise<{ id: string
 
     if (deleteProof) {
         return (
-            <div className="min-h-screen bg-[var(--color-neutral-50)] pt-32 pb-24">
+            <div className="min-h-screen bg-[var(--color-neutral-50)] pt-8 pb-16">
                 <DeleteProofModal
                     verification={deleteProof}
                     onClose={() => router.push("/studio")}
@@ -94,7 +94,7 @@ export default function StudioProject({ params }: { params: Promise<{ id: string
 
     if (error && !data) {
         return (
-            <div className="min-h-screen bg-[var(--color-neutral-50)] pt-32 pb-24">
+            <div className="min-h-screen bg-[var(--color-neutral-50)] pt-8 pb-16">
                 <div className="container mx-auto px-6 max-w-2xl text-center">
                     <p className="text-sm text-[var(--color-error)] mb-4">{error}</p>
                     <Link href="/studio" className="text-sm underline underline-offset-2">
@@ -107,7 +107,7 @@ export default function StudioProject({ params }: { params: Promise<{ id: string
 
     if (!data) {
         return (
-            <div className="min-h-screen bg-[var(--color-neutral-50)] pt-32 pb-24 flex justify-center">
+            <div className="min-h-screen bg-[var(--color-neutral-50)] pt-8 pb-16 flex justify-center">
                 <Loader2 size={28} className="animate-spin text-[var(--color-neutral-500)] mt-16" />
             </div>
         );
@@ -116,7 +116,7 @@ export default function StudioProject({ params }: { params: Promise<{ id: string
     const { project, chats, usage } = data;
 
     return (
-        <div className="min-h-screen bg-[var(--color-neutral-50)] pt-28 pb-12">
+        <div className="min-h-screen bg-[var(--color-neutral-50)] pt-8 pb-12">
             <div className="container mx-auto px-6 max-w-7xl">
                 {/* Kop */}
                 <div className="flex flex-wrap items-center gap-4 mb-6">
@@ -204,7 +204,7 @@ export default function StudioProject({ params }: { params: Promise<{ id: string
                     </div>
 
                     {/* Rechterpaneel: chat */}
-                    <div className="rounded-2xl border border-[var(--color-neutral-200)] bg-white overflow-hidden lg:sticky lg:top-24 flex flex-col h-[70vh]">
+                    <div className="rounded-2xl border border-[var(--color-neutral-200)] bg-white overflow-hidden lg:sticky lg:top-6 flex flex-col h-[70vh]">
                         <ChatPanel projectId={project.id} initialChats={chats} usage={usage} />
                     </div>
                 </div>

@@ -41,14 +41,14 @@ export default async function StudioPage() {
 
     if (user) {
         return (
-            <div className="min-h-screen bg-[var(--color-neutral-50)] pt-32 pb-24">
-                <StudioDashboard email={user.email ?? ''} />
+            <div className="min-h-screen bg-[var(--color-neutral-50)] pt-8 pb-16">
+                <StudioDashboard />
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-[var(--color-neutral-50)] pt-32 pb-24">
+        <div className="min-h-screen bg-[var(--color-neutral-50)] pt-8 pb-16">
             <div className="container mx-auto px-6 max-w-5xl">
                 {/* Hero */}
                 <div className="text-center max-w-3xl mx-auto mb-16">

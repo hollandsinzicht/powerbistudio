@@ -3,8 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Trash2, FolderOpen, Loader2, LogOut, Info, MessageCircle, FileUp, Search, MessageSquareCode, ShieldCheck, Layers } from "lucide-react";
-import { supabaseBrowser } from "@/lib/supabase-browser";
+import { Trash2, FolderOpen, Loader2, Info, MessageCircle, FileUp, Search, MessageSquareCode, ShieldCheck, Layers } from "lucide-react";
 import UploadDropzone from "./UploadDropzone";
 import FileHelpModal from "./FileHelpModal";
 import SecurityInfoModal from "./SecurityInfoModal";
@@ -39,7 +38,7 @@ interface PortfolioSummary {
     created_at: string;
 }
 
-export default function StudioDashboard({ email }: { email: string }) {
+export default function StudioDashboard() {
     const router = useRouter();
     const [projects, setProjects] = useState<ProjectSummary[] | null>(null);
     const [portfolios, setPortfolios] = useState<PortfolioSummary[]>([]);
@@ -100,11 +99,6 @@ export default function StudioDashboard({ email }: { email: string }) {
         }
     };
 
-    const handleLogout = async () => {
-        await supabaseBrowser().auth.signOut();
-        router.refresh();
-    };
-
     const toggleSelect = (id: string) => {
         setSelected((prev) => {
             const next = new Set(prev);
@@ -140,22 +134,13 @@ export default function StudioDashboard({ email }: { email: string }) {
 
     return (
         <div className="container mx-auto px-6 max-w-4xl">
-            <div className="flex items-center justify-between mb-8">
-                <div>
-                    <h1 className="text-3xl font-bold text-[var(--color-primary-900)]">
-                        Mijn projecten
-                    </h1>
-                    <p className="text-sm text-[var(--color-neutral-500)] mt-1">
-                        Ingelogd als {email} — je projecten, analyses en chats blijven bewaard,
-                        ook nadat je uitlogt.
-                    </p>
-                </div>
-                <button
-                    onClick={handleLogout}
-                    className="inline-flex items-center gap-2 text-sm text-[var(--color-neutral-700)] hover:text-[var(--color-neutral-900)] transition-colors"
-                >
-                    <LogOut size={16} /> Uitloggen
-                </button>
+            <div className="mb-8">
+                <h1 className="text-3xl font-bold text-[var(--color-primary-900)]">
+                    Mijn projecten
+                </h1>
+                <p className="text-sm text-[var(--color-neutral-500)] mt-1">
+                    Je projecten, analyses en chats blijven bewaard, ook nadat je uitlogt.
+                </p>
             </div>
 
             {/* Korte uitleg bovenaan — ook voor terugkerende gebruikers compact genoeg */}

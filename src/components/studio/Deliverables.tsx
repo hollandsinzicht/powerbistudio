@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Loader2, FileText, ShieldCheck, KeyRound, RotateCcw, Sparkles } from "lucide-react";
 import { renderStudioMarkdown } from "@/components/studio/markdown";
+import DownloadButtons from "@/components/studio/DownloadButtons";
 import type { AvgPuntResult, AvgStatus } from "@/lib/pbi-analysis/avg-check";
 
 type Kind = "doc" | "avg" | "rls";
@@ -63,6 +64,8 @@ export default function Deliverables({ projectId, initialDoc, initialAvg, initia
                 hasContent={!!doc}
                 busy={busy === "doc"}
                 onGenerate={() => generate("doc")}
+                projectId={projectId}
+                downloadKind="doc"
             >
                 {doc && (
                     <div
@@ -79,6 +82,8 @@ export default function Deliverables({ projectId, initialDoc, initialAvg, initia
                 hasContent={!!avg}
                 busy={busy === "avg"}
                 onGenerate={() => generate("avg")}
+                projectId={projectId}
+                downloadKind="avg"
             >
                 {avg && <AvgTable report={avg} />}
             </DeliverableCard>
@@ -90,6 +95,8 @@ export default function Deliverables({ projectId, initialDoc, initialAvg, initia
                 hasContent={!!rls}
                 busy={busy === "rls"}
                 onGenerate={() => generate("rls")}
+                projectId={projectId}
+                downloadKind="rls"
             >
                 {rls && (
                     <div
@@ -109,6 +116,8 @@ function DeliverableCard({
     hasContent,
     busy,
     onGenerate,
+    projectId,
+    downloadKind,
     children,
 }: {
     icon: React.ReactNode;
@@ -117,6 +126,8 @@ function DeliverableCard({
     hasContent: boolean;
     busy: boolean;
     onGenerate: () => void;
+    projectId: string;
+    downloadKind: "doc" | "avg" | "rls";
     children: React.ReactNode;
 }) {
     return (
@@ -128,20 +139,23 @@ function DeliverableCard({
                     </p>
                     <p className="text-xs text-[var(--color-neutral-500)] mt-1">{hint}</p>
                 </div>
-                <button
-                    onClick={onGenerate}
-                    disabled={busy}
-                    className="shrink-0 inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[var(--color-primary-900)] text-white text-sm font-medium disabled:opacity-60"
-                >
-                    {busy ? (
-                        <Loader2 size={14} className="animate-spin" />
-                    ) : hasContent ? (
-                        <RotateCcw size={14} />
-                    ) : (
-                        <Sparkles size={14} />
-                    )}
-                    {busy ? "Bezig…" : hasContent ? "Opnieuw" : "Genereer"}
-                </button>
+                <div className="shrink-0 flex items-center gap-2">
+                    {hasContent && <DownloadButtons source="project" id={projectId} kind={downloadKind} />}
+                    <button
+                        onClick={onGenerate}
+                        disabled={busy}
+                        className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[var(--color-primary-900)] text-white text-sm font-medium disabled:opacity-60"
+                    >
+                        {busy ? (
+                            <Loader2 size={14} className="animate-spin" />
+                        ) : hasContent ? (
+                            <RotateCcw size={14} />
+                        ) : (
+                            <Sparkles size={14} />
+                        )}
+                        {busy ? "Bezig…" : hasContent ? "Opnieuw" : "Genereer"}
+                    </button>
+                </div>
             </div>
             {children && <div className="mt-4 pt-4 border-t border-[var(--color-neutral-100)]">{children}</div>}
         </div>

@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft, Loader2, Trash2, Sparkles, Layers, RefreshCw } from "lucide-react";
 import FindingsList from "@/components/studio/FindingsList";
 import PortfolioMap from "@/components/studio/PortfolioMap";
+import DownloadButtons from "@/components/studio/DownloadButtons";
 import { renderStudioMarkdown } from "@/components/studio/markdown";
 import type { CrossModelFinding, PortfolioMap as PortfolioMapType, CrossModelStats } from "@/lib/pbi-analysis/cross-model";
 import type { PbiModelStats } from "@/lib/pbi-parser/types";
@@ -95,7 +96,7 @@ export default function StudioPortfolio({ params }: { params: Promise<{ id: stri
 
     if (error && !data) {
         return (
-            <div className="min-h-screen bg-[var(--color-neutral-50)] pt-32 pb-24">
+            <div className="min-h-screen bg-[var(--color-neutral-50)] pt-8 pb-16">
                 <div className="container mx-auto px-6 max-w-2xl text-center">
                     <p className="text-sm text-[var(--color-error)] mb-4">{error}</p>
                     <Link href="/studio" className="text-sm underline underline-offset-2">
@@ -108,7 +109,7 @@ export default function StudioPortfolio({ params }: { params: Promise<{ id: stri
 
     if (!data) {
         return (
-            <div className="min-h-screen bg-[var(--color-neutral-50)] pt-32 pb-24 flex justify-center">
+            <div className="min-h-screen bg-[var(--color-neutral-50)] pt-8 pb-16 flex justify-center">
                 <Loader2 size={28} className="animate-spin text-[var(--color-neutral-500)] mt-16" />
             </div>
         );
@@ -119,7 +120,7 @@ export default function StudioPortfolio({ params }: { params: Promise<{ id: stri
     const modelNames = members.map((m) => m.name || m.source_filename);
 
     return (
-        <div className="min-h-screen bg-[var(--color-neutral-50)] pt-28 pb-12">
+        <div className="min-h-screen bg-[var(--color-neutral-50)] pt-8 pb-12">
             <div className="container mx-auto px-6 max-w-5xl">
                 {/* Kop */}
                 <div className="flex flex-wrap items-center gap-4 mb-6">
@@ -149,6 +150,7 @@ export default function StudioPortfolio({ params }: { params: Promise<{ id: stri
                         {analyzing ? <Loader2 size={15} className="animate-spin" /> : <RefreshCw size={15} />}
                         {analyzed ? "Opnieuw analyseren" : "Analyseer portfolio"}
                     </button>
+                    {analyzed && <DownloadButtons source="portfolio" id={id} kind="portfolio" />}
                     <button
                         onClick={handleDelete}
                         disabled={deleting}

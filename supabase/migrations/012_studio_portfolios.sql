@@ -40,7 +40,10 @@ alter table studio_projects
 create index if not exists studio_projects_portfolio_idx on studio_projects (portfolio_id);
 
 -- ── Usage: portfolio-analyse als kostenpost ────────────────────────────────
--- studio_usage.kind kende alleen 'analysis' en 'chat'; voeg 'portfolio' toe.
+-- Voeg 'portfolio' toe aan de bestaande soorten. LET OP: migratie 010 breidde
+-- de constraint al uit met 'deliverable' — die moet behouden blijven, dus we
+-- hernoemen alle vier de toegestane soorten opnieuw.
 alter table studio_usage drop constraint if exists studio_usage_kind_check;
 alter table studio_usage
-  add constraint studio_usage_kind_check check (kind in ('analysis','chat','portfolio'));
+  add constraint studio_usage_kind_check
+  check (kind in ('analysis','chat','deliverable','portfolio'));
