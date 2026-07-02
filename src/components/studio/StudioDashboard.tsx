@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Trash2, FolderOpen, Loader2, LogOut, Info, MessageCircle, FileUp, Search, MessageSquareCode, ShieldCheck } from "lucide-react";
+import { Trash2, FolderOpen, Loader2, LogOut, Info, MessageCircle, FileUp, Search, MessageSquareCode, ShieldCheck, Layers } from "lucide-react";
 import { supabaseBrowser } from "@/lib/supabase-browser";
 import UploadDropzone from "./UploadDropzone";
 import FileHelpModal from "./FileHelpModal";
@@ -31,23 +31,40 @@ interface ProjectSummary {
     created_at: string;
 }
 
+interface PortfolioSummary {
+    id: string;
+    name: string;
+    modelCount: number;
+    analyzed_at: string | null;
+    created_at: string;
+}
+
 export default function StudioDashboard({ email }: { email: string }) {
     const router = useRouter();
     const [projects, setProjects] = useState<ProjectSummary[] | null>(null);
+    const [portfolios, setPortfolios] = useState<PortfolioSummary[]>([]);
     const [maxProjects, setMaxProjects] = useState(2);
     const [deleting, setDeleting] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [showFileHelp, setShowFileHelp] = useState(false);
     const [showSecurity, setShowSecurity] = useState(false);
     const [deleteProof, setDeleteProof] = useState<DeleteVerification | null>(null);
+    const [selected, setSelected] = useState<Set<string>>(new Set());
+    const [portfolioName, setPortfolioName] = useState("");
+    const [creating, setCreating] = useState(false);
 
     const load = useCallback(async () => {
         try {
-            const res = await fetch("/api/studio/projects");
-            const data = await res.json();
-            if (!res.ok) throw new Error(data.error ?? "Laden mislukte.");
+            const [pRes, plRes] = await Promise.all([
+                fetch("/api/studio/projects"),
+                fetch("/api/studio/portfolios"),
+            ]);
+            const data = await pRes.json();
+            if (!pRes.ok) throw new Error(data.error ?? "Laden mislukte.");
             setProjects(data.projects);
             setMaxProjects(data.maxProjects);
+            const plData = await plRes.json().catch(() => ({}));
+            if (plRes.ok) setPortfolios(plData.portfolios ?? []);
         } catch (err) {
             setError(err instanceof Error ? err.message : "Laden mislukte.");
             setProjects([]);
@@ -86,6 +103,37 @@ export default function StudioDashboard({ email }: { email: string }) {
     const handleLogout = async () => {
         await supabaseBrowser().auth.signOut();
         router.refresh();
+    };
+
+    const toggleSelect = (id: string) => {
+        setSelected((prev) => {
+            const next = new Set(prev);
+            if (next.has(id)) next.delete(id);
+            else next.add(id);
+            return next;
+        });
+    };
+
+    const handleCreatePortfolio = async () => {
+        if (selected.size < 2) return;
+        setCreating(true);
+        setError(null);
+        try {
+            const res = await fetch("/api/studio/portfolios", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    name: portfolioName.trim() || "Portfolio",
+                    projectIds: [...selected],
+                }),
+            });
+            const json = await res.json().catch(() => ({}));
+            if (!res.ok) throw new Error(json.error ?? "Portfolio aanmaken mislukte.");
+            router.push(`/studio/portfolio/${json.id}`);
+        } catch (err) {
+            setError(err instanceof Error ? err.message : "Portfolio aanmaken mislukte.");
+            setCreating(false);
+        }
     };
 
     const atLimit = projects !== null && projects.length >= maxProjects;
@@ -130,38 +178,106 @@ export default function StudioDashboard({ email }: { email: string }) {
                 </div>
             ) : (
                 <div className="space-y-6">
-                    {projects.length > 0 && (
+                    {/* Portfolios: cross-model-analyse over meerdere modellen */}
+                    {portfolios.length > 0 && (
                         <div className="space-y-3">
-                            {projects.map((p) => (
-                                <div
-                                    key={p.id}
-                                    className="flex items-center gap-4 rounded-xl border border-[var(--color-neutral-200)] bg-white p-4"
+                            <h2 className="text-sm font-semibold text-[var(--color-neutral-700)] flex items-center gap-2">
+                                <Layers size={16} className="text-[var(--color-primary-700)]" />
+                                Portfolios
+                            </h2>
+                            {portfolios.map((pf) => (
+                                <Link
+                                    key={pf.id}
+                                    href={`/studio/portfolio/${pf.id}`}
+                                    className="flex items-center gap-4 rounded-xl border border-[var(--color-neutral-200)] bg-white p-4 hover:border-[var(--color-primary-700)] transition-colors"
                                 >
-                                    <FolderOpen size={20} className="text-[var(--color-primary-700)] shrink-0" />
-                                    <Link href={`/studio/p/${p.id}`} className="flex-grow min-w-0 group">
-                                        <p className="text-sm font-semibold text-[var(--color-neutral-900)] group-hover:text-[var(--color-primary-700)] transition-colors truncate">
-                                            {p.name}
+                                    <Layers size={20} className="text-[var(--color-primary-700)] shrink-0" />
+                                    <div className="flex-grow min-w-0">
+                                        <p className="text-sm font-semibold text-[var(--color-neutral-900)] truncate">
+                                            {pf.name}
                                         </p>
                                         <p className="text-xs text-[var(--color-neutral-500)]">
-                                            {p.stats.tables} tabellen · {p.stats.measures} measures ·{" "}
-                                            {p.stats.relationships} relaties ·{" "}
-                                            {new Date(p.created_at).toLocaleDateString("nl-NL")}
+                                            {pf.modelCount} modellen ·{" "}
+                                            {pf.analyzed_at ? "geanalyseerd" : "nog niet geanalyseerd"}
                                         </p>
-                                    </Link>
-                                    <button
-                                        onClick={() => handleDelete(p)}
-                                        disabled={deleting === p.id}
-                                        className="shrink-0 text-[var(--color-neutral-500)] hover:text-[var(--color-error)] transition-colors p-2"
-                                        aria-label={`Verwijder ${p.name}`}
-                                    >
-                                        {deleting === p.id ? (
-                                            <Loader2 size={16} className="animate-spin" />
-                                        ) : (
-                                            <Trash2 size={16} />
-                                        )}
-                                    </button>
-                                </div>
+                                    </div>
+                                </Link>
                             ))}
+                        </div>
+                    )}
+
+                    {projects.length > 0 && (
+                        <div className="space-y-3">
+                            {projects.map((p) => {
+                                const isSelected = selected.has(p.id);
+                                return (
+                                    <div
+                                        key={p.id}
+                                        className={`flex items-center gap-4 rounded-xl border bg-white p-4 transition-colors ${
+                                            isSelected
+                                                ? "border-[var(--color-primary-700)]"
+                                                : "border-[var(--color-neutral-200)]"
+                                        }`}
+                                    >
+                                        <input
+                                            type="checkbox"
+                                            checked={isSelected}
+                                            onChange={() => toggleSelect(p.id)}
+                                            aria-label={`Selecteer ${p.name} voor portfolio`}
+                                            className="shrink-0 h-4 w-4 accent-[var(--color-primary-700)]"
+                                        />
+                                        <FolderOpen size={20} className="text-[var(--color-primary-700)] shrink-0" />
+                                        <Link href={`/studio/p/${p.id}`} className="flex-grow min-w-0 group">
+                                            <p className="text-sm font-semibold text-[var(--color-neutral-900)] group-hover:text-[var(--color-primary-700)] transition-colors truncate">
+                                                {p.name}
+                                            </p>
+                                            <p className="text-xs text-[var(--color-neutral-500)]">
+                                                {p.stats.tables} tabellen · {p.stats.measures} measures ·{" "}
+                                                {p.stats.relationships} relaties ·{" "}
+                                                {new Date(p.created_at).toLocaleDateString("nl-NL")}
+                                            </p>
+                                        </Link>
+                                        <button
+                                            onClick={() => handleDelete(p)}
+                                            disabled={deleting === p.id}
+                                            className="shrink-0 text-[var(--color-neutral-500)] hover:text-[var(--color-error)] transition-colors p-2"
+                                            aria-label={`Verwijder ${p.name}`}
+                                        >
+                                            {deleting === p.id ? (
+                                                <Loader2 size={16} className="animate-spin" />
+                                            ) : (
+                                                <Trash2 size={16} />
+                                            )}
+                                        </button>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    )}
+
+                    {/* Selectie → portfolio maken (cross-model-analyse) */}
+                    {selected.size >= 1 && (
+                        <div className="flex flex-wrap items-center gap-3 rounded-xl border border-[var(--color-primary-700)]/40 bg-[var(--color-accent-100)]/30 p-4">
+                            <Layers size={18} className="text-[var(--color-primary-700)] shrink-0" />
+                            <p className="text-sm text-[var(--color-neutral-700)]">
+                                {selected.size} model{selected.size === 1 ? "" : "len"} geselecteerd
+                                {selected.size < 2 && " — kies er minstens 2 voor een portfolio"}
+                            </p>
+                            <input
+                                type="text"
+                                value={portfolioName}
+                                onChange={(e) => setPortfolioName(e.target.value)}
+                                placeholder="Naam van portfolio"
+                                className="flex-grow min-w-[10rem] rounded-lg border border-[var(--color-neutral-200)] bg-white px-3 py-2 text-sm"
+                            />
+                            <button
+                                onClick={handleCreatePortfolio}
+                                disabled={selected.size < 2 || creating}
+                                className="inline-flex items-center gap-2 rounded-lg bg-[var(--color-primary-700)] hover:bg-[var(--color-primary-900)] px-4 py-2 text-sm font-medium text-white transition-colors disabled:opacity-50"
+                            >
+                                {creating ? <Loader2 size={15} className="animate-spin" /> : <Layers size={15} />}
+                                Maak portfolio
+                            </button>
                         </div>
                     )}
 
